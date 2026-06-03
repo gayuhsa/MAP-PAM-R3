@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/auth_text_box.dart';
 import '../services/auth_service.dart';
-import 'dashboard_screen.dart';
+import 'category_screen.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const DashboardScreen()),
+          MaterialPageRoute(builder: (context) => CategoryScreen()),
           (route) => false,
         );
       }

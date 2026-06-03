@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../screens/category_screen.dart';
-import '../screens/dashboard_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/transactions_screen.dart';
 import '../screens/wallets_screen.dart';
@@ -41,15 +40,6 @@ class Skeleton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            GestureDetector(
-              onTap: () {
-                _navigateTo(context, DashboardScreen());
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [Icon(Icons.dashboard), Text('Dashboard')],
-              ),
-            ),
             GestureDetector(
               onTap: () {
                 _navigateTo(context, CategoryScreen());

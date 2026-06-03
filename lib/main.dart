@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'screens/dashboard_screen.dart';
+import 'screens/category_screen.dart';
 import 'screens/signup_screen.dart';
 import 'firebase_options.dart';
 
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           }
 
           if (snapshot.hasData) {
-            return DashboardScreen();
+            return CategoryScreen();
           }
 
           return SignupScreen();
