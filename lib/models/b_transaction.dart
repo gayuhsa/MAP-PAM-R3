@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BTransaction {
-  final String id;
-  final String walletId;
-  final String categoryId;
-  final double amount;
-  final DateTime dateTime;
-  final String type; // 'INCOME' or 'EXPENSE'
-  final String? notes;
+  String? id;
+  String walletId;
+  String categoryId;
+  double amount;
+  DateTime dateTime;
+  String type; // 'INCOME' or 'EXPENSE'
+  String? notes;
 
   BTransaction({
-    required this.id,
+    this.id,
     required this.walletId,
     required this.categoryId,
     required this.amount,

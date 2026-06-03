@@ -1,26 +1,14 @@
 class Category {
-  final String id;
-  final String name;
-  final int colorHex;
-  final String iconName;
+  String? id;
+  String name;
 
-  Category({
-    required this.id,
-    required this.name,
-    required this.colorHex,
-    required this.iconName,
-  });
+  Category({this.id, required this.name});
 
   factory Category.fromJson(Map<String, dynamic> json, String docId) {
-    return Category(
-      id: docId,
-      name: json['name'] ?? '',
-      colorHex: json['colorHex'] ?? 0xFFFFFFFF,
-      iconName: json['iconName'] ?? 'help',
-    );
+    return Category(id: docId, name: json['name'] ?? '');
   }
 
   Map<String, dynamic> toJson() {
-    return {'name': name, 'colorHex': colorHex, 'iconName': iconName};
+    return {'name': name};
   }
 }

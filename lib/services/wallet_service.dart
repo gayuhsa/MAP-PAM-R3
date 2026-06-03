@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/wallet.dart';
 
 class WalletService {
@@ -6,16 +7,23 @@ class WalletService {
     'wallets',
   );
 
-  Future<void> createWallet(Wallet wallet) async {
+  Future<void> create(Wallet wallet) async {
     await _db.add(wallet.toJson());
   }
 
-  Stream<List<Wallet>> getWallets() {
-    return _db.snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        return Wallet.fromJson(doc.data() as Map<String, dynamic>, doc.id);
-      }).toList();
-    });
+  Stream<List<Wallet>> getAllByUserId() {
+    return _db
+        .where('userId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            return Wallet.fromJson(doc.data() as Map<String, dynamic>, doc.id);
+          }).toList();
+        });
+  }
+
+  Stream<QuerySnapshot<Object?>> getSnapshots() {
+    return _db.snapshots();
   }
 
   Future<void> updateWallet(Wallet wallet) async {

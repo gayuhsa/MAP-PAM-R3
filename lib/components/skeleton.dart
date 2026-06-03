@@ -9,8 +9,14 @@ import '../theme.dart';
 class Skeleton extends StatelessWidget {
   final String title;
   final Widget content;
+  final Widget? actionButton;
 
-  const Skeleton({super.key, required this.title, required this.content});
+  const Skeleton({
+    super.key,
+    required this.title,
+    required this.content,
+    this.actionButton,
+  });
 
   void _navigateTo(BuildContext context, Widget target) {
     if (ModalRoute.of(context)?.settings.name ==
@@ -83,6 +89,8 @@ class Skeleton extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: actionButton,
     );
   }
 }

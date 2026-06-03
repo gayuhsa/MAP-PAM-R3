@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/category.dart';
 
 class CategoryService {
@@ -6,23 +7,33 @@ class CategoryService {
     'categories',
   );
 
-  Future<void> createCategory(Category category) async {
+  Future<void> create(Category category) async {
     await _db.add(category.toJson());
   }
 
-  Stream<List<Category>> getCategories() {
-    return _db.snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        return Category.fromJson(doc.data() as Map<String, dynamic>, doc.id);
-      }).toList();
-    });
+  Stream<List<Category>> getAllByUserId() {
+    return _db
+        .where('userId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            return Category.fromJson(
+              doc.data() as Map<String, dynamic>,
+              doc.id,
+            );
+          }).toList();
+        });
   }
 
-  Future<void> updateCategory(Category category) async {
+  Stream<QuerySnapshot<Object?>> getSnapshots() {
+    return _db.snapshots();
+  }
+
+  Future<void> update(Category category) async {
     await _db.doc(category.id).update(category.toJson());
   }
 
-  Future<void> deleteCategory(String id) async {
+  Future<void> delete(String id) async {
     await _db.doc(id).delete();
   }
 }
