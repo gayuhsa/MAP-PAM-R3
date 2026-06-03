@@ -5,6 +5,7 @@ import '../components/modal.dart';
 import '../components/skeleton.dart';
 import '../models/category.dart';
 import '../services/category_service.dart';
+import '../theme.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({super.key});
@@ -47,6 +48,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   Widget _createActionButton() {
     return FloatingActionButton(
+      backgroundColor: AppTheme.card,
+      foregroundColor: AppTheme.text,
       onPressed: () => _showCategoryModal(),
       child: Icon(Icons.add),
     );

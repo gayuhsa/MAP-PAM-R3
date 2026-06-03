@@ -10,6 +10,7 @@ class AppTheme {
   static Color inputField = Color(0xFFFFFFFF);
   static Color sidebar = Color(0xFF90C1BE);
   static Color subcontainer = Color(0xFFE8F5F4);
+  static Color text = Color(0xFF000000);
 
   static Color editButton = Color(0xFF668685);
   static Color trashButton = Color(0xFFCF3234);

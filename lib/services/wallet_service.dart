@@ -26,11 +26,11 @@ class WalletService {
     return _db.snapshots();
   }
 
-  Future<void> updateWallet(Wallet wallet) async {
+  Future<void> update(Wallet wallet) async {
     await _db.doc(wallet.id).update(wallet.toJson());
   }
 
-  Future<void> deleteWallet(String id) async {
+  Future<void> delete(String id) async {
     await _db.doc(id).delete();
   }
 }
