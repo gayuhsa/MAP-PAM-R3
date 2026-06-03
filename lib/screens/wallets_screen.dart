@@ -41,6 +41,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
 
       if (isEditing) {
         wallet.name = name;
+        wallet.balance = balance;
         _walletService.update(wallet);
       } else {
         _walletService.create(Wallet(name: name, balance: balance));
