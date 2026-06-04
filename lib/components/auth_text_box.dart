@@ -23,7 +23,7 @@ class AuthTextBox extends StatelessWidget {
         decoration: InputDecoration(
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           contentPadding: EdgeInsets.all(8),
-          fillColor: Colors.white,
+          fillColor: const Color.fromARGB(255, 227, 241, 251),
           filled: true,
           hintText: hintText,
           isDense: true,

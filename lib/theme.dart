@@ -1,17 +1,17 @@
 import 'package:flutter/widgets.dart';
 
 class AppTheme {
-  static Color authContainer = Color(0xFFE8F5F4);
-  static Color background = Color(0xFFC2E1DF);
-  static Color card = Color(0xFFFFFFFF);
-  static Color cardBorder = Color(0xFF8E8E8E);
-  static Color container = Color(0xFFC1E1DE);
-  static Color greyButton = Color(0xFFCCCCCC);
-  static Color inputField = Color(0xFFFFFFFF);
-  static Color sidebar = Color(0xFF90C1BE);
-  static Color subcontainer = Color(0xFFE8F5F4);
-  static Color text = Color(0xFF000000);
+  static Color authContainer = Color(0xFFE3F1FB);
+  static Color background = Color(0xFFFFF9E6);
+  static Color card = Color(0xFFC1E4F3);
+  static Color cardBorder = Color(0xFFA8D0EF);
+  static Color container = Color(0xFFE3F1FB);
+  static Color greyButton = Color(0xFFA4A9B2);
+  static Color inputField = Color(0xFF99C3E4);
+  static Color sidebar = Color(0xFFC1E4F3);
+  static Color subcontainer = Color(0xFFCFE6FF);
+  static Color text = Color(0xFFFFF9E6);
 
-  static Color editButton = Color(0xFF668685);
+  static Color editButton = Color(0xFFA8D0EF);
   static Color trashButton = Color(0xFFCF3234);
 }
