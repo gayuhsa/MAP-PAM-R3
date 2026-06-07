@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/theme.dart';
+import 'package:email_validator/email_validator.dart';
 import '../components/auth_text_box.dart';
 import '../components/skeleton.dart';
+import '../screens/login_screen.dart';
 import '../services/auth_service.dart';
+import '../theme.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -17,6 +19,53 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final TextEditingController passwordConfirmController =
       TextEditingController();
   final AuthService _authService = AuthService();
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Gagal Daftar"),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _updateProfile() {
+    if (emailController.text.trim().isEmpty ||
+        passwordController.text.isEmpty ||
+        passwordConfirmController.text.isEmpty) {
+      _showErrorDialog("Seluruh formulir tidak boleh kosong.");
+      return;
+    }
+
+    if (!EmailValidator.validate(emailController.text)) {
+      _showErrorDialog("Email tidak valid.");
+      return;
+    }
+
+    if (passwordController.text.length < 6) {
+      _showErrorDialog("Password minimal 6 karakter.");
+      return;
+    }
+
+    if (passwordController.text != passwordConfirmController.text) {
+      _showErrorDialog("Password tidak cocok.");
+      return;
+    }
+
+    _authService.updateEmail(emailController.text);
+    _authService.updatePassword(passwordController.text);
+
+    emailController.text = '';
+    passwordController.text = '';
+    passwordConfirmController.text = '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +91,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               hintText: "Email",
               obscureText: false,
             ),
+            SizedBox(height: 16),
             Text(
               "Password",
               style: TextStyle(
@@ -56,6 +106,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               hintText: "Password",
               obscureText: true,
             ),
+            SizedBox(height: 16),
             Text(
               "Konfirmasi Password",
               style: TextStyle(
@@ -70,14 +121,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               hintText: "Konfirmasi Password",
               obscureText: true,
             ),
+            SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: _updateProfile,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.button,
                   foregroundColor: AppTheme.textInverted,
-                  padding: EdgeInsets.all(24),
+                  padding: EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -96,11 +148,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  _authService.signOut();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.buttonDanger,
                   foregroundColor: AppTheme.textInverted,
-                  padding: EdgeInsets.all(24),
+                  padding: EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),

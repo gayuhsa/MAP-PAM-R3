@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:email_validator/email_validator.dart';
 import '../components/auth_text_box.dart';
 import '../services/auth_service.dart';
 import '../theme.dart';
@@ -26,6 +27,11 @@ class _SignupScreenState extends State<SignupScreen> {
         passwordController.text.isEmpty ||
         passwordConfirmController.text.isEmpty) {
       _showErrorDialog("Seluruh formulir tidak boleh kosong.");
+      return;
+    }
+
+    if (!EmailValidator.validate(emailController.text)) {
+      _showErrorDialog("Email tidak valid.");
       return;
     }
 
@@ -155,7 +161,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.button,
                   foregroundColor: AppTheme.textInverted,
-                  padding: EdgeInsets.all(24),
+                  padding: EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -169,7 +175,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     : Text(
                         "Daftar",
                         style: TextStyle(
-                          color: AppTheme.text,
+                          color: AppTheme.textInverted,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -184,7 +190,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(24),
+                  padding: EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
