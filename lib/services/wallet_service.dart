@@ -23,10 +23,6 @@ class WalletService {
         });
   }
 
-  Stream<QuerySnapshot<Object?>> getSnapshots() {
-    return _db.snapshots();
-  }
-
   Future<void> update(Wallet wallet) async {
     await _db.doc(wallet.id).update(wallet.toJson());
   }

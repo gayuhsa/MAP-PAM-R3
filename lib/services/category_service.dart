@@ -26,10 +26,6 @@ class CategoryService {
         });
   }
 
-  Stream<QuerySnapshot<Object?>> getSnapshots() {
-    return _db.snapshots();
-  }
-
   Future<void> update(Category category) async {
     await _db.doc(category.id).update(category.toJson());
   }
