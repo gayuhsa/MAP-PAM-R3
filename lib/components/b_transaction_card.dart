@@ -1,28 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../models/wallet.dart';
+import '../models/b_transaction.dart';
 import '../theme.dart';
 import 'card_chip.dart';
 
-class WalletCard extends StatelessWidget {
-  final Wallet wallet;
-  final void Function({Wallet? wallet}) modalCallback;
+class BTransactionCard extends StatelessWidget {
+  final BTransaction transaction;
+  final void Function({BTransaction? transaction}) modalCallback;
   final void Function(String) deleteCallback;
 
-  const WalletCard({
+  const BTransactionCard({
     super.key,
-    required this.wallet,
+    required this.transaction,
     required this.modalCallback,
     required this.deleteCallback,
   });
 
   @override
   Widget build(BuildContext context) {
+    Color chipColor = AppTheme.chipExpense;
+    IconData chipIcon = Icons.trending_down;
     String formattedIdr = NumberFormat.currency(
       locale: 'id_ID',
       symbol: 'Rp',
       decimalDigits: 2,
-    ).format(wallet.balance);
+    ).format(transaction.amount);
+
+    if (transaction.type == 'INCOME') {
+      chipColor = AppTheme.chipIncome;
+      chipIcon = Icons.trending_up;
+    }
 
     return Container(
       decoration: BoxDecoration(
@@ -41,36 +48,20 @@ class WalletCard extends StatelessWidget {
             spacing: 4,
             children: [
               Text(
-                wallet.name,
+                transaction.categoryId,
                 style: TextStyle(
                   color: AppTheme.text,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(formattedIdr),
-              Row(
-                spacing: 12,
+              CardChip(
+                backgroundColor: chipColor,
                 children: [
-                  CardChip(
-                    backgroundColor: AppTheme.chipIncome,
-                    children: [
-                      Icon(Icons.trending_up),
-                      Text(
-                        'Rp0',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  CardChip(
-                    backgroundColor: AppTheme.chipExpense,
-                    children: [
-                      Icon(Icons.trending_down),
-                      Text(
-                        'Rp0',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                  Icon(chipIcon),
+                  Text(
+                    formattedIdr,
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -86,7 +77,7 @@ class WalletCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            onPressed: () => modalCallback(wallet: wallet),
+            onPressed: () => modalCallback(transaction: transaction),
           ),
           SizedBox(width: 8),
           IconButton(
@@ -98,7 +89,7 @@ class WalletCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            onPressed: () => deleteCallback(wallet.id ?? ''),
+            onPressed: () => deleteCallback(transaction.id ?? ''),
           ),
         ],
       ),

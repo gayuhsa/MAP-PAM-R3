@@ -10,6 +10,9 @@ class AppTheme {
   static const Color card = Color(0xFFC1E4F3);
   static const Color cardBorder = Color(0xFFA8D0EF);
 
+  static const Color chipExpense = Color(0xFFF2A6A6);
+  static const Color chipIncome = Color(0xFFA6D4A8);
+
   static const Color authContainer = Color(0xFFE3F1FB);
   static const Color authTextBox = Color(0xFFFFFFFF);
   static const Color inputField = Color(0xFF99C3E4);
