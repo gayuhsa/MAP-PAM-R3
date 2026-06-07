@@ -11,6 +11,8 @@ class TransactionService {
   );
 
   Future<void> create(BTransaction transaction) async {
+    transaction.userId = FirebaseAuth.instance.currentUser!.uid;
+
     await FirebaseFirestore.instance.runTransaction((tx) async {
       final walletRef = _walletDb.doc(transaction.walletId);
       final walletSnapshot = await tx.get(walletRef);

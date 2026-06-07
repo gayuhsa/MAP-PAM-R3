@@ -8,6 +8,7 @@ class CategoryService {
   );
 
   Future<void> create(Category category) async {
+    category.userId = FirebaseAuth.instance.currentUser!.uid;
     await _db.add(category.toJson());
   }
 

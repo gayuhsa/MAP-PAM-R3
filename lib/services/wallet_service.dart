@@ -8,6 +8,7 @@ class WalletService {
   );
 
   Future<void> create(Wallet wallet) async {
+    wallet.userId = FirebaseAuth.instance.currentUser!.uid;
     await _db.add(wallet.toJson());
   }
 
