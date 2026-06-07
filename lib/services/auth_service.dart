@@ -61,4 +61,8 @@ class AuthService {
       throw Exception(e.toString());
     }
   }
+
+  String getCurrentUserEmail() {
+    return _auth.currentUser?.email ?? '';
+  }
 }

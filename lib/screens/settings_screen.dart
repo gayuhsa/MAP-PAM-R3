@@ -69,6 +69,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    emailController.text = _authService.getCurrentUserEmail();
+
     return Skeleton(
       title: 'Setelan',
       content: Container(
@@ -135,7 +137,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 child: Text(
-                  "Update Profil",
+                  'Perbarui Profil',
                   style: TextStyle(
                     color: AppTheme.textInverted,
                     fontSize: 16,
@@ -164,7 +166,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 child: Text(
-                  "Log Out",
+                  'Keluar',
                   style: TextStyle(
                     color: AppTheme.textInverted,
                     fontSize: 16,
