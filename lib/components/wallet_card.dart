@@ -22,6 +22,7 @@ class WalletCard extends StatelessWidget {
         border: Border.all(color: AppTheme.cardBorder, width: 2),
         borderRadius: BorderRadius.circular(16),
       ),
+      margin: EdgeInsets.fromLTRB(0, 0, 0, 8),
       padding: EdgeInsets.all(16),
       child: Row(
         children: [
@@ -32,7 +33,7 @@ class WalletCard extends StatelessWidget {
               Text(
                 wallet.name,
                 style: TextStyle(
-                  color: Colors.black,
+                  color: AppTheme.text,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -45,19 +46,19 @@ class WalletCard extends StatelessWidget {
             icon: Icon(Icons.edit),
             style: IconButton.styleFrom(
               backgroundColor: AppTheme.editButton,
-              foregroundColor: AppTheme.card,
+              foregroundColor: AppTheme.textInverted,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
             onPressed: () => modalCallback(wallet: wallet),
           ),
-          SizedBox(width: 4),
+          SizedBox(width: 8),
           IconButton(
             icon: Icon(Icons.delete),
             style: IconButton.styleFrom(
               backgroundColor: AppTheme.trashButton,
-              foregroundColor: AppTheme.card,
+              foregroundColor: AppTheme.textInverted,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),

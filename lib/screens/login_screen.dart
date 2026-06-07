@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/auth_text_box.dart';
 import '../services/auth_service.dart';
+import '../theme.dart';
 import 'category_screen.dart';
 import 'signup_screen.dart';
 
@@ -67,13 +68,13 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 194, 225, 223),
+      backgroundColor: AppTheme.background,
       resizeToAvoidBottomInset: false,
       body: Center(
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(32),
-            color: Color.fromARGB(255, 232, 245, 244),
+            color: AppTheme.authContainer,
           ),
           margin: EdgeInsets.fromLTRB(32, 0, 32, 0),
           padding: EdgeInsets.all(32),
@@ -83,13 +84,21 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               Text(
                 "Masuk",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: AppTheme.text,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 16),
               Text(
                 "Email",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: AppTheme.text,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.left,
               ),
               AuthTextBox(
@@ -100,7 +109,11 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 16),
               Text(
                 "Password",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: AppTheme.text,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.left,
               ),
               AuthTextBox(
@@ -112,9 +125,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: _isLoading ? null : _login,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 45, 131, 124),
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: AppTheme.button,
+                  foregroundColor: AppTheme.textInverted,
+                  padding: EdgeInsets.all(24),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -123,14 +136,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     ? SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
+                        child: CircularProgressIndicator(),
                       )
                     : Text(
                         "Masuk",
                         style: TextStyle(
+                          color: AppTheme.text,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -145,14 +156,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.all(24),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
                 child: Text(
                   "Belum memiliki akun? Daftar.",
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(color: AppTheme.text, fontSize: 16),
                 ),
               ),
             ],

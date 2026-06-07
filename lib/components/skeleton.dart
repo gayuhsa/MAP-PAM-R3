@@ -30,13 +30,13 @@ class Skeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppTheme.sidebar,
+        backgroundColor: AppTheme.bottomBar,
         title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       resizeToAvoidBottomInset: false,
       body: Container(color: AppTheme.background, child: content),
       bottomNavigationBar: BottomAppBar(
-        color: AppTheme.sidebar,
+        color: AppTheme.bottomBar,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
