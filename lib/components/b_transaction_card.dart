@@ -18,33 +18,30 @@ class BTransactionCard extends StatelessWidget {
     required this.deleteCallback,
   });
 
-  Future<Map<String, String>> _getNames() async {
+  Future<Map<String, dynamic>> _getTransactionDetails() async {
     try {
       final category = await CategoryService().getById(transaction.categoryId);
       final wallet = await WalletService().getById(transaction.walletId);
+
       return {
         'category': category?.name ?? 'Kategori Umum',
-        'wallet': wallet?.name ?? 'Dompet Utama'
+        'wallet': wallet?.name ?? 'Dompet Utama',
+        'walletPrice': wallet?.balance ?? 0.0,
       };
     } catch (_) {
-      return {'category': 'Memuat...', 'wallet': 'Memuat...'};
+      return {
+        'category': 'Memuat...',
+        'wallet': 'Memuat...',
+        'walletPrice': 0.0,
+      };
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Secara default kita buat warnanya merah untuk pengeluaran
     Color chipColor = AppTheme.chipExpense;
     IconData chipIcon = Icons.trending_down;
-    
-    String formattedIdr = NumberFormat.currency(
-      locale: 'id_ID',
-      symbol: 'Rp',
-      decimalDigits: 2,
-    ).format(transaction.amount);
 
-    // LOGIKA LABEL: Kamu bisa atur jika jumlahnya minus atau ada kondisi INCOME tertentu. 
-    // Di sini default-nya tetap memakai chipExpense, jika ingin dinamis tinggal disesuaikan kondisi di bawah:
     if (transaction.type.toUpperCase() == 'INCOME') {
       chipColor = AppTheme.chipIncome;
       chipIcon = Icons.trending_up;
@@ -56,23 +53,31 @@ class BTransactionCard extends StatelessWidget {
         border: Border.all(color: AppTheme.cardBorder, width: 2),
         borderRadius: BorderRadius.circular(16),
       ),
-      padding: const EdgeInsets.all(12),
-      child: FutureBuilder<Map<String, String>>(
-        future: _getNames(),
+      padding: EdgeInsets.all(12),
+      child: FutureBuilder<Map<String, dynamic>>(
+        future: _getTransactionDetails(),
         builder: (context, snapshot) {
           final categoryName = snapshot.data?['category'] ?? 'Memuat...';
           final walletName = snapshot.data?['wallet'] ?? 'Memuat...';
+          final double walletPrice = (snapshot.data?['walletPrice'] ?? 0.0)
+              .toDouble();
+
+          final double totalCalculated = walletPrice * transaction.amount;
+
+          String formattedTotalIdr = NumberFormat.currency(
+            locale: 'id_ID',
+            symbol: 'Rp',
+            decimalDigits: 2,
+          ).format(totalCalculated);
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Bagian Informasi Atas
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // 1. Kategori (Contoh: atk / konsum)
                   Text(
                     categoryName,
                     style: TextStyle(
@@ -83,52 +88,42 @@ class BTransactionCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  
-                  // 2. Dompet (Contoh: fotocopy / makan berat)
+
                   Text(
                     walletName,
-                    style: TextStyle(
-                      color: AppTheme.text.withOpacity(0.7),
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: AppTheme.text, fontSize: 18),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
 
-                  // 3. Label Jumlah
                   Text(
                     'Jumlah',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 11),
+                    style: TextStyle(color: Colors.grey[600], fontSize: 16),
                   ),
                   Text(
-                    '${transaction.amount.toInt()} x', 
+                    '${transaction.amount.toInt()}x',
                     style: TextStyle(
                       color: AppTheme.text,
-                      fontSize: 16,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
 
-                  // 4. PERBAIKAN DI SINI: Menampilkan isi teks input keterangan dari field Jenis
                   Text(
                     'Jenis',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 11),
+                    style: TextStyle(color: Colors.grey[600], fontSize: 16),
                   ),
                   Text(
-                    transaction.type.isNotEmpty ? transaction.type : '-', // Menampilkan tulisan seperti 'makan siang'
-                    style: TextStyle(
-                      color: AppTheme.text,
-                      fontSize: 16,
-                    ),
+                    transaction.type.isNotEmpty ? transaction.type : '-',
+                    style: TextStyle(color: AppTheme.text, fontSize: 18),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
 
-              // Bagian Informasi Bawah
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -136,48 +131,51 @@ class BTransactionCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      // 5. Total Utama (Tetap dipertahankan di sisi kiri)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Total',
-                            style: TextStyle(color: Colors.grey[600], fontSize: 11),
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 16,
+                            ),
                           ),
                           Text(
-                            formattedIdr,
+                            formattedTotalIdr,
                             style: TextStyle(
                               color: AppTheme.text,
-                              fontSize: 15,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
                       ),
-                      
-                      // 6. PERBAIKAN DI SINI: Label berwarna (Merah/Hijau) yang isinya disamakan dengan Nilai Total Harga
+
                       CardChip(
                         backgroundColor: chipColor,
                         children: [
                           Icon(chipIcon, size: 12),
                           Text(
-                            formattedIdr, // Isinya sama dengan total harga rupiah
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
+                            formattedTotalIdr,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 11,
+                            ),
                           ),
                         ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
 
-                  // 7. Tombol Aksi Edit & Hapus
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.edit, size: 16),
-                        constraints: const BoxConstraints(),
-                        padding: const EdgeInsets.all(6),
+                        icon: Icon(Icons.edit, size: 16),
+                        constraints: BoxConstraints(),
+                        padding: EdgeInsets.all(6),
                         style: IconButton.styleFrom(
                           backgroundColor: AppTheme.editButton,
                           foregroundColor: AppTheme.textInverted,
@@ -185,13 +183,14 @@ class BTransactionCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(6),
                           ),
                         ),
-                        onPressed: () => modalCallback(transaction: transaction),
+                        onPressed: () =>
+                            modalCallback(transaction: transaction),
                       ),
-                      const SizedBox(width: 6),
+                      SizedBox(width: 6),
                       IconButton(
-                        icon: const Icon(Icons.delete, size: 16),
-                        constraints: const BoxConstraints(),
-                        padding: const EdgeInsets.all(6),
+                        icon: Icon(Icons.delete, size: 16),
+                        constraints: BoxConstraints(),
+                        padding: EdgeInsets.all(6),
                         style: IconButton.styleFrom(
                           backgroundColor: AppTheme.trashButton,
                           foregroundColor: AppTheme.textInverted,
