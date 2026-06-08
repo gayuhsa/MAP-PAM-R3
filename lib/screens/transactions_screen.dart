@@ -31,13 +31,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         text: isEditing ? transaction.walletId : '',
       ),
       'Kategori': TextEditingController(
-        text: isEditing ? '${transaction.categoryId}' : '',
+        text: isEditing ? transaction.categoryId : '',
       ),
       'Jumlah': TextEditingController(
         text: isEditing ? '${transaction.amount}' : '',
       ),
       'Jenis': TextEditingController(
-        text: isEditing ? '${transaction.type}' : '',
+        text: isEditing ? transaction.type : '',
       ),
     };
 
@@ -47,10 +47,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         title: isEditing ? 'Edit Transaksi' : 'Tambah Transaksi',
         fields: fields,
         dropdownFields: {
-          'Dompet': categories
-              .map((c) => DropdownOptions(id: c.id ?? '', name: c.name))
+          'Dompet': wallets
+              .map((w) => DropdownOptions(id: w.id ?? '', name: w.name))
               .toList(),
-          'Kategori': wallets
+          'Kategori': categories
               .map((c) => DropdownOptions(id: c.id ?? '', name: c.name))
               .toList(),
         },
@@ -62,10 +62,17 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       final String categoryId = fields['Kategori']!.text.trim();
       final double balance =
           double.tryParse(fields['Jumlah']!.text.trim()) ?? 0.0;
+      final String type = fields['Jenis']!.text.trim().isEmpty 
+          ? 'EXPENSE' 
+          : fields['Jenis']!.text.trim();
+
       if (walletId.isEmpty || categoryId.isEmpty) return;
 
       if (isEditing) {
         transaction.walletId = walletId;
+        transaction.categoryId = categoryId;
+        transaction.amount = balance;
+        transaction.type = type;
         _transactionService.update(transaction);
       } else {
         _transactionService.create(
@@ -74,7 +81,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             categoryId: categoryId,
             amount: balance,
             dateTime: DateTime.now(),
-            type: 'EXPENSE',
+            type: type,
           ),
         );
       }
@@ -86,7 +93,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       backgroundColor: AppTheme.card,
       foregroundColor: AppTheme.text,
       onPressed: () => _showTransactionModal(),
-      child: Icon(Icons.add),
+      child: const Icon(Icons.add),
     );
   }
 
@@ -99,21 +106,28 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         stream: _transactionService.getAllByUserId(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text('Terjadi error. Coba lagi nanti.'));
+            return const Center(child: Text('Terjadi error. Coba lagi nanti.'));
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           final docs = snapshot.data ?? [];
 
           if (docs.isEmpty) {
-            return Center(child: Text('Belum ada transaksi.'));
+            return const Center(child: Text('Belum ada transaksi.'));
           }
 
-          return ListView.builder(
-            padding: EdgeInsets.all(8),
+          // GridView dengan rasio tinggi yang sudah disesuaikan agar pas
+          return GridView.builder(
+            padding: const EdgeInsets.all(12),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,          // Menjadi 2 kolom ke samping
+              crossAxisSpacing: 12,       // Jarak horizontal antar kartu
+              mainAxisSpacing: 12,        // Jarak vertikal antar kartu
+              childAspectRatio: 1.3,      // PERBAIKAN: Diubah ke 0.8 agar kotak memanjang kebawah dan muat semua teks
+            ),
             itemCount: docs.length,
             itemBuilder: (BuildContext context, int index) {
               final doc = docs[index];
