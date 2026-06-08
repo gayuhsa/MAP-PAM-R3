@@ -3,21 +3,31 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/category.dart';
 
 class CategoryService {
-  final CollectionReference _db = FirebaseFirestore.instance
-      .collection('users')
-      .doc(FirebaseAuth.instance.currentUser!.uid)
-      .collection('categories');
+  CollectionReference get _db {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception("User belum login!");
+    }
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('categories'); 
+  }
 
   Future<void> create(Category category) async {
     await _db.add(category.toJson());
   }
 
   Stream<List<Category>> getAllByUserId() {
-    return _db.snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        return Category.fromJson(doc.data() as Map<String, dynamic>, doc.id);
-      }).toList();
-    });
+    try {
+      return _db.snapshots().map((snapshot) {
+        return snapshot.docs.map((doc) {
+          return Category.fromJson(doc.data() as Map<String, dynamic>, doc.id);
+        }).toList();
+      });
+    } catch (e) {
+      return Stream.value([]); 
+    }
   }
 
   Future<void> update(Category category) async {

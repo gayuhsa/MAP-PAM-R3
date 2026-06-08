@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class AppTheme {
   static const Color background = Color(0xFFFFF9E6);

@@ -21,7 +21,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
 
     final Map<String, TextEditingController> fields = {
       'Nama': TextEditingController(text: isEditing ? wallet.name : ''),
-      'Isi (Contoh: 5000)': TextEditingController(text: isEditing ? '${wallet.balance}' : null),
+      'Isi': TextEditingController(text: isEditing ? '${wallet.balance}' : null),
     };
 
     final bool? isConfirmed = await showDialog(
