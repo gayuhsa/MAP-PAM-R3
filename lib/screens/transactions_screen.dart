@@ -126,7 +126,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               crossAxisCount: 2,          // Menjadi 2 kolom ke samping
               crossAxisSpacing: 12,       // Jarak horizontal antar kartu
               mainAxisSpacing: 12,        // Jarak vertikal antar kartu
-              childAspectRatio: 1.2,      // PERBAIKAN: Diubah ke 0.8 agar kotak memanjang kebawah dan muat semua teks
+              childAspectRatio: 1.5,      // PERBAIKAN: Diubah ke 0.8 agar kotak memanjang kebawah dan muat semua teks
             ),
             itemCount: docs.length,
             itemBuilder: (BuildContext context, int index) {

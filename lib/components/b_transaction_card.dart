@@ -18,7 +18,6 @@ class BTransactionCard extends StatelessWidget {
     required this.deleteCallback,
   });
 
-  // Mengambil detail Kategori dan Dompet (termasuk nominal saldo/harga dompet)
   Future<Map<String, dynamic>> _getTransactionDetails() async {
     try {
       final category = await CategoryService().getById(transaction.categoryId);
@@ -27,7 +26,7 @@ class BTransactionCard extends StatelessWidget {
       return {
         'category': category?.name ?? 'Kategori Umum',
         'wallet': wallet?.name ?? 'Dompet Utama',
-        'walletPrice': wallet?.balance ?? 0.0, // Menggunakan .balance sesuai model Wallet kamu
+        'walletPrice': wallet?.balance ?? 0.0,
       };
     } catch (_) {
       return {'category': 'Memuat...', 'wallet': 'Memuat...', 'walletPrice': 0.0};
@@ -36,7 +35,6 @@ class BTransactionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Menentukan warna label (Chip) berdasarkan tipe transaksi
     Color chipColor = AppTheme.chipExpense;
     IconData chipIcon = Icons.trending_down;
 
@@ -59,10 +57,8 @@ class BTransactionCard extends StatelessWidget {
           final walletName = snapshot.data?['wallet'] ?? 'Memuat...';
           final double walletPrice = (snapshot.data?['walletPrice'] ?? 0.0).toDouble();
 
-          // Rumus: Harga Satuan Dompet x Jumlah Kuantitas dari Transaksi
           final double totalCalculated = walletPrice * transaction.amount;
 
-          // Format hasil perkalian ke format mata uang Rupiah (Rp)
           String formattedTotalIdr = NumberFormat.currency(
             locale: 'id_ID',
             symbol: 'Rp',
@@ -71,114 +67,75 @@ class BTransactionCard extends StatelessWidget {
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min, // Agar kolom menciut mengikuti tinggi konten
             children: [
-              // --- Bagian Informasi Atas ---
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // 1. Kategori (Judul Utama)
-                  Text(
-                    categoryName,
-                    style: TextStyle(
-                      color: AppTheme.text,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  
-                  // 2. Nama Dompet
-                  Text(
-                    walletName,
-                    style: TextStyle(
-                      color: AppTheme.text.withOpacity(0.7),
-                      fontSize: 18,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-
-                  // 3. Jumlah Nominal / Kuantitas (Ditambah huruf 'x' di belakang)
-                  Text(
-                    'Jumlah',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 16),
-                  ),
-                  Text(
-                    '${transaction.amount.toInt()}x', 
-                    style: TextStyle(
-                      color: AppTheme.text,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-
-                  // 4. Keterangan / Deskripsi Transaksi (Diambil dari field Jenis)
-                  Text(
-                    'Jenis',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 16),
-                  ),
-                  Text(
-                    transaction.type.isNotEmpty ? transaction.type : '-',
-                    style: TextStyle(
-                      color: AppTheme.text,
-                      fontSize: 18,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+              Text(
+                categoryName,
+                style: const TextStyle(color: AppTheme.text, fontSize: 18, fontWeight: FontWeight.bold),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
+              Text(
+                walletName,
+                style: TextStyle(color: AppTheme.text.withOpacity(0.7), fontSize: 18),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 6),
 
-              // --- Bagian Informasi Bawah ---
-              Column(
-                mainAxisSize: MainAxisSize.min,
+              Text(
+                'Jumlah',
+                style: TextStyle(color: Colors.grey[600], fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                '${transaction.amount.toInt()}x', 
+                style: const TextStyle(color: AppTheme.text, fontSize: 16),
+              ),
+              const SizedBox(height: 4),
+
+              Text(
+                'Jenis',
+                style: TextStyle(color: Colors.grey[600], fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                transaction.type.isNotEmpty ? transaction.type : '-',
+                style: const TextStyle(color: AppTheme.text, fontSize: 16),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              
+              // KUNCI: Jarak dari Jenis ke Total dibuat dekat (hanya 8)
+              const SizedBox(height: 8), 
+
+              // Bagian Total dan Tombol digabung sejajar biar nempel pas di bawah Jenis
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 5. Label Total Utama (Hasil perhitungan perkalian)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Total',
-                            style: TextStyle(color: Colors.grey[600], fontSize: 16),
-                          ),
-                          Text(
-                            formattedTotalIdr,
-                            style: TextStyle(
-                              color: AppTheme.text,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        'Total',
+                        style: TextStyle(color: Colors.grey[600], fontSize: 14),
                       ),
-                      
-                      // 6. Label Chip Berwarna (Isinya sama dengan total utama)
+                      const SizedBox(height: 2),
                       CardChip(
                         backgroundColor: chipColor,
                         children: [
                           Icon(chipIcon, size: 12),
                           Text(
                             formattedTotalIdr, 
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15), 
                           ),
                         ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
-
-                  // 7. Tombol Aksi Edit & Hapus
+                  
+                  // Tombol aksi pas di sebelah kanan total
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
                         icon: const Icon(Icons.edit, size: 16),
@@ -187,9 +144,7 @@ class BTransactionCard extends StatelessWidget {
                         style: IconButton.styleFrom(
                           backgroundColor: AppTheme.editButton,
                           foregroundColor: AppTheme.textInverted,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                         ),
                         onPressed: () => modalCallback(transaction: transaction),
                       ),
@@ -201,9 +156,7 @@ class BTransactionCard extends StatelessWidget {
                         style: IconButton.styleFrom(
                           backgroundColor: AppTheme.trashButton,
                           foregroundColor: AppTheme.textInverted,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                         ),
                         onPressed: () => deleteCallback(transaction.id ?? ''),
                       ),
