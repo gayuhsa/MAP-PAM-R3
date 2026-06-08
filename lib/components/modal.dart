@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../models/dropdown_options.dart';
 
 class Modal extends StatelessWidget {
@@ -54,8 +55,13 @@ class Modal extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 8),
               child: TextField(
                 controller: entry.value,
+                keyboardType: entry.key == 'Isi' ? TextInputType.number : TextInputType.text,
+                inputFormatters: entry.key == 'Isi' 
+                    ? [FilteringTextInputFormatter.digitsOnly] 
+                    : null,
                 decoration: InputDecoration(
                   labelText: entry.key,
+                  hintText: entry.key == 'Isi' ? 'Masukkan nominal angka (Contoh: 50000)' : null,
                   border: OutlineInputBorder(),
                 ),
               ),
