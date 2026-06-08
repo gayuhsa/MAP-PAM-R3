@@ -82,13 +82,12 @@ class BTransactionCard extends StatelessWidget {
                     categoryName,
                     style: TextStyle(
                       color: AppTheme.text,
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-
                   Text(
                     walletName,
                     style: TextStyle(color: AppTheme.text, fontSize: 18),
@@ -96,7 +95,6 @@ class BTransactionCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: 8),
-
                   Text(
                     'Jumlah',
                     style: TextStyle(color: Colors.grey[600], fontSize: 16),
@@ -105,25 +103,23 @@ class BTransactionCard extends StatelessWidget {
                     '${transaction.amount.toInt()}x',
                     style: TextStyle(
                       color: AppTheme.text,
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 4),
-
                   Text(
                     'Jenis',
                     style: TextStyle(color: Colors.grey[600], fontSize: 16),
                   ),
                   Text(
                     transaction.type.isNotEmpty ? transaction.type : '-',
-                    style: TextStyle(color: AppTheme.text, fontSize: 18),
+                    style: TextStyle(color: AppTheme.text, fontSize: 16),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
-
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -145,13 +141,12 @@ class BTransactionCard extends StatelessWidget {
                             formattedTotalIdr,
                             style: TextStyle(
                               color: AppTheme.text,
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
                       ),
-
                       CardChip(
                         backgroundColor: chipColor,
                         children: [
@@ -160,7 +155,7 @@ class BTransactionCard extends StatelessWidget {
                             formattedTotalIdr,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 11,
+                              fontSize: 12,
                             ),
                           ),
                         ],
@@ -168,34 +163,33 @@ class BTransactionCard extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 8),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.edit, size: 16),
+                        icon: Icon(Icons.edit),
                         constraints: BoxConstraints(),
-                        padding: EdgeInsets.all(6),
+                        padding: EdgeInsets.all(8),
                         style: IconButton.styleFrom(
                           backgroundColor: AppTheme.editButton,
                           foregroundColor: AppTheme.textInverted,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(8),
                           ),
                         ),
                         onPressed: () =>
                             modalCallback(transaction: transaction),
                       ),
-                      SizedBox(width: 6),
+                      SizedBox(width: 8),
                       IconButton(
-                        icon: Icon(Icons.delete, size: 16),
+                        icon: Icon(Icons.delete),
                         constraints: BoxConstraints(),
-                        padding: EdgeInsets.all(6),
+                        padding: EdgeInsets.all(8),
                         style: IconButton.styleFrom(
                           backgroundColor: AppTheme.trashButton,
                           foregroundColor: AppTheme.textInverted,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(8),
                           ),
                         ),
                         onPressed: () => deleteCallback(transaction.id ?? ''),
