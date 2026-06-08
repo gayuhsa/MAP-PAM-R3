@@ -29,16 +29,18 @@ class WalletService {
   }
 
   Future<Wallet?> getById(String id) async {
-  if (id.isEmpty) return null;
-  try {
-    final doc = await _db.doc(id).get();
-    if (doc.exists) {
-      // PERHATIKAN: Ganti 'Wallet' dengan nama class model Dompet kamu yang sebenarnya jika berbeda
-      return Wallet.fromJson(doc.data() as Map<String, dynamic>, doc.id);
+    if (id.isEmpty) return null;
+
+    try {
+      final doc = await _db.doc(id).get();
+
+      if (doc.exists) {
+        return Wallet.fromJson(doc.data() as Map<String, dynamic>, doc.id);
+      }
+
+      return null;
+    } catch (e) {
+      return null;
     }
-    return null;
-  } catch (e) {
-    print('Error ambil data dompet: $e');
-    return null;
   }
-}}
+}

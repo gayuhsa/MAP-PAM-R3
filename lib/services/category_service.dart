@@ -30,15 +30,16 @@ class CategoryService {
 
   Future<Category?> getById(String id) async {
     if (id.isEmpty) return null;
+
     try {
       final doc = await _db.doc(id).get();
+
       if (doc.exists) {
-        // Menggunakan model 'Category' sesuai project kamu
         return Category.fromJson(doc.data() as Map<String, dynamic>, doc.id);
       }
+
       return null;
     } catch (e) {
-      print('Error ambil kategori: $e');
       return null;
     }
   }

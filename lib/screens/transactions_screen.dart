@@ -36,9 +36,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       'Jumlah': TextEditingController(
         text: isEditing ? '${transaction.amount}' : '',
       ),
-      'Jenis': TextEditingController(
-        text: isEditing ? transaction.type : '',
-      ),
+      'Jenis': TextEditingController(text: isEditing ? transaction.type : ''),
     };
 
     final bool? isConfirmed = await showDialog(
@@ -62,8 +60,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       final String categoryId = fields['Kategori']!.text.trim();
       final double balance =
           double.tryParse(fields['Jumlah']!.text.trim()) ?? 0.0;
-      final String type = fields['Jenis']!.text.trim().isEmpty 
-          ? 'EXPENSE' 
+      final String type = fields['Jenis']!.text.trim().isEmpty
+          ? 'EXPENSE'
           : fields['Jenis']!.text.trim();
 
       if (walletId.isEmpty || categoryId.isEmpty) return;
@@ -119,14 +117,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             return const Center(child: Text('Belum ada transaksi.'));
           }
 
-          // GridView dengan rasio tinggi yang sudah disesuaikan agar pas
           return GridView.builder(
             padding: const EdgeInsets.all(12),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,          // Menjadi 2 kolom ke samping
+              crossAxisCount: 2,          // 2 kolom ke samping
               crossAxisSpacing: 12,       // Jarak horizontal antar kartu
               mainAxisSpacing: 12,        // Jarak vertikal antar kartu
-              childAspectRatio: 1.5,      // PERBAIKAN: Diubah ke 0.8 agar kotak memanjang kebawah dan muat semua teks
+              childAspectRatio: 1.2,     
             ),
             itemCount: docs.length,
             itemBuilder: (BuildContext context, int index) {
