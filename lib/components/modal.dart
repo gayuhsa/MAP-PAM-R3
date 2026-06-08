@@ -61,7 +61,6 @@ class Modal extends StatelessWidget {
                     : null,
                 decoration: InputDecoration(
                   labelText: entry.key,
-                  hintText: entry.key == 'Isi' ? 'Masukkan nominal angka (Contoh: 50000)' : null,
                   border: OutlineInputBorder(),
                 ),
               ),
