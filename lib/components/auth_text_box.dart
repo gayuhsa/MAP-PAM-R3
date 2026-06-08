@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme.dart';
 
 class AuthTextBox extends StatelessWidget {
   final TextEditingController controller;
@@ -22,8 +23,8 @@ class AuthTextBox extends StatelessWidget {
         textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          contentPadding: EdgeInsets.all(8),
-          fillColor: const Color.fromARGB(255, 227, 241, 251),
+          contentPadding: EdgeInsets.all(16),
+          fillColor: AppTheme.authTextBox,
           filled: true,
           hintText: hintText,
           isDense: true,

@@ -7,7 +7,6 @@ class BTransaction {
   double amount;
   DateTime dateTime;
   String type; // 'INCOME' or 'EXPENSE'
-  String? notes;
 
   BTransaction({
     this.id,
@@ -16,7 +15,6 @@ class BTransaction {
     required this.amount,
     required this.dateTime,
     required this.type,
-    this.notes,
   });
 
   factory BTransaction.fromJson(Map<String, dynamic> json, String docId) {
@@ -27,7 +25,6 @@ class BTransaction {
       amount: (json['amount'] ?? 0.0).toDouble(),
       dateTime: (json['dateTime'] as Timestamp?)?.toDate() ?? DateTime.now(),
       type: json['type'] ?? 'EXPENSE',
-      notes: json['notes'],
     );
   }
 
@@ -38,7 +35,6 @@ class BTransaction {
       'amount': amount,
       'dateTime': dateTime,
       'type': type,
-      'notes': notes,
     };
   }
 }

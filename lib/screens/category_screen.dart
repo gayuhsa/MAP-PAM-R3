@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../components/category_card.dart';
 import '../components/modal.dart';
 import '../components/skeleton.dart';
@@ -60,8 +59,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return Skeleton(
       title: 'Kategori',
       actionButton: _createActionButton(),
-      content: StreamBuilder<QuerySnapshot>(
-        stream: _categoryService.getSnapshots(),
+      content: StreamBuilder<List<Category>>(
+        stream: _categoryService.getAllByUserId(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('Terjadi error. Coba lagi nanti.'));
@@ -71,7 +70,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             return Center(child: CircularProgressIndicator());
           }
 
-          final docs = snapshot.data?.docs ?? [];
+          final docs = snapshot.data ?? [];
 
           if (docs.isEmpty) {
             return Center(child: Text('Belum ada kategori.'));
@@ -83,13 +82,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
             itemBuilder: (BuildContext context, int index) {
               final doc = docs[index];
 
-              final Category category = Category.fromJson(
-                doc.data() as Map<String, dynamic>,
-                doc.id,
-              );
-
               return CategoryCard(
-                category: category,
+                category: doc,
                 modalCallback: _showCategoryModal,
                 deleteCallback: _categoryService.delete,
               );
