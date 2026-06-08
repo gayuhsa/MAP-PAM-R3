@@ -22,18 +22,14 @@ class BTransactionCard extends StatelessWidget {
     try {
       final category = await CategoryService().getById(transaction.categoryId);
       final wallet = await WalletService().getById(transaction.walletId);
-
+      
       return {
         'category': category?.name ?? 'Kategori Umum',
         'wallet': wallet?.name ?? 'Dompet Utama',
         'walletPrice': wallet?.balance ?? 0.0,
       };
     } catch (_) {
-      return {
-        'category': 'Memuat...',
-        'wallet': 'Memuat...',
-        'walletPrice': 0.0,
-      };
+      return {'category': 'Memuat...', 'wallet': 'Memuat...', 'walletPrice': 0.0};
     }
   }
 
@@ -53,14 +49,13 @@ class BTransactionCard extends StatelessWidget {
         border: Border.all(color: AppTheme.cardBorder, width: 2),
         borderRadius: BorderRadius.circular(16),
       ),
-      padding: EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12),
       child: FutureBuilder<Map<String, dynamic>>(
         future: _getTransactionDetails(),
         builder: (context, snapshot) {
           final categoryName = snapshot.data?['category'] ?? 'Memuat...';
           final walletName = snapshot.data?['wallet'] ?? 'Memuat...';
-          final double walletPrice = (snapshot.data?['walletPrice'] ?? 0.0)
-              .toDouble();
+          final double walletPrice = (snapshot.data?['walletPrice'] ?? 0.0).toDouble();
 
           final double totalCalculated = walletPrice * transaction.amount;
 
@@ -74,121 +69,90 @@ class BTransactionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min, // Agar kolom menciut mengikuti tinggi konten
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    categoryName,
-                    style: TextStyle(
-                      color: AppTheme.text,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-
-                  Text(
-                    walletName,
-                    style: TextStyle(color: AppTheme.text, fontSize: 18),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 8),
-
-                  Text(
-                    'Jumlah',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 16),
-                  ),
-                  Text(
-                    '${transaction.amount.toInt()}x',
-                    style: TextStyle(
-                      color: AppTheme.text,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-
-                  Text(
-                    'Jenis',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 16),
-                  ),
-                  Text(
-                    transaction.type.isNotEmpty ? transaction.type : '-',
-                    style: TextStyle(color: AppTheme.text, fontSize: 18),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+              Text(
+                categoryName,
+                style: const TextStyle(color: AppTheme.text, fontSize: 18, fontWeight: FontWeight.bold),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
+              Text(
+                walletName,
+                style: TextStyle(color: AppTheme.text.withOpacity(0.7), fontSize: 18),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 6),
 
-              Column(
-                mainAxisSize: MainAxisSize.min,
+              Text(
+                'Jumlah',
+                style: TextStyle(color: Colors.grey[600], fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                '${transaction.amount.toInt()}x', 
+                style: const TextStyle(color: AppTheme.text, fontSize: 18),
+              ),
+              const SizedBox(height: 4),
+
+              Text(
+                'Jenis',
+                style: TextStyle(color: Colors.grey[600], fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                transaction.type.isNotEmpty ? transaction.type : '-',
+                style: const TextStyle(color: AppTheme.text, fontSize: 18),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              
+              // KUNCI: Jarak dari Jenis ke Total dibuat dekat (hanya 8)
+              const SizedBox(height: 8), 
+
+              // Bagian Total dan Tombol digabung sejajar biar nempel pas di bawah Jenis
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Total',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 16,
-                            ),
-                          ),
-                          Text(
-                            formattedTotalIdr,
-                            style: TextStyle(
-                              color: AppTheme.text,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        'Total',
+                        style: TextStyle(color: Colors.grey[600], fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-
+                      const SizedBox(height: 2),
                       CardChip(
                         backgroundColor: chipColor,
                         children: [
-                          Icon(chipIcon, size: 12),
+                          Icon(chipIcon, size: 14),
                           Text(
-                            formattedTotalIdr,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 11,
-                            ),
+                            formattedTotalIdr, 
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18), 
                           ),
                         ],
                       ),
                     ],
                   ),
-                  SizedBox(height: 8),
-
+                  
+                  // Tombol aksi pas di sebelah kanan total
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.edit, size: 16),
-                        constraints: BoxConstraints(),
-                        padding: EdgeInsets.all(6),
+                        icon: const Icon(Icons.edit, size: 16),
+                        constraints: const BoxConstraints(),
+                        padding: const EdgeInsets.all(6),
                         style: IconButton.styleFrom(
                           backgroundColor: AppTheme.editButton,
                           foregroundColor: AppTheme.textInverted,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                         ),
-                        onPressed: () =>
-                            modalCallback(transaction: transaction),
+                        onPressed: () => modalCallback(transaction: transaction),
                       ),
-                      SizedBox(width: 6),
+                      const SizedBox(width: 6),
                       IconButton(
-                        icon: Icon(Icons.delete, size: 16),
-                        constraints: BoxConstraints(),
-                        padding: EdgeInsets.all(6),
+                        icon: const Icon(Icons.delete, size: 16),
+                        constraints: const BoxConstraints(),
+                        padding: const EdgeInsets.all(6),
                         style: IconButton.styleFrom(
                           backgroundColor: AppTheme.trashButton,
                           foregroundColor: AppTheme.textInverted,
