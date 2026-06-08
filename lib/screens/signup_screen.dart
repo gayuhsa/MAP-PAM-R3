@@ -187,25 +187,22 @@ class _SignupScreenState extends State<SignupScreen> {
                 child: RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
-                    style: TextStyle(
-                      color: AppTheme.text, 
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(color: AppTheme.text, fontSize: 16),
                     children: [
-                      const TextSpan(
-                        text: "Sudah memiliki akun? ",
-                      ),
+                      TextSpan(text: "Sudah memiliki akun? "),
                       TextSpan(
                         text: "Masuk.",
                         style: TextStyle(
-                          color: AppTheme.button, 
+                          color: AppTheme.button,
                           fontWeight: FontWeight.bold,
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) => const LoginScreen()),
+                              MaterialPageRoute(
+                                builder: (context) => LoginScreen(),
+                              ),
                             );
                           },
                       ),

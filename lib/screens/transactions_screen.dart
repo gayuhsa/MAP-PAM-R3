@@ -91,7 +91,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       backgroundColor: AppTheme.card,
       foregroundColor: AppTheme.text,
       onPressed: () => _showTransactionModal(),
-      child: const Icon(Icons.add),
+      child: Icon(Icons.add),
     );
   }
 
@@ -104,17 +104,17 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         stream: _transactionService.getAllByUserId(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const Center(child: Text('Terjadi error. Coba lagi nanti.'));
+            return Center(child: Text('Terjadi error. Coba lagi nanti.'));
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           }
 
           final docs = snapshot.data ?? [];
 
           if (docs.isEmpty) {
-            return const Center(child: Text('Belum ada transaksi.'));
+            return Center(child: Text('Belum ada transaksi.'));
           }
 
           return ListView.builder(

@@ -22,14 +22,18 @@ class BTransactionCard extends StatelessWidget {
     try {
       final category = await CategoryService().getById(transaction.categoryId);
       final wallet = await WalletService().getById(transaction.walletId);
-      
+
       return {
         'category': category?.name ?? 'Kategori Umum',
         'wallet': wallet?.name ?? 'Dompet Utama',
         'walletPrice': wallet?.balance ?? 0.0,
       };
     } catch (_) {
-      return {'category': 'Memuat...', 'wallet': 'Memuat...', 'walletPrice': 0.0};
+      return {
+        'category': 'Memuat...',
+        'wallet': 'Memuat...',
+        'walletPrice': 0.0,
+      };
     }
   }
 
@@ -49,13 +53,14 @@ class BTransactionCard extends StatelessWidget {
         border: Border.all(color: AppTheme.cardBorder, width: 2),
         borderRadius: BorderRadius.circular(16),
       ),
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12),
       child: FutureBuilder<Map<String, dynamic>>(
         future: _getTransactionDetails(),
         builder: (context, snapshot) {
           final categoryName = snapshot.data?['category'] ?? 'Memuat...';
           final walletName = snapshot.data?['wallet'] ?? 'Memuat...';
-          final double walletPrice = (snapshot.data?['walletPrice'] ?? 0.0).toDouble();
+          final double walletPrice = (snapshot.data?['walletPrice'] ?? 0.0)
+              .toDouble();
 
           final double totalCalculated = walletPrice * transaction.amount;
 
@@ -67,7 +72,7 @@ class BTransactionCard extends StatelessWidget {
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min, // Agar kolom menciut mengikuti tinggi konten
+            mainAxisSize: MainAxisSize.min,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,7 +176,8 @@ class BTransactionCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        onPressed: () => modalCallback(transaction: transaction),
+                        onPressed: () =>
+                            modalCallback(transaction: transaction),
                       ),
                       SizedBox(width: 8),
                       IconButton(
