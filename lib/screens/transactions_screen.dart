@@ -119,6 +119,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
           return ListView.builder(
             padding: EdgeInsets.all(12),
+            itemCount: docs.length,
             itemBuilder: (BuildContext context, int index) {
               final doc = docs[index];
 
