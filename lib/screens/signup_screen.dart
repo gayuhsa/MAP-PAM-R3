@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:email_validator/email_validator.dart';
 import '../components/auth_text_box.dart';
 import '../services/auth_service.dart';
@@ -182,22 +183,34 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
               ),
               SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+              Center(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: AppTheme.text, 
+                      fontSize: 16,
+                    ),
+                    children: [
+                      const TextSpan(
+                        text: "Sudah memiliki akun? ",
+                      ),
+                      TextSpan(
+                        text: "Masuk.",
+                        style: TextStyle(
+                          color: AppTheme.button, 
+                          fontWeight: FontWeight.bold,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => const LoginScreen()),
+                            );
+                          },
+                      ),
+                    ],
                   ),
-                ),
-                child: Text(
-                  "Sudah memiliki akun? Masuk.",
-                  style: TextStyle(color: AppTheme.text, fontSize: 16),
                 ),
               ),
             ],

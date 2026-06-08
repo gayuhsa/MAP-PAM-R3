@@ -117,6 +117,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             return const Center(child: Text('Belum ada transaksi.'));
           }
 
+<<<<<<< HEAD
           return GridView.builder(
             padding: const EdgeInsets.all(12),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -125,6 +126,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               mainAxisSpacing: 12,        // Jarak vertikal antar kartu
               childAspectRatio: 1.2,     
             ),
+=======
+          return ListView.builder(
+            padding: EdgeInsets.all(12),
+>>>>>>> 8542e7443c78e102e99e7880f9944e0c9cb72459
             itemCount: docs.length,
             itemBuilder: (BuildContext context, int index) {
               final doc = docs[index];

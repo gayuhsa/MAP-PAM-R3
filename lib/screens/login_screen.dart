@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:email_validator/email_validator.dart';
 import '../components/auth_text_box.dart';
 import '../services/auth_service.dart';
@@ -154,22 +155,34 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
               ),
               SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignupScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+              Center(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: AppTheme.text, 
+                      fontSize: 16,
+                    ),
+                    children: [
+                      const TextSpan(
+                        text: "Belum memiliki akun? ",
+                      ),
+                      TextSpan(
+                        text: "Daftar.",
+                        style: TextStyle(
+                          color: AppTheme.button, 
+                          fontWeight: FontWeight.bold,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => const SignupScreen()),
+                            );
+                          },
+                      ),
+                    ],
                   ),
-                ),
-                child: Text(
-                  "Belum memiliki akun? Daftar.",
-                  style: TextStyle(color: AppTheme.text, fontSize: 16),
                 ),
               ),
             ],

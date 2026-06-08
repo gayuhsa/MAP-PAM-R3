@@ -13,9 +13,9 @@ class AppTheme {
   static const Color chipExpense = Color(0xFFF2A6A6);
   static const Color chipIncome = Color(0xFFA6D4A8);
 
-  static const Color authContainer = Color(0xFFE3F1FB);
+  static const Color authContainer = Color(0xFFE4FDE1);
   static const Color authTextBox = Color(0xFFFFFFFF);
-  static const Color inputField = Color(0xFF99C3E4);
+  static const Color inputField = Color(0xFFD5F5E4);
 
   static const Color text = Color(0xFF1C2D42);
   static const Color textInverted = Colors.white;
@@ -24,6 +24,6 @@ class AppTheme {
   static const Color buttonDanger = Color(0xFFB83A3C);
   static const Color trashButton = Color(0xFFB83A3C);
   static const Color editButton = Color(0xFF90CF8E);
-  static const Color greyButton = Color(0xFF788596);
+  static const Color greyButton = Color(0xFFD5F5E5);
 
 }

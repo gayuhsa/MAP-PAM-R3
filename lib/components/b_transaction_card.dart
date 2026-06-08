@@ -69,6 +69,7 @@ class BTransactionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min, // Agar kolom menciut mengikuti tinggi konten
             children: [
+<<<<<<< HEAD
               Text(
                 categoryName,
                 style: const TextStyle(color: AppTheme.text, fontSize: 18, fontWeight: FontWeight.bold),
@@ -111,33 +112,119 @@ class BTransactionCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
+=======
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    categoryName,
+                    style: TextStyle(
+                      color: AppTheme.text,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    walletName,
+                    style: TextStyle(color: AppTheme.text, fontSize: 18),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Jumlah',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                  ),
+                  Text(
+                    '${transaction.amount.toInt()}x',
+                    style: TextStyle(
+                      color: AppTheme.text,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Jenis',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                  ),
+                  Text(
+                    transaction.type.isNotEmpty ? transaction.type : '-',
+                    style: TextStyle(color: AppTheme.text, fontSize: 16),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+>>>>>>> 8542e7443c78e102e99e7880f9944e0c9cb72459
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+<<<<<<< HEAD
                       Text(
                         'Total',
                         style: TextStyle(color: Colors.grey[600], fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 2),
+=======
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Total',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            formattedTotalIdr,
+                            style: TextStyle(
+                              color: AppTheme.text,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+>>>>>>> 8542e7443c78e102e99e7880f9944e0c9cb72459
                       CardChip(
                         backgroundColor: chipColor,
                         children: [
                           Icon(chipIcon, size: 14),
                           Text(
+<<<<<<< HEAD
                             formattedTotalIdr, 
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18), 
+=======
+                            formattedTotalIdr,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+>>>>>>> 8542e7443c78e102e99e7880f9944e0c9cb72459
                           ),
                         ],
                       ),
                     ],
                   ),
+<<<<<<< HEAD
                   
                   // Tombol aksi pas di sebelah kanan total
+=======
+                  SizedBox(height: 8),
+>>>>>>> 8542e7443c78e102e99e7880f9944e0c9cb72459
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
+<<<<<<< HEAD
                         icon: const Icon(Icons.edit, size: 16),
                         constraints: const BoxConstraints(),
                         padding: const EdgeInsets.all(6),
@@ -145,9 +232,21 @@ class BTransactionCard extends StatelessWidget {
                           backgroundColor: AppTheme.editButton,
                           foregroundColor: AppTheme.textInverted,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+=======
+                        icon: Icon(Icons.edit),
+                        constraints: BoxConstraints(),
+                        padding: EdgeInsets.all(8),
+                        style: IconButton.styleFrom(
+                          backgroundColor: AppTheme.editButton,
+                          foregroundColor: AppTheme.textInverted,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+>>>>>>> 8542e7443c78e102e99e7880f9944e0c9cb72459
                         ),
                         onPressed: () => modalCallback(transaction: transaction),
                       ),
+<<<<<<< HEAD
                       const SizedBox(width: 6),
                       IconButton(
                         icon: const Icon(Icons.delete, size: 16),
@@ -157,6 +256,19 @@ class BTransactionCard extends StatelessWidget {
                           backgroundColor: AppTheme.trashButton,
                           foregroundColor: AppTheme.textInverted,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+=======
+                      SizedBox(width: 8),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        constraints: BoxConstraints(),
+                        padding: EdgeInsets.all(8),
+                        style: IconButton.styleFrom(
+                          backgroundColor: AppTheme.trashButton,
+                          foregroundColor: AppTheme.textInverted,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+>>>>>>> 8542e7443c78e102e99e7880f9944e0c9cb72459
                         ),
                         onPressed: () => deleteCallback(transaction.id ?? ''),
                       ),
