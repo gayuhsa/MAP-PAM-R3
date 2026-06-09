@@ -285,13 +285,13 @@ class _InfoItem extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: TextStyle(color: Colors.grey[500], fontSize: 11),
+                style: TextStyle(color: Colors.grey[500], fontSize: 15),
               ),
               Text(
                 value,
                 style: TextStyle(
                   color: AppTheme.text,
-                  fontSize: 13,
+                  fontSize: 15,
                   fontWeight: FontWeight.w600,
                 ),
                 maxLines: 1,
