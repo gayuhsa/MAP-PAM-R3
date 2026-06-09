@@ -1,18 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import '../models/b_transaction.dart';
 
 class TransactionService {
-  final CollectionReference _db = FirebaseFirestore.instance
-      .collection('users')
-      .doc(FirebaseAuth.instance.currentUser!.uid)
-      .collection('transactions');
+  CollectionReference get _db {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception("User belum login!");
+    }
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('transactions');
+  }
 
-  Future<void> create(BTransaction transaction) async {
-    await _db.add(transaction.toJson());
+  Future<DocumentReference> create(BTransaction transaction) async {
+    final user = FirebaseAuth.instance.currentUser;
+    print("Firestore Creating Transaction for User: ${user?.uid}");
+    final docRef = await _db.add(transaction.toJson());
+    print(
+      "Firestore Created Transaction Document: ${docRef.id} at path: ${docRef.path}",
+    );
+    return docRef;
   }
 
   Stream<List<BTransaction>> getAllByUserId() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return Stream.error("User belum login!");
+    }
     return _db.orderBy('dateTime', descending: true).snapshots().map((
       snapshot,
     ) {
@@ -26,6 +43,10 @@ class TransactionService {
   }
 
   Stream<List<BTransaction>> getByWallet(String walletId) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return Stream.error("User belum login!");
+    }
     return _db
         .where('walletId', isEqualTo: walletId)
         .orderBy('dateTime', descending: true)

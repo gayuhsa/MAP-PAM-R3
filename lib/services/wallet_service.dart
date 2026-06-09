@@ -1,23 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import '../models/wallet.dart';
 
 class WalletService {
-  final CollectionReference _db = FirebaseFirestore.instance
-      .collection('users')
-      .doc(FirebaseAuth.instance.currentUser!.uid)
-      .collection('wallets');
+  CollectionReference get _db {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception("User belum login!");
+    }
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('wallets');
+  }
 
   Future<void> create(Wallet wallet) async {
     await _db.add(wallet.toJson());
   }
 
   Stream<List<Wallet>> getAllByUserId() {
-    return _db.snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        return Wallet.fromJson(doc.data() as Map<String, dynamic>, doc.id);
-      }).toList();
-    });
+    try {
+      return _db.snapshots().map((snapshot) {
+        return snapshot.docs.map((doc) {
+          return Wallet.fromJson(doc.data() as Map<String, dynamic>, doc.id);
+        }).toList();
+      });
+    } catch (e) {
+      return Stream.value([]);
+    }
   }
 
   Future<void> update(Wallet wallet) async {
@@ -26,6 +37,23 @@ class WalletService {
 
   Future<void> delete(String id) async {
     await _db.doc(id).delete();
+  }
+
+  /// Menyesuaikan saldo wallet secara atomik.
+  /// positif = tambah saldo (INCOME), negatif = kurangi saldo (EXPENSE).
+  Future<void> adjustBalance(String walletId, double delta) async {
+    if (walletId.isEmpty) return;
+    try {
+      debugPrint(
+        'WalletService.adjustBalance: walletId=$walletId delta=$delta',
+      );
+      await _db.doc(walletId).update({'balance': FieldValue.increment(delta)});
+      debugPrint('WalletService.adjustBalance: success for walletId=$walletId');
+    } catch (e, st) {
+      debugPrint('WalletService.adjustBalance failed: $e');
+      debugPrint(st.toString());
+      rethrow;
+    }
   }
 
   Future<Wallet?> getById(String id) async {
