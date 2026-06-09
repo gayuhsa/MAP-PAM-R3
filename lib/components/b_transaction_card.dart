@@ -72,6 +72,42 @@ class _BTransactionCardState extends State<BTransactionCard> {
     });
   }
 
+  String _formatDate(DateTime dateTime) {
+    try {
+      return DateFormat('dd MMM yyyy', 'id_ID').format(dateTime);
+    } catch (_) {
+      return '${dateTime.day.toString().padLeft(2, '0')} '
+          '${_monthNames[dateTime.month - 1]} ${dateTime.year}';
+    }
+  }
+
+  String _formatAmount(double amount) {
+    try {
+      return NumberFormat.currency(
+        locale: 'id_ID',
+        symbol: 'Rp',
+        decimalDigits: 0,
+      ).format(amount);
+    } catch (_) {
+      return 'Rp${amount.toStringAsFixed(0)}';
+    }
+  }
+
+  static const List<String> _monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'Mei',
+    'Jun',
+    'Jul',
+    'Agu',
+    'Sep',
+    'Okt',
+    'Nov',
+    'Des',
+  ];
+
   @override
   Widget build(BuildContext context) {
     final bool isIncome = widget.transaction.type.toUpperCase() == 'INCOME';
@@ -86,15 +122,8 @@ class _BTransactionCardState extends State<BTransactionCard> {
         : Icons.arrow_upward_rounded;
     final String typeLabel = isIncome ? 'Pemasukan' : 'Pengeluaran';
 
-    final String formattedDate = DateFormat(
-      'dd MMM yyyy',
-      'id_ID',
-    ).format(widget.transaction.dateTime);
-    final String formattedAmount = NumberFormat.currency(
-      locale: 'id_ID',
-      symbol: 'Rp',
-      decimalDigits: 0,
-    ).format(widget.transaction.amount);
+    final String formattedDate = _formatDate(widget.transaction.dateTime);
+    final String formattedAmount = _formatAmount(widget.transaction.amount);
 
     return Container(
       decoration: BoxDecoration(

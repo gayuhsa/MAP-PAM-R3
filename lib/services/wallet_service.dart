@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import '../models/wallet.dart';
 
 class WalletService {
@@ -42,7 +43,17 @@ class WalletService {
   /// positif = tambah saldo (INCOME), negatif = kurangi saldo (EXPENSE).
   Future<void> adjustBalance(String walletId, double delta) async {
     if (walletId.isEmpty) return;
-    await _db.doc(walletId).update({'balance': FieldValue.increment(delta)});
+    try {
+      debugPrint(
+        'WalletService.adjustBalance: walletId=$walletId delta=$delta',
+      );
+      await _db.doc(walletId).update({'balance': FieldValue.increment(delta)});
+      debugPrint('WalletService.adjustBalance: success for walletId=$walletId');
+    } catch (e, st) {
+      debugPrint('WalletService.adjustBalance failed: $e');
+      debugPrint(st.toString());
+      rethrow;
+    }
   }
 
   Future<Wallet?> getById(String id) async {

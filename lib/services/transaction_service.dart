@@ -15,7 +15,12 @@ class TransactionService {
   }
 
   Future<DocumentReference> create(BTransaction transaction) async {
+    final user = FirebaseAuth.instance.currentUser;
+    debugPrint("Firestore Creating Transaction for User: ${user?.uid}");
     final docRef = await _db.add(transaction.toJson());
+    debugPrint(
+      "Firestore Created Transaction Document: ${docRef.id} at path: ${docRef.path}",
+    );
     return docRef;
   }
 
