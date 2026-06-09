@@ -33,7 +33,8 @@ class BTransaction {
       'walletId': walletId,
       'categoryId': categoryId,
       'amount': amount,
-      'dateTime': dateTime,
+      // Simpan sebagai Firestore Timestamp agar orderBy('dateTime') bekerja
+      'dateTime': Timestamp.fromDate(dateTime),
       'type': type,
     };
   }

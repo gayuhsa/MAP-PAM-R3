@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import '../models/dropdown_options.dart';
 
 class Modal extends StatelessWidget {
@@ -23,6 +24,35 @@ class Modal extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: fields.entries.map((entry) {
             final TextEditingController controller = entry.value;
+
+            if (entry.key == 'Tanggal') {
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: TextField(
+                  controller: controller,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: entry.key,
+                    border: OutlineInputBorder(),
+                    suffixIcon: Icon(Icons.calendar_today),
+                  ),
+                  onTap: () async {
+                    DateTime initialDate =
+                        DateTime.tryParse(controller.text) ?? DateTime.now();
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: initialDate,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                    );
+                    if (pickedDate != null) {
+                      controller.text =
+                          DateFormat('yyyy-MM-dd').format(pickedDate);
+                    }
+                  },
+                ),
+              );
+            }
 
             if (dropdownFields != null &&
                 dropdownFields!.containsKey(entry.key)) {
@@ -55,13 +85,17 @@ class Modal extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 8),
               child: TextField(
                 controller: entry.value,
-                keyboardType: entry.key == 'Isi' ? TextInputType.number : TextInputType.text,
-                inputFormatters: entry.key == 'Isi' 
-                    ? [FilteringTextInputFormatter.digitsOnly] 
+                keyboardType: (entry.key == 'Isi' || entry.key == 'Jumlah')
+                    ? TextInputType.number
+                    : TextInputType.text,
+                inputFormatters: (entry.key == 'Isi' || entry.key == 'Jumlah')
+                    ? [FilteringTextInputFormatter.digitsOnly]
                     : null,
                 decoration: InputDecoration(
                   labelText: entry.key,
-                  hintText: entry.key == 'Isi' ? 'Contoh: 50000' : (entry.key == 'Nama' ? 'Contoh: Konsumsi' : null),
+                  hintText: entry.key == 'Isi' || entry.key == 'Jumlah'
+                      ? 'Contoh: 50000'
+                      : (entry.key == 'Nama' ? 'Contoh: Konsumsi' : null),
                   border: OutlineInputBorder(),
                 ),
               ),

@@ -10,7 +10,7 @@ class WalletService {
     }
     return FirebaseFirestore.instance
         .collection('users')
-        .doc(user.uid) 
+        .doc(user.uid)
         .collection('wallets');
   }
 
@@ -36,6 +36,13 @@ class WalletService {
 
   Future<void> delete(String id) async {
     await _db.doc(id).delete();
+  }
+
+  /// Menyesuaikan saldo wallet secara atomik.
+  /// positif = tambah saldo (INCOME), negatif = kurangi saldo (EXPENSE).
+  Future<void> adjustBalance(String walletId, double delta) async {
+    if (walletId.isEmpty) return;
+    await _db.doc(walletId).update({'balance': FieldValue.increment(delta)});
   }
 
   Future<Wallet?> getById(String id) async {
