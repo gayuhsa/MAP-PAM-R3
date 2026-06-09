@@ -3,8 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:rxdart/rxdart.dart';
 import '../models/wallet.dart';
+import 'transaction_service.dart';
 
 class WalletService {
+  static const String _defaultWalletId = '_default_wallet';
+
   CollectionReference get _db {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
@@ -51,6 +54,47 @@ class WalletService {
       debugPrint('WARNING: Memulai penghapusan dompet $id.');
     }
     await _db.doc(id).delete();
+  }
+
+  Future<void> deleteWithTransactionHandling(
+    String id, {
+    bool deleteTransactions = false,
+    bool reassignTransactionsToDefault = false,
+  }) async {
+    if (kDebugMode) {
+      debugPrint(
+        'WARNING: Memulai penghapusan dompet $id dengan penanganan transaksi.',
+      );
+    }
+
+    if (deleteTransactions && reassignTransactionsToDefault) {
+      throw Exception('Pilih salah satu opsi penanganan transaksi.');
+    }
+
+    if (id == _defaultWalletId) {
+      throw Exception('Dompet default tidak dapat dihapus.');
+    }
+
+    final transactionService = TransactionService();
+
+    if (reassignTransactionsToDefault) {
+      final defaultWalletId = await _ensureDefaultWallet();
+      await transactionService.reassignWalletReference(id, defaultWalletId);
+    } else if (deleteTransactions) {
+      await transactionService.deleteTransactionsByWallet(id);
+    }
+
+    await _db.doc(id).delete();
+  }
+
+  Future<String> _ensureDefaultWallet() async {
+    final defaultDoc = _db.doc(_defaultWalletId);
+    final snapshot = await defaultDoc.get();
+    if (snapshot.exists) {
+      return defaultDoc.id;
+    }
+    await defaultDoc.set(Wallet(name: 'Dompet Default', balance: 0.0).toJson());
+    return defaultDoc.id;
   }
 
   Future<void> adjustBalance(String walletId, double delta) async {

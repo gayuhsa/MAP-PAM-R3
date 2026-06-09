@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import '../models/b_transaction.dart';
 
 class TransactionService {
+  static const int _batchWriteLimit = 450;
+
   CollectionReference get _db {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
@@ -174,5 +176,108 @@ class TransactionService {
       tx.delete(txRef);
       tx.update(walletRef, {'balance': FieldValue.increment(-delta)});
     });
+  }
+
+  Future<void> deleteTransactionsByCategory(String categoryId) async {
+    final snapshot = await _db.where('categoryId', isEqualTo: categoryId).get();
+    if (snapshot.docs.isEmpty) return;
+
+    int count = 0;
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    for (final doc in snapshot.docs) {
+      batch.delete(doc.reference);
+      count++;
+      if (count >= _batchWriteLimit) {
+        await batch.commit();
+        batch = FirebaseFirestore.instance.batch();
+        count = 0;
+      }
+    }
+    if (count > 0) {
+      await batch.commit();
+    }
+  }
+
+  Future<void> deleteTransactionsByWallet(String walletId) async {
+    final snapshot = await _db.where('walletId', isEqualTo: walletId).get();
+    if (snapshot.docs.isEmpty) return;
+
+    int count = 0;
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    for (final doc in snapshot.docs) {
+      batch.delete(doc.reference);
+      count++;
+      if (count >= _batchWriteLimit) {
+        await batch.commit();
+        batch = FirebaseFirestore.instance.batch();
+        count = 0;
+      }
+    }
+    if (count > 0) {
+      await batch.commit();
+    }
+  }
+
+  Future<void> reassignCategoryReference(
+    String oldCategoryId,
+    String newCategoryId,
+  ) async {
+    if (oldCategoryId == newCategoryId) return;
+    final snapshot = await _db
+        .where('categoryId', isEqualTo: oldCategoryId)
+        .get();
+    if (snapshot.docs.isEmpty) return;
+
+    int count = 0;
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    for (final doc in snapshot.docs) {
+      batch.update(doc.reference, {'categoryId': newCategoryId});
+      count++;
+      if (count >= _batchWriteLimit) {
+        await batch.commit();
+        batch = FirebaseFirestore.instance.batch();
+        count = 0;
+      }
+    }
+    if (count > 0) {
+      await batch.commit();
+    }
+  }
+
+  Future<void> reassignWalletReference(
+    String oldWalletId,
+    String newWalletId,
+  ) async {
+    if (oldWalletId == newWalletId) return;
+    final snapshot = await _db.where('walletId', isEqualTo: oldWalletId).get();
+    if (snapshot.docs.isEmpty) return;
+
+    double balanceAdjustment = 0.0;
+    int count = 0;
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    for (final doc in snapshot.docs) {
+      final data = doc.data() as Map<String, dynamic>;
+      final type = (data['type'] as String?)?.toUpperCase() ?? 'EXPENSE';
+      final amount = (data['amount'] is num)
+          ? (data['amount'] as num).toDouble()
+          : double.tryParse(data['amount']?.toString() ?? '0') ?? 0.0;
+      balanceAdjustment += _computeDelta(type, amount);
+      batch.update(doc.reference, {'walletId': newWalletId});
+      count++;
+      if (count >= _batchWriteLimit) {
+        await batch.commit();
+        batch = FirebaseFirestore.instance.batch();
+        count = 0;
+      }
+    }
+    if (count > 0) {
+      await batch.commit();
+    }
+
+    if (balanceAdjustment != 0.0) {
+      await _walletDb.doc(newWalletId).update({
+        'balance': FieldValue.increment(balanceAdjustment),
+      });
+    }
   }
 }

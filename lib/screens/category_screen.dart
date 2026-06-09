@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../components/category_card.dart';
+import '../components/confirmation_dialog.dart';
 import '../components/modal.dart';
 import '../components/skeleton.dart';
 import '../models/category.dart';
@@ -35,6 +36,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
       final String name = fields['Nama']!.text.trim();
 
       if (name.isEmpty) return;
+
+      if (isEditing) {
+        final shouldSave = await showConfirmationDialog(
+          context,
+          title: 'Konfirmasi Edit',
+          message: 'Yakin ingin menyimpan perubahan kategori ini?',
+          confirmLabel: 'Simpan',
+        );
+        if (!shouldSave) return;
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -95,6 +106,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 
   Future<void> _deleteCategory(String id) async {
+    final option = await showDeleteChoiceDialog(
+      context,
+      title: 'Hapus Kategori',
+      message:
+          'Pilih cara menangani transaksi yang terkait dengan kategori ini.',
+    );
+    if (option == null) return;
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -105,7 +124,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
     }
     debugPrint('WARNING: Penghapusan kategori dimulai.');
     try {
-      await _categoryService.delete(id);
+      await _categoryService.deleteWithTransactionHandling(
+        id,
+        deleteTransactions: option == 'delete_all',
+        reassignTransactionsToDefault: option == 'reassign',
+      );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

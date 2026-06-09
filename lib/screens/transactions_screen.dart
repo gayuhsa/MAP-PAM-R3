@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../components/b_transaction_card.dart';
+import '../components/confirmation_dialog.dart';
 import '../components/modal.dart';
 import '../components/skeleton.dart';
 import '../models/b_transaction.dart';
@@ -144,6 +145,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     );
 
     if (isEditing) {
+      final confirmEdit = await showConfirmationDialog(
+        context,
+        title: 'Konfirmasi Edit',
+        message: 'Yakin ingin menyimpan perubahan transaksi ini?',
+      );
+      if (!confirmEdit) return;
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -217,6 +225,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   }
 
   Future<void> _deleteTransaction(String id) async {
+    final confirmDelete = await showConfirmationDialog(
+      context,
+      title: 'Konfirmasi Hapus',
+      message: 'Yakin ingin menghapus transaksi ini?',
+      confirmLabel: 'Hapus',
+      cancelLabel: 'Batal',
+    );
+    if (!confirmDelete) return;
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

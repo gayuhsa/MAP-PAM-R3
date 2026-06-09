@@ -3,8 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:rxdart/rxdart.dart';
 import '../models/category.dart';
+import 'transaction_service.dart';
 
 class CategoryService {
+  static const String _defaultCategoryId = '_default_category';
+
   CollectionReference get _db {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
@@ -51,6 +54,47 @@ class CategoryService {
       debugPrint('WARNING: Memulai penghapusan kategori $id.');
     }
     await _db.doc(id).delete();
+  }
+
+  Future<void> deleteWithTransactionHandling(
+    String id, {
+    bool deleteTransactions = false,
+    bool reassignTransactionsToDefault = false,
+  }) async {
+    if (kDebugMode) {
+      debugPrint(
+        'WARNING: Memulai penghapusan kategori $id dengan penanganan transaksi.',
+      );
+    }
+
+    if (deleteTransactions && reassignTransactionsToDefault) {
+      throw Exception('Pilih salah satu opsi penanganan transaksi.');
+    }
+
+    if (id == _defaultCategoryId) {
+      throw Exception('Kategori default tidak dapat dihapus.');
+    }
+
+    final transactionService = TransactionService();
+
+    if (reassignTransactionsToDefault) {
+      final defaultCategoryId = await _ensureDefaultCategory();
+      await transactionService.reassignCategoryReference(id, defaultCategoryId);
+    } else if (deleteTransactions) {
+      await transactionService.deleteTransactionsByCategory(id);
+    }
+
+    await _db.doc(id).delete();
+  }
+
+  Future<String> _ensureDefaultCategory() async {
+    final defaultDoc = _db.doc(_defaultCategoryId);
+    final snapshot = await defaultDoc.get();
+    if (snapshot.exists) {
+      return defaultDoc.id;
+    }
+    await defaultDoc.set(Category(name: 'Default').toJson());
+    return defaultDoc.id;
   }
 
   Future<Category?> getById(String id) async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../components/confirmation_dialog.dart';
 import '../components/modal.dart';
 import '../components/wallet_card.dart';
 import '../components/skeleton.dart';
@@ -39,6 +40,16 @@ class _WalletsScreenState extends State<WalletsScreen> {
       final double balance = double.tryParse(fields['Isi']!.text.trim()) ?? 0.0;
 
       if (name.isEmpty) return;
+
+      if (isEditing) {
+        final shouldSave = await showConfirmationDialog(
+          context,
+          title: 'Konfirmasi Edit',
+          message: 'Yakin ingin menyimpan perubahan dompet ini?',
+          confirmLabel: 'Simpan',
+        );
+        if (!shouldSave) return;
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -100,6 +111,13 @@ class _WalletsScreenState extends State<WalletsScreen> {
   }
 
   Future<void> _deleteWallet(String id) async {
+    final option = await showDeleteChoiceDialog(
+      context,
+      title: 'Hapus Dompet',
+      message: 'Pilih cara menangani transaksi yang terkait dengan dompet ini.',
+    );
+    if (option == null) return;
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -110,7 +128,11 @@ class _WalletsScreenState extends State<WalletsScreen> {
     }
     debugPrint('WARNING: Penghapusan dompet dimulai.');
     try {
-      await _walletService.delete(id);
+      await _walletService.deleteWithTransactionHandling(
+        id,
+        deleteTransactions: option == 'delete_all',
+        reassignTransactionsToDefault: option == 'reassign',
+      );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
