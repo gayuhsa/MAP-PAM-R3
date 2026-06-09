@@ -76,11 +76,11 @@ class _BTransactionCardState extends State<BTransactionCard> {
   Widget build(BuildContext context) {
     final bool isIncome = widget.transaction.type.toUpperCase() == 'INCOME';
     final Color typeColor = isIncome
-        ? const Color(0xFF22C55E)
-        : const Color(0xFFEF4444);
+        ? AppTheme.chipIncome
+        : AppTheme.chipExpense;
     final Color typeBg = isIncome
-        ? const Color(0xFF22C55E).withOpacity(0.12)
-        : const Color(0xFFEF4444).withOpacity(0.12);
+        ? AppTheme.chipIncome.withOpacity(0.12)
+        : AppTheme.chipExpense.withOpacity(0.12);
     final IconData typeIcon = isIncome
         ? Icons.arrow_downward_rounded
         : Icons.arrow_upward_rounded;
@@ -102,7 +102,7 @@ class _BTransactionCardState extends State<BTransactionCard> {
         border: Border.all(color: AppTheme.cardBorder, width: 2),
         borderRadius: BorderRadius.circular(16),
       ),
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(14),
       child: StreamBuilder<Map<String, dynamic>>(
         stream: _detailsStream,
         builder: (context, snapshot) {
@@ -113,16 +113,11 @@ class _BTransactionCardState extends State<BTransactionCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Header: Jenis + Tanggal
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Badge Jenis
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: typeBg,
                       borderRadius: BorderRadius.circular(20),
@@ -131,7 +126,7 @@ class _BTransactionCardState extends State<BTransactionCard> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(typeIcon, size: 14, color: typeColor),
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4),
                         Text(
                           typeLabel,
                           style: TextStyle(
@@ -143,7 +138,6 @@ class _BTransactionCardState extends State<BTransactionCard> {
                       ],
                     ),
                   ),
-                  // Tanggal
                   Row(
                     children: [
                       Icon(
@@ -151,7 +145,7 @@ class _BTransactionCardState extends State<BTransactionCard> {
                         size: 13,
                         color: Colors.grey[500],
                       ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4),
                       Text(
                         formattedDate,
                         style: TextStyle(color: Colors.grey[500], fontSize: 12),
@@ -160,10 +154,7 @@ class _BTransactionCardState extends State<BTransactionCard> {
                   ),
                 ],
               ),
-
-              const SizedBox(height: 12),
-
-              // Jumlah uang (besar)
+              SizedBox(height: 12),
               Text(
                 formattedAmount,
                 style: TextStyle(
@@ -173,14 +164,11 @@ class _BTransactionCardState extends State<BTransactionCard> {
                 ),
               ),
 
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               Divider(color: AppTheme.cardBorder, height: 1),
-              const SizedBox(height: 10),
-
-              // Info: Kategori & Dompet
+              SizedBox(height: 10),
               Row(
                 children: [
-                  // Kategori
                   Expanded(
                     child: _InfoItem(
                       icon: Icons.category_rounded,
@@ -188,8 +176,7 @@ class _BTransactionCardState extends State<BTransactionCard> {
                       value: categoryName,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  // Dompet
+                  SizedBox(width: 12),
                   Expanded(
                     child: _InfoItem(
                       icon: Icons.account_balance_wallet_rounded,
@@ -199,20 +186,14 @@ class _BTransactionCardState extends State<BTransactionCard> {
                   ),
                 ],
               ),
-
-              const SizedBox(height: 12),
-
-              // Tombol Edit & Hapus
+              SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.edit_rounded, size: 18),
-                    constraints: const BoxConstraints(),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
+                    icon: Icon(Icons.edit_rounded, size: 18),
+                    constraints: BoxConstraints(),
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     style: IconButton.styleFrom(
                       backgroundColor: AppTheme.editButton,
                       foregroundColor: AppTheme.textInverted,
@@ -223,14 +204,11 @@ class _BTransactionCardState extends State<BTransactionCard> {
                     onPressed: () =>
                         widget.modalCallback(transaction: widget.transaction),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   IconButton(
-                    icon: const Icon(Icons.delete_rounded, size: 18),
-                    constraints: const BoxConstraints(),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
+                    icon: Icon(Icons.delete_rounded, size: 18),
+                    constraints: BoxConstraints(),
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     style: IconButton.styleFrom(
                       backgroundColor: AppTheme.trashButton,
                       foregroundColor: AppTheme.textInverted,
@@ -268,7 +246,7 @@ class _InfoItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, size: 15, color: Colors.grey[500]),
-        const SizedBox(width: 6),
+        SizedBox(width: 6),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
