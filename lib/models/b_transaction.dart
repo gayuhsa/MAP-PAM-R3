@@ -18,12 +18,35 @@ class BTransaction {
   });
 
   factory BTransaction.fromJson(Map<String, dynamic> json, String docId) {
+    DateTime parsedDate;
+    final dynamic rawDateTime = json['dateTime'];
+    if (rawDateTime is Timestamp) {
+      parsedDate = rawDateTime.toDate();
+    } else if (rawDateTime is String) {
+      parsedDate = DateTime.tryParse(rawDateTime) ?? DateTime.now();
+    } else if (rawDateTime is Map) {
+      try {
+        parsedDate = DateTime(
+          rawDateTime['year'] ?? 2026,
+          rawDateTime['month'] ?? 1,
+          rawDateTime['day'] ?? 1,
+          rawDateTime['hour'] ?? 0,
+          rawDateTime['minute'] ?? 0,
+          rawDateTime['second'] ?? 0,
+        );
+      } catch (_) {
+        parsedDate = DateTime.now();
+      }
+    } else {
+      parsedDate = DateTime.now();
+    }
+
     return BTransaction(
       id: docId,
       walletId: json['walletId'] ?? '',
       categoryId: json['categoryId'] ?? '',
       amount: (json['amount'] ?? 0.0).toDouble(),
-      dateTime: (json['dateTime'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      dateTime: parsedDate,
       type: json['type'] ?? 'EXPENSE',
     );
   }
@@ -33,7 +56,7 @@ class BTransaction {
       'walletId': walletId,
       'categoryId': categoryId,
       'amount': amount,
-      'dateTime': dateTime,
+      'dateTime': Timestamp.fromDate(dateTime),
       'type': type,
     };
   }

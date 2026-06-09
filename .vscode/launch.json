@@ -5,21 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "MAP-PAM-R3",
+            "type": "chrome",
             "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "MAP-PAM-R3 (profile mode)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "MAP-PAM-R3 (release mode)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
+            "name": "Launch Chrome against localhost",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}"
         }
     ]
 }

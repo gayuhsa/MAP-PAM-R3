@@ -1,4 +1,10 @@
 {
   "IDX.agenticWorkspace": true,
+<<<<<<< HEAD
   "java.configuration.updateBuildConfiguration": "interactive"
+=======
+  "files.readonlyInclude": {
+    "{**/.c4z/.extsrcs/*.PROTSYM.cbl,**/.c4z/.extsrcs/*.PROTSYM.listing}": true
+  }
+>>>>>>> d46f523152a3ceafb7b6443d3fb4f4ca9db46e08
 }

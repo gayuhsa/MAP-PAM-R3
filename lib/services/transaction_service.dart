@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import '../models/b_transaction.dart';
 
 class TransactionService {
@@ -14,42 +15,50 @@ class TransactionService {
         .collection('transactions');
   }
 
-  Future<void> create(BTransaction transaction) async {
-    await _db.add(transaction.toJson());
+  Future<DocumentReference> create(BTransaction transaction) async {
+    final user = FirebaseAuth.instance.currentUser;
+    print("Firestore Creating Transaction for User: ${user?.uid}");
+    final docRef = await _db.add(transaction.toJson());
+    print(
+      "Firestore Created Transaction Document: ${docRef.id} at path: ${docRef.path}",
+    );
+    return docRef;
   }
 
   Stream<List<BTransaction>> getAllByUserId() {
-    try {
-      return _db.orderBy('dateTime', descending: true).snapshots().map((snapshot) {
-        return snapshot.docs.map((doc) {
-          return BTransaction.fromJson(
-            doc.data() as Map<String, dynamic>,
-            doc.id,
-          );
-        }).toList();
-      });
-    } catch (e) {
-      return Stream.value([]);
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return Stream.error("User belum login!");
     }
+    return _db.orderBy('dateTime', descending: true).snapshots().map((
+      snapshot,
+    ) {
+      return snapshot.docs.map((doc) {
+        return BTransaction.fromJson(
+          doc.data() as Map<String, dynamic>,
+          doc.id,
+        );
+      }).toList();
+    });
   }
 
   Stream<List<BTransaction>> getByWallet(String walletId) {
-    try {
-      return _db
-          .where('walletId', isEqualTo: walletId)
-          .orderBy('dateTime', descending: true)
-          .snapshots()
-          .map((snapshot) {
-            return snapshot.docs.map((doc) {
-              return BTransaction.fromJson(
-                doc.data() as Map<String, dynamic>,
-                doc.id,
-              );
-            }).toList();
-          });
-    } catch (e) {
-      return Stream.value([]);
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return Stream.error("User belum login!");
     }
+    return _db
+        .where('walletId', isEqualTo: walletId)
+        .orderBy('dateTime', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            return BTransaction.fromJson(
+              doc.data() as Map<String, dynamic>,
+              doc.id,
+            );
+          }).toList();
+        });
   }
 
   Future<void> update(BTransaction transaction) async {
