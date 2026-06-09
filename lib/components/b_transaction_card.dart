@@ -68,15 +68,13 @@ class _BTransactionCardState extends State<BTransactionCard> {
         orElse: () => Category(id: '', name: 'Kategori Umum'),
       );
 
-<<<<<<< HEAD
       return {
         'category': category.name ?? 'Kategori Umum',
         'wallet': wallet.name ?? 'Dompet Utama',
         'walletPrice': wallet.balance ?? 0.0,
       };
-=======
+
       return {'category': category.name, 'wallet': wallet.name};
->>>>>>> d46f523152a3ceafb7b6443d3fb4f4ca9db46e08
     });
   }
 
@@ -123,8 +121,8 @@ class _BTransactionCardState extends State<BTransactionCard> {
         ? AppTheme.chipIncome
         : AppTheme.chipExpense;
     final Color typeBg = isIncome
-        ? AppTheme.chipIncome.withOpacity(0.12)
-        : AppTheme.chipExpense.withOpacity(0.12);
+        ? AppTheme.chipIncome.withValues(alpha: 0.12)
+        : AppTheme.chipExpense.withValues(alpha: 0.12);
     final IconData typeIcon = isIncome
         ? Icons.arrow_downward_rounded
         : Icons.arrow_upward_rounded;
