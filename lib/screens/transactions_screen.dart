@@ -110,14 +110,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     final DateTime dateTime =
         DateTime.tryParse(fields['Tanggal']!.text.trim()) ?? DateTime.now();
 
-<<<<<<< HEAD
-=======
     debugPrint(
       'Transaction values: walletId=$walletId categoryId=$categoryId amount=$amount type=$type dateTime=$dateTime',
     );
 
     // Validasi: walletId, categoryId, dan amount > 0 wajib diisi
->>>>>>> 813c0c2 (revisi transaction-card)
     if (walletId.isEmpty || categoryId.isEmpty || amount <= 0) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -131,11 +128,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
     if (isEditing) {
       try {
-<<<<<<< HEAD
-=======
         debugPrint('Editing transaction ${transaction.id}');
         // Edit: rollback saldo lama → terapkan saldo baru
->>>>>>> 813c0c2 (revisi transaction-card)
         final double oldDelta = _computeDelta(
           transaction.type,
           transaction.amount,
@@ -174,14 +168,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       }
     } else {
       try {
-<<<<<<< HEAD
-        await _walletService.adjustBalance(
-          walletId,
-          _computeDelta(type, amount),
-=======
         debugPrint(
           'Creating transaction with walletId=$walletId categoryId=$categoryId amount=$amount',
->>>>>>> 813c0c2 (revisi transaction-card)
         );
         final docRef = await _transactionService.create(
           BTransaction(
