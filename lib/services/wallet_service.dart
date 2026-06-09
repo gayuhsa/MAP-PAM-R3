@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // ignore: unused_import
 import 'package:flutter/foundation.dart';
+import 'package:rxdart/rxdart.dart';
 import '../models/wallet.dart';
 
 class WalletService {
@@ -21,16 +22,21 @@ class WalletService {
   }
 
   Stream<List<Wallet>> getAllByUserId() {
-    try {
-      return _db.snapshots().map((snapshot) {
-        return snapshot.docs.map((doc) {
-          return Wallet.fromJson(doc.data() as Map<String, dynamic>, doc.id);
-        }).toList();
-      });
-    } catch (e) {
-      return Stream.value([]);
-    }
-  }
+  return FirebaseAuth.instance.authStateChanges().switchMap((user) {
+    if (user == null) return Stream.value([]);
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('wallets')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => Wallet.fromJson(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ))
+            .toList());
+  });
+}
 
   Future<void> update(Wallet wallet) async {
     await _db.doc(wallet.id).update(wallet.toJson());

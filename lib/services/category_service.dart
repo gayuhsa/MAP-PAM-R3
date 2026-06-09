@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rxdart/rxdart.dart';
 import '../models/category.dart';
 
 class CategoryService {
@@ -19,16 +20,21 @@ class CategoryService {
   }
 
   Stream<List<Category>> getAllByUserId() {
-    try {
-      return _db.snapshots().map((snapshot) {
-        return snapshot.docs.map((doc) {
-          return Category.fromJson(doc.data() as Map<String, dynamic>, doc.id);
-        }).toList();
-      });
-    } catch (e) {
-      return Stream.value([]); 
-    }
-  }
+  return FirebaseAuth.instance.authStateChanges().switchMap((user) {
+    if (user == null) return Stream.value([]);
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('categories')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => Category.fromJson(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ))
+            .toList());
+  });
+}
 
   Future<void> update(Category category) async {
     await _db.doc(category.id).update(category.toJson());
