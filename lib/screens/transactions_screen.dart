@@ -124,6 +124,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               final doc = docs[index];
 
               return BTransactionCard(
+                key: ValueKey(doc.id ?? index.toString()),
                 transaction: doc,
                 modalCallback: _showTransactionModal,
                 deleteCallback: _transactionService.delete,

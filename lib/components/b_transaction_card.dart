@@ -18,23 +18,28 @@ class BTransactionCard extends StatelessWidget {
     required this.deleteCallback,
   });
 
-  Future<Map<String, dynamic>> _getTransactionDetails() async {
-    try {
-      final category = await CategoryService().getById(transaction.categoryId);
-      final wallet = await WalletService().getById(transaction.walletId);
+  Stream<Map<String, dynamic>> _getTransactionDetailsStream() {
+    final categoryService = CategoryService();
+    final walletService = WalletService();
+
+    return walletService.getAllByUserId().asyncMap((wallets) async {
+      final categories = await categoryService.getAllByUserId().first;
+
+      final wallet = wallets.firstWhere(
+        (w) => w.id == transaction.walletId,
+        orElse: () => wallets.isNotEmpty ? wallets.first : null as dynamic,
+      );
+      final category = categories.firstWhere(
+        (c) => c.id == transaction.categoryId,
+        orElse: () => categories.isNotEmpty ? categories.first : null as dynamic,
+      );
 
       return {
         'category': category?.name ?? 'Kategori Umum',
         'wallet': wallet?.name ?? 'Dompet Utama',
         'walletPrice': wallet?.balance ?? 0.0,
       };
-    } catch (_) {
-      return {
-        'category': 'Memuat...',
-        'wallet': 'Memuat...',
-        'walletPrice': 0.0,
-      };
-    }
+    });
   }
 
   @override
@@ -54,9 +59,25 @@ class BTransactionCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       padding: EdgeInsets.all(12),
-      child: FutureBuilder<Map<String, dynamic>>(
-        future: _getTransactionDetails(),
+      child: StreamBuilder<Map<String, dynamic>>(
+        stream: _getTransactionDetailsStream(),
         builder: (context, snapshot) {
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text('Memuat data...'),
+              ),
+            );
+          }
+
+          if (snapshot.hasError || !snapshot.hasData) {
+            return const Center(
+              child: Text('Data akun tidak sinkron'),
+            );
+          }
+        
           final categoryName = snapshot.data?['category'] ?? 'Memuat...';
           final walletName = snapshot.data?['wallet'] ?? 'Memuat...';
           final double walletPrice = (snapshot.data?['walletPrice'] ?? 0.0)
