@@ -17,6 +17,12 @@ class BTransaction {
     required this.type,
   });
 
+  static double _parseDouble(dynamic value) {
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
+  }
+
   factory BTransaction.fromJson(Map<String, dynamic> json, String docId) {
     DateTime parsedDate;
     final dynamic rawDateTime = json['dateTime'];
@@ -45,9 +51,9 @@ class BTransaction {
       id: docId,
       walletId: json['walletId'] ?? '',
       categoryId: json['categoryId'] ?? '',
-      amount: (json['amount'] ?? 0.0).toDouble(),
+      amount: _parseDouble(json['amount']),
       dateTime: parsedDate,
-      type: json['type'] ?? 'EXPENSE',
+      type: (json['type'] as String?)?.toUpperCase() ?? 'EXPENSE',
     );
   }
 

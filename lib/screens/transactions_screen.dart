@@ -27,8 +27,16 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     DropdownOptions(id: 'EXPENSE', name: 'Pengeluaran'),
   ];
 
-  double _computeDelta(String type, double amount) {
-    return type.toUpperCase() == 'INCOME' ? amount : -amount;
+  double? _parseAmount(String value) {
+    final sanitized = value.trim().replaceAll(',', '.');
+    if (sanitized.isEmpty) return null;
+    return double.tryParse(sanitized);
+  }
+
+  DateTime? _parseDate(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return null;
+    return DateTime.tryParse(trimmed);
   }
 
   void _showTransactionModal({BTransaction? transaction}) async {
@@ -103,47 +111,47 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
     final String walletId = fields['Dompet']!.text.trim();
     final String categoryId = fields['Kategori']!.text.trim();
-    final double amount = double.tryParse(fields['Jumlah']!.text.trim()) ?? 0.0;
+    final double? amount = _parseAmount(fields['Jumlah']!.text.trim());
     final String type = fields['Jenis']!.text.trim().isEmpty
         ? 'EXPENSE'
         : fields['Jenis']!.text.trim().toUpperCase();
-    final DateTime dateTime =
-        DateTime.tryParse(fields['Tanggal']!.text.trim()) ?? DateTime.now();
+    final DateTime? dateTime = _parseDate(fields['Tanggal']!.text.trim());
 
-    if (walletId.isEmpty || categoryId.isEmpty || amount <= 0) {
+    if (walletId.isEmpty ||
+        categoryId.isEmpty ||
+        amount == null ||
+        amount <= 0 ||
+        dateTime == null) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Isi semua field dan pastikan jumlah lebih dari 0.'),
+          const SnackBar(
+            content: Text(
+              'Isi semua field dengan benar: dompet, kategori, tanggal, dan jumlah > 0.',
+            ),
           ),
         );
       }
       return;
     }
 
+    final BTransaction updatedTransaction = BTransaction(
+      id: transaction?.id,
+      walletId: walletId,
+      categoryId: categoryId,
+      amount: amount,
+      dateTime: dateTime,
+      type: type,
+    );
+
     if (isEditing) {
       try {
-        final double oldDelta = _computeDelta(
-          transaction.type,
-          transaction.amount,
+        await _transactionService.updateWithWalletAdjustment(
+          transaction,
+          updatedTransaction,
         );
-
-        await _walletService.adjustBalance(transaction.walletId, -oldDelta);
-
-        await _walletService.adjustBalance(
-          walletId,
-          _computeDelta(type, amount),
-        );
-
-        transaction.walletId = walletId;
-        transaction.categoryId = categoryId;
-        transaction.amount = amount;
-        transaction.type = type;
-        transaction.dateTime = dateTime;
-        await _transactionService.update(transaction);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('Transaksi berhasil diubah!'),
               backgroundColor: Colors.green,
             ),
@@ -161,33 +169,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       }
     } else {
       try {
-        final docRef = await _transactionService.create(
-          BTransaction(
-            walletId: walletId,
-            categoryId: categoryId,
-            amount: amount,
-            dateTime: dateTime,
-            type: type,
-          ),
+        final docRef = await _transactionService.createWithWalletAdjustment(
+          updatedTransaction,
         );
-
-        try {
-          await _walletService.adjustBalance(
-            walletId,
-            _computeDelta(type, amount),
-          );
-        } catch (e) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Transaksi tersimpan, tetapi gagal memperbarui saldo dompet: $e',
-                ),
-                backgroundColor: Colors.orange,
-              ),
-            );
-          }
-        }
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -212,20 +196,16 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   Future<void> _deleteTransaction(String id) async {
     try {
-      final allTx = await _transactionService.getAllByUserId().first;
-      final tx = allTx.where((t) => t.id == id).firstOrNull;
-
+      final tx = await _transactionService.getById(id);
       if (tx != null) {
-        await _walletService.adjustBalance(
-          tx.walletId,
-          -_computeDelta(tx.type, tx.amount),
-        );
+        await _transactionService.deleteWithWalletAdjustment(tx);
+      } else {
+        await _transactionService.delete(id);
       }
 
-      await _transactionService.delete(id);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Transaksi berhasil dihapus!'),
             backgroundColor: Colors.green,
           ),

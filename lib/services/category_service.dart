@@ -12,7 +12,7 @@ class CategoryService {
     return FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
-        .collection('categories'); 
+        .collection('categories');
   }
 
   Future<void> create(Category category) async {
@@ -20,21 +20,20 @@ class CategoryService {
   }
 
   Stream<List<Category>> getAllByUserId() {
-  return FirebaseAuth.instance.authStateChanges().switchMap((user) {
-    if (user == null) return Stream.value([]);
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .collection('categories')
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => Category.fromJson(
-                  doc.data() as Map<String, dynamic>,
-                  doc.id,
-                ))
-            .toList());
-  });
-}
+    return FirebaseAuth.instance.authStateChanges().switchMap((user) {
+      if (user == null) return Stream.value([]);
+      return FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('categories')
+          .snapshots()
+          .map(
+            (snapshot) => snapshot.docs
+                .map((doc) => Category.fromJson(doc.data(), doc.id))
+                .toList(),
+          );
+    });
+  }
 
   Future<void> update(Category category) async {
     await _db.doc(category.id).update(category.toJson());

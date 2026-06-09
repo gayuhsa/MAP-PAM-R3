@@ -22,21 +22,20 @@ class WalletService {
   }
 
   Stream<List<Wallet>> getAllByUserId() {
-  return FirebaseAuth.instance.authStateChanges().switchMap((user) {
-    if (user == null) return Stream.value([]);
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .collection('wallets')
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => Wallet.fromJson(
-                  doc.data() as Map<String, dynamic>,
-                  doc.id,
-                ))
-            .toList());
-  });
-}
+    return FirebaseAuth.instance.authStateChanges().switchMap((user) {
+      if (user == null) return Stream.value([]);
+      return FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('wallets')
+          .snapshots()
+          .map(
+            (snapshot) => snapshot.docs
+                .map((doc) => Wallet.fromJson(doc.data(), doc.id))
+                .toList(),
+          );
+    });
+  }
 
   Future<void> update(Wallet wallet) async {
     await _db.doc(wallet.id).update(wallet.toJson());
