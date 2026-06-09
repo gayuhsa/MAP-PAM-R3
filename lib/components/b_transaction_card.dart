@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/b_transaction.dart';
+import '../models/category.dart';
+import '../models/wallet.dart';
 import '../services/category_service.dart';
 import '../services/wallet_service.dart';
 import '../theme.dart';
 import 'card_chip.dart';
 
-class BTransactionCard extends StatelessWidget {
+class BTransactionCard extends StatefulWidget {
   final BTransaction transaction;
   final void Function({BTransaction? transaction}) modalCallback;
-  final void Function(String) deleteCallback;
+  final Future<void> Function(String) deleteCallback;
 
   const BTransactionCard({
     super.key,
@@ -18,40 +20,81 @@ class BTransactionCard extends StatelessWidget {
     required this.deleteCallback,
   });
 
+  @override
+  State<BTransactionCard> createState() => _BTransactionCardState();
+}
+
+class _BTransactionCardState extends State<BTransactionCard> {
+  late Stream<Map<String, dynamic>> _detailsStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _initStream();
+  }
+
+  void _initStream() {
+    _detailsStream = _getTransactionDetailsStream();
+  }
+
+  @override
+  void didUpdateWidget(covariant BTransactionCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.transaction.walletId != widget.transaction.walletId ||
+        oldWidget.transaction.categoryId != widget.transaction.categoryId) {
+      setState(() {
+        _initStream();
+      });
+    }
+  }
+
   Stream<Map<String, dynamic>> _getTransactionDetailsStream() {
     final categoryService = CategoryService();
     final walletService = WalletService();
 
     return walletService.getAllByUserId().asyncMap((wallets) async {
-      final categories = await categoryService.getAllByUserId().first;
+      List<Category> categories = [];
+      try {
+        categories = await categoryService.getAllByUserId().first;
+      } catch (_) {}
 
       final wallet = wallets.firstWhere(
-        (w) => w.id == transaction.walletId,
-        orElse: () => wallets.isNotEmpty ? wallets.first : null as dynamic,
+        (w) => w.id == widget.transaction.walletId,
+        orElse: () => Wallet(id: '', name: 'Dompet Utama', balance: 0),
       );
 
       final category = categories.firstWhere(
-        (c) => c.id == transaction.categoryId,
-        orElse: () => categories.isNotEmpty ? categories.first : null as dynamic,
+        (c) => c.id == widget.transaction.categoryId,
+        orElse: () => Category(id: '', name: 'Kategori Umum'),
       );
 
-      return {
-        'category': category?.name ?? 'Kategori Umum',
-        'wallet': wallet?.name ?? 'Dompet Utama',
-        'walletPrice': wallet?.balance ?? 0.0,
-      };
+      return {'category': category.name, 'wallet': wallet.name};
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Color chipColor = AppTheme.chipExpense;
-    IconData chipIcon = Icons.trending_down;
+    final bool isIncome = widget.transaction.type.toUpperCase() == 'INCOME';
+    final Color typeColor = isIncome
+        ? const Color(0xFF22C55E)
+        : const Color(0xFFEF4444);
+    final Color typeBg = isIncome
+        ? const Color(0xFF22C55E).withOpacity(0.12)
+        : const Color(0xFFEF4444).withOpacity(0.12);
+    final IconData typeIcon = isIncome
+        ? Icons.arrow_downward_rounded
+        : Icons.arrow_upward_rounded;
+    final String typeLabel = isIncome ? 'Pemasukan' : 'Pengeluaran';
 
-    if (transaction.type.toUpperCase() == 'INCOME') {
-      chipColor = AppTheme.chipIncome;
-      chipIcon = Icons.trending_up;
-    }
+    final String formattedDate = DateFormat(
+      'dd MMM yyyy',
+      'id_ID',
+    ).format(widget.transaction.dateTime);
+    final String formattedAmount = NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: 'Rp',
+      decimalDigits: 0,
+    ).format(widget.transaction.amount);
 
     return Container(
       decoration: BoxDecoration(
@@ -59,163 +102,144 @@ class BTransactionCard extends StatelessWidget {
         border: Border.all(color: AppTheme.cardBorder, width: 2),
         borderRadius: BorderRadius.circular(16),
       ),
-      padding: EdgeInsets.all(12),
+      padding: const EdgeInsets.all(14),
       child: StreamBuilder<Map<String, dynamic>>(
-        stream: _getTransactionDetailsStream(),
+        stream: _detailsStream,
         builder: (context, snapshot) {
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text('Memuat data...'),
-              ),
-            );
-          }
-
-          if (snapshot.hasError || !snapshot.hasData) {
-            return const Center(
-              child: Text('Data akun tidak sinkron'),
-            );
-          }
-        
           final categoryName = snapshot.data?['category'] ?? 'Memuat...';
           final walletName = snapshot.data?['wallet'] ?? 'Memuat...';
-          final double walletPrice = (snapshot.data?['walletPrice'] ?? 0.0)
-              .toDouble();
-
-          final double totalCalculated = walletPrice * transaction.amount;
-
-          String formattedTotalIdr = NumberFormat.currency(
-            locale: 'id_ID',
-            symbol: 'Rp',
-            decimalDigits: 2,
-          ).format(totalCalculated);
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+              // Header: Jenis + Tanggal
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    categoryName,
-                    style: TextStyle(
-                      color: AppTheme.text,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                  // Badge Jenis
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    walletName,
-                    style: TextStyle(color: AppTheme.text, fontSize: 18),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Jumlah',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 16),
-                  ),
-                  Text(
-                    '${transaction.amount.toInt()}x',
-                    style: TextStyle(
-                      color: AppTheme.text,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                    decoration: BoxDecoration(
+                      color: typeBg,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(typeIcon, size: 14, color: typeColor),
+                        const SizedBox(width: 4),
+                        Text(
+                          typeLabel,
+                          style: TextStyle(
+                            color: typeColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Jenis',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 16),
-                  ),
-                  Text(
-                    transaction.type.isNotEmpty ? transaction.type : '-',
-                    style: TextStyle(color: AppTheme.text, fontSize: 16),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  // Tanggal
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today_rounded,
+                        size: 13,
+                        color: Colors.grey[500],
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        formattedDate,
+                        style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
+
+              const SizedBox(height: 12),
+
+              // Jumlah uang (besar)
+              Text(
+                formattedAmount,
+                style: TextStyle(
+                  color: typeColor,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+              Divider(color: AppTheme.cardBorder, height: 1),
+              const SizedBox(height: 10),
+
+              // Info: Kategori & Dompet
+              Row(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Total',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 16,
-                            ),
-                          ),
-                          Text(
-                            formattedTotalIdr,
-                            style: TextStyle(
-                              color: AppTheme.text,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      CardChip(
-                        backgroundColor: chipColor,
-                        children: [
-                          Icon(chipIcon, size: 14),
-                          Text(
-                            formattedTotalIdr,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                  // Kategori
+                  Expanded(
+                    child: _InfoItem(
+                      icon: Icons.category_rounded,
+                      label: 'Kategori',
+                      value: categoryName,
+                    ),
                   ),
-                  SizedBox(height: 8),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.edit),
-                        constraints: BoxConstraints(),
-                        padding: EdgeInsets.all(8),
-                        style: IconButton.styleFrom(
-                          backgroundColor: AppTheme.editButton,
-                          foregroundColor: AppTheme.textInverted,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        onPressed: () =>
-                            modalCallback(transaction: transaction),
+                  const SizedBox(width: 12),
+                  // Dompet
+                  Expanded(
+                    child: _InfoItem(
+                      icon: Icons.account_balance_wallet_rounded,
+                      label: 'Dompet',
+                      value: walletName,
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 12),
+
+              // Tombol Edit & Hapus
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit_rounded, size: 18),
+                    constraints: const BoxConstraints(),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppTheme.editButton,
+                      foregroundColor: AppTheme.textInverted,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      SizedBox(width: 8),
-                      IconButton(
-                        icon: Icon(Icons.delete),
-                        constraints: BoxConstraints(),
-                        padding: EdgeInsets.all(8),
-                        style: IconButton.styleFrom(
-                          backgroundColor: AppTheme.trashButton,
-                          foregroundColor: AppTheme.textInverted,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        onPressed: () => deleteCallback(transaction.id ?? ''),
+                    ),
+                    onPressed: () =>
+                        widget.modalCallback(transaction: widget.transaction),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Icons.delete_rounded, size: 18),
+                    constraints: const BoxConstraints(),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppTheme.trashButton,
+                      foregroundColor: AppTheme.textInverted,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                    ],
+                    ),
+                    onPressed: () =>
+                        widget.deleteCallback(widget.transaction.id ?? ''),
                   ),
                 ],
               ),
@@ -223,6 +247,50 @@ class BTransactionCard extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class _InfoItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _InfoItem({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 15, color: Colors.grey[500]),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(color: Colors.grey[500], fontSize: 11),
+              ),
+              Text(
+                value,
+                style: TextStyle(
+                  color: AppTheme.text,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
