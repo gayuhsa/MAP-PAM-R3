@@ -99,7 +99,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       ),
     );
 
-    debugPrint('Transaction modal confirmed: $isConfirmed');
     if (isConfirmed != true) return;
 
     final String walletId = fields['Dompet']!.text.trim();
@@ -111,11 +110,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     final DateTime dateTime =
         DateTime.tryParse(fields['Tanggal']!.text.trim()) ?? DateTime.now();
 
-    debugPrint(
-      'Transaction values: walletId=$walletId categoryId=$categoryId amount=$amount type=$type dateTime=$dateTime',
-    );
-
-    // Validasi: walletId, categoryId, dan amount > 0 wajib diisi
     if (walletId.isEmpty || categoryId.isEmpty || amount <= 0) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -129,8 +123,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
     if (isEditing) {
       try {
-        debugPrint('Editing transaction ${transaction.id}');
-        // Edit: rollback saldo lama → terapkan saldo baru
         final double oldDelta = _computeDelta(
           transaction.type,
           transaction.amount,
@@ -169,9 +161,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       }
     } else {
       try {
-        debugPrint(
-          'Creating transaction with walletId=$walletId categoryId=$categoryId amount=$amount',
-        );
         final docRef = await _transactionService.create(
           BTransaction(
             walletId: walletId,
@@ -181,17 +170,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             type: type,
           ),
         );
-        debugPrint('After create transaction: ${docRef.id}');
 
         try {
-          debugPrint('Before adjustBalance');
           await _walletService.adjustBalance(
             walletId,
             _computeDelta(type, amount),
           );
-          debugPrint('After adjustBalance');
         } catch (e) {
-          debugPrint('adjustBalance failed after create: $e');
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
