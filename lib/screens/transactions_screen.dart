@@ -177,13 +177,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             itemBuilder: (BuildContext context, int index) {
               final doc = docs[index];
 
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: BTransactionCard(
-                  transaction: doc,
-                  modalCallback: _showTransactionModal,
-                  deleteCallback: _deleteTransaction,
-                ),
+              return BTransactionCard(
+                key: ValueKey(doc.id ?? index.toString()),
+                transaction: doc,
+                modalCallback: _showTransactionModal,
+                deleteCallback: _transactionService.delete,
               );
             },
           );
