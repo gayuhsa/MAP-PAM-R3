@@ -34,9 +34,7 @@ class Skeleton extends StatelessWidget {
       body: Container(color: AppTheme.background, child: content),
       bottomNavigationBar: BottomAppBar(
         color: AppTheme.bottomBar,
-<<<<<<< HEAD
         child: SingleChildScrollView(
-          // ← BARU: biar 6 menu muat di layar kecil
           scrollDirection: Axis.horizontal,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -57,140 +55,11 @@ class Skeleton extends StatelessWidget {
                 onTap: () => _navigateTo(context, const TransactionsScreen()),
               ),
               _NavItem(
-                // ← BARU
                 icon: Icons.shopping_cart,
                 label: 'Belanja',
                 onTap: () => _navigateTo(context, const ShoppingRecordScreen()),
-=======
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            GestureDetector(
-              onTap: () {
-                _navigateTo(context, const CategoryScreen());
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Ditambahkan lingkaran penanda aktif
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: title == 'Kategori' ? const Color.fromARGB(255, 178, 234, 176) : Colors.transparent,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Icon(
-                      Icons.category,
-                      color: title == 'Kategori' ? AppTheme.text : Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Kategori',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: title == 'Kategori' ? FontWeight.bold : FontWeight.normal,
-                      color: title == 'Kategori' ? AppTheme.text : Colors.grey[600],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                _navigateTo(context, const WalletsScreen());
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Ditambahkan lingkaran penanda aktif
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: title == 'Dompet' ? const Color.fromARGB(255, 178, 234, 176) : Colors.transparent,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Icon(
-                      Icons.wallet,
-                      color: title == 'Dompet' ? AppTheme.text : Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Dompet',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: title == 'Dompet' ? FontWeight.bold : FontWeight.normal,
-                      color: title == 'Dompet' ? AppTheme.text : Colors.grey[600],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                _navigateTo(context, const TransactionsScreen());
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Ditambahkan lingkaran penanda aktif
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: title == 'Transaksi' ? const Color.fromARGB(255, 178, 234, 176) : Colors.transparent,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Icon(
-                      Icons.money,
-                      color: title == 'Transaksi' ? AppTheme.text : Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Transaksi',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: title == 'Transaksi' ? FontWeight.bold : FontWeight.normal,
-                      color: title == 'Transaksi' ? AppTheme.text : Colors.grey[600],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                _navigateTo(context, const SettingsScreen());
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Ditambahkan lingkaran penanda aktif
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: title == 'Setelan' ? const Color.fromARGB(255, 178, 234, 176) : Colors.transparent,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Icon(
-                      Icons.settings,
-                      color: title == 'Setelan' ? AppTheme.text : Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Setelan',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: title == 'Setelan' ? FontWeight.bold : FontWeight.normal,
-                      color: title == 'Setelan' ? AppTheme.text : Colors.grey[600],
-                    ),
-                  )
-                ],
->>>>>>> ea2be0a698f92d254424119c728ea7a36748b73b
               ),
               _NavItem(
-                // ← BARU
                 icon: Icons.bar_chart,
                 label: 'Realisasi',
                 onTap: () =>
@@ -209,7 +78,6 @@ class Skeleton extends StatelessWidget {
       floatingActionButton: actionButton,
     );
   }
-<<<<<<< HEAD
 }
 
 // ← BARU: widget helper agar kode navbar lebih rapi
@@ -241,6 +109,3 @@ class _NavItem extends StatelessWidget {
     );
   }
 }
-=======
-}
->>>>>>> ea2be0a698f92d254424119c728ea7a36748b73b

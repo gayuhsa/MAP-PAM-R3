@@ -5,11 +5,7 @@ import '../models/category.dart';
 import '../models/wallet.dart';
 import '../services/category_service.dart';
 import '../services/wallet_service.dart';
-<<<<<<< HEAD
-import 'package:myapp/theme.dart';
-=======
 import '../theme.dart';
->>>>>>> ea2be0a698f92d254424119c728ea7a36748b73b
 
 class BTransactionCard extends StatefulWidget {
   final BTransaction transaction;
@@ -122,15 +118,10 @@ class _BTransactionCardState extends State<BTransactionCard> {
         ? AppTheme.chipIncome
         : AppTheme.chipExpense;
     final Color typeBg = isIncome
-<<<<<<< HEAD
         // ignore: deprecated_member_use
         ? AppTheme.chipIncome.withOpacity(0.12)
         // ignore: deprecated_member_use
         : AppTheme.chipExpense.withOpacity(0.12);
-=======
-        ? AppTheme.chipIncome.withValues(alpha: 0.12)
-        : AppTheme.chipExpense.withValues(alpha: 0.12);
->>>>>>> ea2be0a698f92d254424119c728ea7a36748b73b
     final IconData typeIcon = isIncome
         ? Icons.arrow_downward_rounded
         : Icons.arrow_upward_rounded;
