@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import '../models/b_transaction.dart';
 
 class TransactionService {
@@ -16,12 +15,7 @@ class TransactionService {
   }
 
   Future<DocumentReference> create(BTransaction transaction) async {
-    final user = FirebaseAuth.instance.currentUser;
-    print("Firestore Creating Transaction for User: ${user?.uid}");
     final docRef = await _db.add(transaction.toJson());
-    print(
-      "Firestore Created Transaction Document: ${docRef.id} at path: ${docRef.path}",
-    );
     return docRef;
   }
 
@@ -30,15 +24,9 @@ class TransactionService {
     if (user == null) {
       return Stream.error("User belum login!");
     }
-    print(
-      "Firestore Listening to Transactions at path: users/${user.uid}/transactions",
-    );
     return _db.orderBy('dateTime', descending: true).snapshots().map((
       snapshot,
     ) {
-      print(
-        "Firestore Transactions Snapshot loaded: ${snapshot.docs.length} documents found.",
-      );
       return snapshot.docs.map((doc) {
         return BTransaction.fromJson(
           doc.data() as Map<String, dynamic>,

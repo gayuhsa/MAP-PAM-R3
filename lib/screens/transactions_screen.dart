@@ -22,13 +22,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   final TransactionService _transactionService = TransactionService();
   final WalletService _walletService = WalletService();
 
-  // Dropdown opsi jenis transaksi
   static const List<DropdownOptions> _typeOptions = [
     DropdownOptions(id: 'INCOME', name: 'Pemasukan'),
     DropdownOptions(id: 'EXPENSE', name: 'Pengeluaran'),
   ];
 
-  //  Hitung delta saldo berdasarkan jenis transaksi
   double _computeDelta(String type, double amount) {
     return type.toUpperCase() == 'INCOME' ? amount : -amount;
   }
@@ -53,7 +51,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       'Jumlah': TextEditingController(
         text: isEditing ? '${transaction.amount.toInt()}' : '',
       ),
-      // Default ke 'EXPENSE', bukan string kosong
       'Jenis': TextEditingController(
         text: isEditing ? transaction.type : 'EXPENSE',
       ),
@@ -71,7 +68,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           'Kategori': categories
               .map((c) => DropdownOptions(id: c.id ?? '', name: c.name))
               .toList(),
-          // Field Jenis sekarang dropdown INCOME / EXPENSE
           'Jenis': _typeOptions,
         },
       ),
@@ -88,11 +84,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     final DateTime dateTime =
         DateTime.tryParse(fields['Tanggal']!.text.trim()) ?? DateTime.now();
 
-    // Validasi: walletId, categoryId, dan amount > 0 wajib diisi
     if (walletId.isEmpty || categoryId.isEmpty || amount <= 0) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Isi semua field dan pastikan jumlah lebih dari 0.'),
           ),
         );
@@ -102,16 +97,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
     if (isEditing) {
       try {
-        // Edit: rollback saldo lama → terapkan saldo baru
         final double oldDelta = _computeDelta(
           transaction.type,
           transaction.amount,
         );
 
-        // Rollback saldo lama di wallet lama
         await _walletService.adjustBalance(transaction.walletId, -oldDelta);
 
-        // Terapkan saldo baru di wallet baru (mungkin sama / beda)
         await _walletService.adjustBalance(
           walletId,
           _computeDelta(type, amount),
@@ -125,14 +117,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         await _transactionService.update(transaction);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Text('Transaksi berhasil diubah!'),
               backgroundColor: Colors.green,
             ),
           );
         }
       } catch (e) {
-        debugPrint("Error editing transaction: $e");
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -144,7 +135,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       }
     } else {
       try {
-        // Create: update saldo wallet
         await _walletService.adjustBalance(
           walletId,
           _computeDelta(type, amount),
@@ -167,7 +157,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           );
         }
       } catch (e) {
-        debugPrint("Error creating transaction: $e");
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -182,7 +171,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   Future<void> _deleteTransaction(String id) async {
     try {
-      // Cari transaksi dari stream saat ini
       final allTx = await _transactionService.getAllByUserId().first;
       final tx = allTx.where((t) => t.id == id).firstOrNull;
 
@@ -196,14 +184,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       await _transactionService.delete(id);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Transaksi berhasil dihapus!'),
             backgroundColor: Colors.green,
           ),
         );
       }
     } catch (e) {
-      debugPrint("Error deleting transaction: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -220,7 +207,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       backgroundColor: AppTheme.card,
       foregroundColor: AppTheme.text,
       onPressed: () => _showTransactionModal(),
-      child: const Icon(Icons.add),
+      child: Icon(Icons.add),
     );
   }
 
@@ -233,31 +220,30 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         stream: _transactionService.getAllByUserId(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            debugPrint("Transactions Stream Error: ${snapshot.error}");
             return Center(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(16),
                 child: Text(
                   'Terjadi error: ${snapshot.error}',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.red),
+                  style: TextStyle(color: Colors.red),
                 ),
               ),
             );
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           }
 
           final docs = snapshot.data ?? [];
 
           if (docs.isEmpty) {
-            return const Center(child: Text('Belum ada transaksi.'));
+            return Center(child: Text('Belum ada transaksi.'));
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             itemCount: docs.length,
             itemBuilder: (BuildContext context, int index) {
               final doc = docs[index];
