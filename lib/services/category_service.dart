@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:rxdart/rxdart.dart';
 import '../models/category.dart';
 
@@ -16,6 +17,9 @@ class CategoryService {
   }
 
   Future<void> create(Category category) async {
+    if (kDebugMode) {
+      debugPrint('WARNING: Memulai pembuatan kategori baru.');
+    }
     await _db.add(category.toJson());
   }
 
@@ -36,10 +40,16 @@ class CategoryService {
   }
 
   Future<void> update(Category category) async {
+    if (kDebugMode) {
+      debugPrint('WARNING: Memulai pembaruan kategori ${category.id}.');
+    }
     await _db.doc(category.id).update(category.toJson());
   }
 
   Future<void> delete(String id) async {
+    if (kDebugMode) {
+      debugPrint('WARNING: Memulai penghapusan kategori $id.');
+    }
     await _db.doc(id).delete();
   }
 

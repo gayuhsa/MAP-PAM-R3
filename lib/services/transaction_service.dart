@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import '../models/b_transaction.dart';
 
 class TransactionService {
@@ -33,11 +33,11 @@ class TransactionService {
   Future<DocumentReference> create(BTransaction transaction) async {
     final user = FirebaseAuth.instance.currentUser;
     if (kDebugMode) {
-      print('Firestore Creating Transaction for User: ${user?.uid}');
+      debugPrint('Firestore Creating Transaction for User: ${user?.uid}');
     }
     final docRef = await _db.add(transaction.toJson());
     if (kDebugMode) {
-      print(
+      debugPrint(
         'Firestore Created Transaction Document: ${docRef.id} at path: ${docRef.path}',
       );
     }
@@ -47,6 +47,11 @@ class TransactionService {
   Future<DocumentReference> createWithWalletAdjustment(
     BTransaction transaction,
   ) async {
+    if (kDebugMode) {
+      print(
+        'WARNING: Memulai pembuatan transaksi baru dan penyesuaian saldo dompet.',
+      );
+    }
     final walletRef = _walletDb.doc(transaction.walletId);
     return FirebaseFirestore.instance.runTransaction((tx) async {
       final newDocRef = _db.doc();
@@ -118,6 +123,9 @@ class TransactionService {
       throw Exception('ID transaksi tidak valid');
     }
 
+    if (kDebugMode) {
+      debugPrint('WARNING: Memulai pembaruan transaksi ${oldTransaction.id}.');
+    }
     final txRef = _db.doc(oldTransaction.id!);
     final oldDelta = _computeDelta(oldTransaction.type, oldTransaction.amount);
     final newDelta = _computeDelta(newTransaction.type, newTransaction.amount);
@@ -151,6 +159,9 @@ class TransactionService {
       throw Exception('ID transaksi tidak valid');
     }
 
+    if (kDebugMode) {
+      debugPrint('WARNING: Memulai penghapusan transaksi ${transaction.id}.');
+    }
     final txRef = _db.doc(transaction.id!);
     final walletRef = _walletDb.doc(transaction.walletId);
     final delta = _computeDelta(transaction.type, transaction.amount);

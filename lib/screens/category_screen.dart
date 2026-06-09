@@ -36,11 +36,92 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
       if (name.isEmpty) return;
 
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Peringatan: sedang memproses kategori...'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+
       if (isEditing) {
+        debugPrint('WARNING: Edit kategori dimulai.');
         category.name = name;
-        _categoryService.update(category);
+        try {
+          await _categoryService.update(category);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Kategori berhasil diubah!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        } catch (_) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Gagal mengubah kategori!'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
       } else {
-        _categoryService.create(Category(name: name));
+        debugPrint('WARNING: Input kategori baru dimulai.');
+        try {
+          await _categoryService.create(Category(name: name));
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Kategori berhasil ditambah!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        } catch (_) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Gagal menambah kategori!'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      }
+    }
+  }
+
+  Future<void> _deleteCategory(String id) async {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Peringatan: sedang memproses penghapusan kategori...'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    }
+    debugPrint('WARNING: Penghapusan kategori dimulai.');
+    try {
+      await _categoryService.delete(id);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Kategori berhasil dihapus!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Gagal menghapus kategori!'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }
@@ -85,7 +166,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               return CategoryCard(
                 category: doc,
                 modalCallback: _showCategoryModal,
-                deleteCallback: _categoryService.delete,
+                deleteCallback: _deleteCategory,
               );
             },
           );

@@ -144,6 +144,17 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     );
 
     if (isEditing) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Peringatan: sedang memproses perubahan transaksi...',
+            ),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+      debugPrint('WARNING: Edit transaksi dimulai.');
       try {
         await _transactionService.updateWithWalletAdjustment(
           transaction,
@@ -161,22 +172,33 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Gagal mengubah transaksi: $e'),
+              content: Text('Gagal mengubah transaksi!'),
               backgroundColor: Colors.red,
             ),
           );
         }
       }
     } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Peringatan: sedang memproses penambahan transaksi...',
+            ),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+      debugPrint('WARNING: Input transaksi baru dimulai.');
       try {
-        final docRef = await _transactionService.createWithWalletAdjustment(
+        await _transactionService.createWithWalletAdjustment(
           updatedTransaction,
         );
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Transaksi berhasil ditambah! ID: ${docRef.id}'),
+            const SnackBar(
+              content: Text('Transaksi berhasil ditambah!'),
               backgroundColor: Colors.green,
             ),
           );
@@ -195,6 +217,17 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   }
 
   Future<void> _deleteTransaction(String id) async {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Peringatan: sedang memproses penghapusan transaksi...',
+          ),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    }
+    debugPrint('WARNING: Penghapusan transaksi $id dimulai.');
     try {
       final tx = await _transactionService.getById(id);
       if (tx != null) {
@@ -215,7 +248,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Gagal menghapus transaksi: $e'),
+            content: Text('Gagal menghapus transaksi!'),
             backgroundColor: Colors.red,
           ),
         );

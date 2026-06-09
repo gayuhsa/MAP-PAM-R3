@@ -21,7 +21,9 @@ class _WalletsScreenState extends State<WalletsScreen> {
 
     final Map<String, TextEditingController> fields = {
       'Nama': TextEditingController(text: isEditing ? wallet.name : ''),
-      'Isi': TextEditingController(text: isEditing ? '${wallet.balance}' : null),
+      'Isi': TextEditingController(
+        text: isEditing ? '${wallet.balance}' : null,
+      ),
     };
 
     final bool? isConfirmed = await showDialog(
@@ -38,12 +40,93 @@ class _WalletsScreenState extends State<WalletsScreen> {
 
       if (name.isEmpty) return;
 
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Peringatan: sedang memproses dompet...'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+
       if (isEditing) {
+        debugPrint('WARNING: Edit dompet dimulai.');
         wallet.name = name;
         wallet.balance = balance;
-        _walletService.update(wallet);
+        try {
+          await _walletService.update(wallet);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Dompet berhasil diubah!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        } catch (_) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Gagal mengubah dompet!'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
       } else {
-        _walletService.create(Wallet(name: name, balance: balance));
+        debugPrint('WARNING: Input dompet baru dimulai.');
+        try {
+          await _walletService.create(Wallet(name: name, balance: balance));
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Dompet berhasil ditambah!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        } catch (_) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Gagal menambah dompet!'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      }
+    }
+  }
+
+  Future<void> _deleteWallet(String id) async {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Peringatan: sedang memproses penghapusan dompet...'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    }
+    debugPrint('WARNING: Penghapusan dompet dimulai.');
+    try {
+      await _walletService.delete(id);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Dompet berhasil dihapus!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Gagal menghapus dompet!'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }
@@ -88,7 +171,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
               return WalletCard(
                 wallet: doc,
                 modalCallback: _showWalletModal,
-                deleteCallback: _walletService.delete,
+                deleteCallback: _deleteWallet,
               );
             },
           );
