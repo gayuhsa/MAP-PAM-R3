@@ -39,19 +39,11 @@ class WalletService {
     await _db.doc(id).delete();
   }
 
-  /// Menyesuaikan saldo wallet secara atomik.
-  /// positif = tambah saldo (INCOME), negatif = kurangi saldo (EXPENSE).
   Future<void> adjustBalance(String walletId, double delta) async {
     if (walletId.isEmpty) return;
     try {
-      debugPrint(
-        'WalletService.adjustBalance: walletId=$walletId delta=$delta',
-      );
       await _db.doc(walletId).update({'balance': FieldValue.increment(delta)});
-      debugPrint('WalletService.adjustBalance: success for walletId=$walletId');
-    } catch (e, st) {
-      debugPrint('WalletService.adjustBalance failed: $e');
-      debugPrint(st.toString());
+    } catch (e) {
       rethrow;
     }
   }
