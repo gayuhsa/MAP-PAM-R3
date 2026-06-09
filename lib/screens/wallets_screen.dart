@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../components/modal.dart';
 import '../components/wallet_card.dart';
 import '../components/skeleton.dart';
@@ -22,7 +21,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
 
     final Map<String, TextEditingController> fields = {
       'Nama': TextEditingController(text: isEditing ? wallet.name : ''),
-      'Isi': TextEditingController(text: isEditing ? '${wallet.balance}' : ''),
+      'Isi (Contoh: 5000)': TextEditingController(text: isEditing ? '${wallet.balance}' : null),
     };
 
     final bool? isConfirmed = await showDialog(
@@ -63,8 +62,8 @@ class _WalletsScreenState extends State<WalletsScreen> {
     return Skeleton(
       title: 'Dompet',
       actionButton: _createActionButton(),
-      content: StreamBuilder<QuerySnapshot>(
-        stream: _walletService.getSnapshots(),
+      content: StreamBuilder<List<Wallet>>(
+        stream: _walletService.getAllByUserId(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('Terjadi error. Coba lagi nanti.'));
@@ -74,7 +73,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
             return Center(child: CircularProgressIndicator());
           }
 
-          final docs = snapshot.data?.docs ?? [];
+          final docs = snapshot.data ?? [];
 
           if (docs.isEmpty) {
             return Center(child: Text('Belum ada dompet.'));
@@ -86,13 +85,8 @@ class _WalletsScreenState extends State<WalletsScreen> {
             itemBuilder: (BuildContext context, int index) {
               final doc = docs[index];
 
-              final Wallet wallet = Wallet.fromJson(
-                doc.data() as Map<String, dynamic>,
-                doc.id,
-              );
-
               return WalletCard(
-                wallet: wallet,
+                wallet: doc,
                 modalCallback: _showWalletModal,
                 deleteCallback: _walletService.delete,
               );

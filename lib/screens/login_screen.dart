@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:email_validator/email_validator.dart';
 import '../components/auth_text_box.dart';
 import '../services/auth_service.dart';
+import '../theme.dart';
 import 'category_screen.dart';
 import 'signup_screen.dart';
 
@@ -22,6 +25,11 @@ class _LoginScreenState extends State<LoginScreen> {
     if (emailController.text.trim().isEmpty ||
         passwordController.text.trim().isEmpty) {
       _showErrorDialog("Email dan password tidak boleh kosong.");
+      return;
+    }
+
+    if (!EmailValidator.validate(emailController.text)) {
+      _showErrorDialog("Email tidak valid.");
       return;
     }
 
@@ -67,13 +75,13 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 194, 225, 223),
+      backgroundColor: AppTheme.background,
       resizeToAvoidBottomInset: false,
       body: Center(
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(32),
-            color: Color.fromARGB(255, 232, 245, 244),
+            color: AppTheme.authContainer,
           ),
           margin: EdgeInsets.fromLTRB(32, 0, 32, 0),
           padding: EdgeInsets.all(32),
@@ -83,13 +91,21 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               Text(
                 "Masuk",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: AppTheme.text,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 16),
               Text(
                 "Email",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: AppTheme.text,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.left,
               ),
               AuthTextBox(
@@ -100,7 +116,11 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 16),
               Text(
                 "Password",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: AppTheme.text,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.left,
               ),
               AuthTextBox(
@@ -112,9 +132,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: _isLoading ? null : _login,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 45, 131, 124),
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: AppTheme.button,
+                  foregroundColor: AppTheme.textInverted,
+                  padding: EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -123,36 +143,46 @@ class _LoginScreenState extends State<LoginScreen> {
                     ? SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
+                        child: CircularProgressIndicator(),
                       )
                     : Text(
                         "Masuk",
                         style: TextStyle(
+                          color: AppTheme.textInverted,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
               ),
               SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignupScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+              Center(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: AppTheme.text, 
+                      fontSize: 16,
+                    ),
+                    children: [
+                      const TextSpan(
+                        text: "Belum memiliki akun? ",
+                      ),
+                      TextSpan(
+                        text: "Daftar.",
+                        style: TextStyle(
+                          color: AppTheme.button, 
+                          fontWeight: FontWeight.bold,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => const SignupScreen()),
+                            );
+                          },
+                      ),
+                    ],
                   ),
-                ),
-                child: Text(
-                  "Belum memiliki akun? Daftar.",
-                  style: TextStyle(fontSize: 16),
                 ),
               ),
             ],
