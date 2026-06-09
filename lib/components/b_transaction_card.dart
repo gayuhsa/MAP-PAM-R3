@@ -6,7 +6,6 @@ import '../models/wallet.dart';
 import '../services/category_service.dart';
 import '../services/wallet_service.dart';
 import '../theme.dart';
-import 'card_chip.dart';
 
 class BTransactionCard extends StatefulWidget {
   final BTransaction transaction;
@@ -69,12 +68,10 @@ class _BTransactionCardState extends State<BTransactionCard> {
       );
 
       return {
-        'category': category.name ?? 'Kategori Umum',
-        'wallet': wallet.name ?? 'Dompet Utama',
-        'walletPrice': wallet.balance ?? 0.0,
+        'category': category.name,
+        'wallet': wallet.name,
+        'walletPrice': wallet.balance,
       };
-
-      return {'category': category.name, 'wallet': wallet.name};
     });
   }
 
