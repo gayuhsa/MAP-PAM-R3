@@ -36,9 +36,9 @@ class BTransactionCard extends StatelessWidget {
       );
 
       return {
-        'category': category?.name ?? 'Kategori Umum',
-        'wallet': wallet?.name ?? 'Dompet Utama',
-        'walletPrice': wallet?.balance ?? 0.0,
+        'category': category.name ?? 'Kategori Umum',
+        'wallet': wallet.name ?? 'Dompet Utama',
+        'walletPrice': wallet.balance ?? 0.0,
       };
     });
   }
