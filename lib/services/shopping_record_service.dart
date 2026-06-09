@@ -33,11 +33,13 @@ class ShoppingRecordService {
     }
   }
 
-  /// Ambil semua catatan belanja milik satu akun anggaran tertentu
-  Stream<List<ShoppingRecord>> getByBudgetAccount(String budgetAccountId) {
+  Stream<List<ShoppingRecord>> getByCategory(String categoryId) {
     try {
       return _db
-          .where('budgetAccountId', isEqualTo: budgetAccountId)
+          .where(
+            'budgetAccountId',
+            isEqualTo: categoryId,
+          ) // Tetap pakai budgetAccountId di database
           .orderBy('tanggal', descending: true)
           .snapshots()
           .map((snapshot) {
