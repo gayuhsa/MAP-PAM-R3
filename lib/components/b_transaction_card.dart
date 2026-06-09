@@ -25,14 +25,18 @@ class BTransactionCard extends StatelessWidget {
     return walletService.getAllByUserId().asyncMap((wallets) async {
       final categories = await categoryService.getAllByUserId().first;
 
-      final wallet = wallets.firstWhere(
-        (w) => w.id == transaction.walletId,
-        orElse: () => wallets.isNotEmpty ? wallets.first : null as dynamic,
-      );
-      final category = categories.firstWhere(
-        (c) => c.id == transaction.categoryId,
-        orElse: () => categories.isNotEmpty ? categories.first : null as dynamic,
-      );
+      final List<dynamic> walletList = wallets;
+      final List<dynamic> categoryList = categories;
+
+      final wallet = walletList.cast<dynamic>().firstWhere(
+            (w) => w.id == transaction.walletId,
+            orElse: () => wallets.isNotEmpty ? wallets.first : null,
+          );
+
+      final category = categoryList.cast<dynamic>().firstWhere(
+            (c) => c.id == transaction.categoryId,
+            orElse: () => categories.isNotEmpty ? categories.first : null,
+          );
 
       return {
         'category': category?.name ?? 'Kategori Umum',
