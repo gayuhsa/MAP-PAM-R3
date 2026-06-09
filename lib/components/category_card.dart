@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../models/b_transaction.dart';
-import '../models/category.dart';
+import "../models/category.dart";
 import '../services/transaction_service.dart';
 import '../theme.dart';
 import 'card_chip.dart';

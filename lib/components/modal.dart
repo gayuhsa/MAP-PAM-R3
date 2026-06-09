@@ -28,18 +28,26 @@ class _ModalState extends State<Modal> {
   }
 
   bool _isNumericField(String key) {
-    return key == 'Isi' || key == 'Jumlah';
+    return key == 'Isi' ||
+        key == 'Jumlah' ||
+        key == 'Jumlah Total' || // ← BARU
+        key == 'Volume'; // ← BARU
   }
 
   bool _isDateField(String key) {
     return key == 'Tanggal';
   }
 
+  bool _isOptionalField(String key) {
+    return key == 'Bukti Pengeluaran' || key == 'Keterangan';
+  }
+
   String? _validateField(String key, String? value) {
     final trimmed = value?.trim() ?? '';
-    if (trimmed.isEmpty && _isOptionalField(key)) 
+    if (trimmed.isEmpty && _isOptionalField(key)) {
       return null;
-      
+    }
+
     if (trimmed.isEmpty) {
       return 'Field ini wajib diisi.';
     }
@@ -116,22 +124,25 @@ class _ModalState extends State<Modal> {
   }
 
   Widget _buildTextField(String key, TextEditingController controller) {
+    final isMultiline = key == 'Keterangan';
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         controller: controller,
         readOnly: _isDateField(key),
+        maxLines: isMultiline ? null : 1,
+        minLines: isMultiline ? 3 : 1,
         keyboardType: _isNumericField(key)
             ? TextInputType.number
             : TextInputType.text,
         inputFormatters: _isNumericField(key)
             ? [FilteringTextInputFormatter.digitsOnly]
             : null,
+
         decoration: InputDecoration(
-          labelText: key,
-          hintText: _isNumericField(key)
-              ? 'Contoh: 50000'
-              : (key == 'Nama' ? 'Contoh: Konsumsi' : null),
+          labelText: _isOptionalField(key) ? '$key (opsional)' : key, // ← BARU
+          hintText: _hintFor(key), // ← BARU
           border: const OutlineInputBorder(),
           suffixIcon: _isDateField(key)
               ? const Icon(Icons.calendar_today)
@@ -155,6 +166,27 @@ class _ModalState extends State<Modal> {
             : null,
       ),
     );
+  }
+
+  String? _hintFor(String key) {
+    switch (key) {
+      case 'Nama':
+        return 'Contoh: Konsumsi';
+      case 'Volume':
+        return 'Contoh: 10';
+      case 'Satuan':
+        return 'Contoh: kg, buah, unit';
+      case 'Jumlah Total':
+        return 'Contoh: 150000';
+      case 'Keterangan':
+        return 'Keterangan tambahan...';
+      case 'Bukti Pengeluaran':
+        return 'Nama file / URL bukti';
+      case 'Isi':
+        return 'Contoh: 50000';
+      default:
+        return null;
+    }
   }
 
   @override

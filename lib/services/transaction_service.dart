@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
+import 'package:flutter/foundation.dart' show kDebugMode;
 import '../models/b_transaction.dart';
 
 class TransactionService {
@@ -16,11 +17,15 @@ class TransactionService {
 
   Future<DocumentReference> create(BTransaction transaction) async {
     final user = FirebaseAuth.instance.currentUser;
-    print("Firestore Creating Transaction for User: ${user?.uid}");
+    if (kDebugMode) {
+      print("Firestore Creating Transaction for User: ${user?.uid}");
+    }
     final docRef = await _db.add(transaction.toJson());
-    print(
-      "Firestore Created Transaction Document: ${docRef.id} at path: ${docRef.path}",
-    );
+    if (kDebugMode) {
+      print(
+        "Firestore Created Transaction Document: ${docRef.id} at path: ${docRef.path}",
+      );
+    }
     return docRef;
   }
 
