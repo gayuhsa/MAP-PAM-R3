@@ -6,7 +6,6 @@ import '../models/wallet.dart';
 import '../services/category_service.dart';
 import '../services/wallet_service.dart';
 import '../theme.dart';
-import 'card_chip.dart';
 
 class BTransactionCard extends StatefulWidget {
   final BTransaction transaction;

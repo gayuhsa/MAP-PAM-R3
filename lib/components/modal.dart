@@ -37,7 +37,9 @@ class _ModalState extends State<Modal> {
 
   String? _validateField(String key, String? value) {
     final trimmed = value?.trim() ?? '';
-
+    if (trimmed.isEmpty && _isOptionalField(key)) 
+      return null;
+      
     if (trimmed.isEmpty) {
       return 'Field ini wajib diisi.';
     }
