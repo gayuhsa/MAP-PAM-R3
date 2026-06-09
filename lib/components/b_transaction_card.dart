@@ -70,7 +70,7 @@ class _BTransactionCardState extends State<BTransactionCard> {
       return {
         'category': category.name,
         'wallet': wallet.name,
-        'walletPrice': wallet.balance, // Data balance dompet diambil di sini
+        'walletPrice': wallet.balance,
       };
     });
   }
@@ -97,8 +97,18 @@ class _BTransactionCardState extends State<BTransactionCard> {
   }
 
   static const List<String> _monthNames = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-    'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'Mei',
+    'Jun',
+    'Jul',
+    'Agu',
+    'Sep',
+    'Okt',
+    'Nov',
+    'Des',
   ];
 
   @override
@@ -116,6 +126,7 @@ class _BTransactionCardState extends State<BTransactionCard> {
     final String typeLabel = isIncome ? 'Pemasukan' : 'Pengeluaran';
 
     final String formattedDate = _formatDate(widget.transaction.dateTime);
+    final String formattedAmount = _formatAmount(widget.transaction.amount);
 
     return Container(
       decoration: BoxDecoration(
@@ -123,23 +134,12 @@ class _BTransactionCardState extends State<BTransactionCard> {
         border: Border.all(color: AppTheme.cardBorder, width: 2),
         borderRadius: BorderRadius.circular(16),
       ),
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(14),
       child: StreamBuilder<Map<String, dynamic>>(
         stream: _detailsStream,
         builder: (context, snapshot) {
           final categoryName = snapshot.data?['category'] ?? 'Memuat...';
           final walletName = snapshot.data?['wallet'] ?? 'Memuat...';
-
-          // ==================== LOGIKA PERHITUNGAN MATEMATIKA ====================
-          // Ambil nominal walletPrice dari stream (default 0.0 jika belum termuat)
-          final double walletPrice = (snapshot.data?['walletPrice'] ?? 0.0).toDouble();
-          
-          // Rumus: Jumlah Transaksi x Harga/Balance Dompet
-          final double totalCalculated = widget.transaction.amount * walletPrice;
-          
-          // Masukkan hasil perkalian ke formatter rupiah
-          final String formattedAmount = _formatAmount(totalCalculated);
-          // =======================================================================
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,7 +149,7 @@ class _BTransactionCardState extends State<BTransactionCard> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: typeBg,
                       borderRadius: BorderRadius.circular(20),
@@ -158,7 +158,7 @@ class _BTransactionCardState extends State<BTransactionCard> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(typeIcon, size: 14, color: typeColor),
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4),
                         Text(
                           typeLabel,
                           style: TextStyle(
@@ -177,7 +177,7 @@ class _BTransactionCardState extends State<BTransactionCard> {
                         size: 13,
                         color: Colors.grey[500],
                       ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4),
                       Text(
                         formattedDate,
                         style: TextStyle(color: Colors.grey[500], fontSize: 12),
@@ -186,9 +186,7 @@ class _BTransactionCardState extends State<BTransactionCard> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
-              
-              // Menampilkan hasil perkalian otomatis
+              SizedBox(height: 12),
               Text(
                 formattedAmount,
                 style: TextStyle(
@@ -198,9 +196,9 @@ class _BTransactionCardState extends State<BTransactionCard> {
                 ),
               ),
 
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               Divider(color: AppTheme.cardBorder, height: 1),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               Row(
                 children: [
                   Expanded(
@@ -210,7 +208,7 @@ class _BTransactionCardState extends State<BTransactionCard> {
                       value: categoryName,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: _InfoItem(
                       icon: Icons.account_balance_wallet_rounded,
@@ -220,14 +218,14 @@ class _BTransactionCardState extends State<BTransactionCard> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.edit_rounded, size: 18),
-                    constraints: const BoxConstraints(),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    icon: Icon(Icons.edit_rounded, size: 18),
+                    constraints: BoxConstraints(),
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     style: IconButton.styleFrom(
                       backgroundColor: AppTheme.editButton,
                       foregroundColor: AppTheme.textInverted,
@@ -238,11 +236,11 @@ class _BTransactionCardState extends State<BTransactionCard> {
                     onPressed: () =>
                         widget.modalCallback(transaction: widget.transaction),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   IconButton(
-                    icon: const Icon(Icons.delete_rounded, size: 18),
-                    constraints: const BoxConstraints(),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    icon: Icon(Icons.delete_rounded, size: 18),
+                    constraints: BoxConstraints(),
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     style: IconButton.styleFrom(
                       backgroundColor: AppTheme.trashButton,
                       foregroundColor: AppTheme.textInverted,
@@ -280,20 +278,20 @@ class _InfoItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, size: 15, color: Colors.grey[500]),
-        const SizedBox(width: 6),
+        SizedBox(width: 6),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 label,
-                style: TextStyle(color: Colors.grey[500], fontSize: 15),
+                style: TextStyle(color: Colors.grey[500], fontSize: 11),
               ),
               Text(
                 value,
                 style: TextStyle(
                   color: AppTheme.text,
-                  fontSize: 15,
+                  fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
                 maxLines: 1,
