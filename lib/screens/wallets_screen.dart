@@ -61,7 +61,6 @@ class _WalletsScreenState extends State<WalletsScreen> {
       }
 
       if (isEditing) {
-        debugPrint('WARNING: Edit dompet dimulai.');
         wallet.name = name;
         wallet.balance = balance;
         try {
@@ -85,7 +84,6 @@ class _WalletsScreenState extends State<WalletsScreen> {
           }
         }
       } else {
-        debugPrint('WARNING: Input dompet baru dimulai.');
         try {
           await _walletService.create(Wallet(name: name, balance: balance));
           if (mounted) {
@@ -126,7 +124,6 @@ class _WalletsScreenState extends State<WalletsScreen> {
         ),
       );
     }
-    debugPrint('WARNING: Penghapusan dompet dimulai.');
     try {
       await _walletService.deleteWithTransactionHandling(
         id,

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:rxdart/rxdart.dart';
 import '../models/wallet.dart';
 import 'transaction_service.dart';
@@ -20,9 +19,6 @@ class WalletService {
   }
 
   Future<void> create(Wallet wallet) async {
-    if (kDebugMode) {
-      debugPrint('WARNING: Memulai pembuatan dompet baru.');
-    }
     await _db.add(wallet.toJson());
   }
 
@@ -43,16 +39,10 @@ class WalletService {
   }
 
   Future<void> update(Wallet wallet) async {
-    if (kDebugMode) {
-      debugPrint('WARNING: Memulai pembaruan dompet ${wallet.id}.');
-    }
     await _db.doc(wallet.id).update(wallet.toJson());
   }
 
   Future<void> delete(String id) async {
-    if (kDebugMode) {
-      debugPrint('WARNING: Memulai penghapusan dompet $id.');
-    }
     await _db.doc(id).delete();
   }
 
@@ -61,12 +51,6 @@ class WalletService {
     bool deleteTransactions = false,
     bool reassignTransactionsToDefault = false,
   }) async {
-    if (kDebugMode) {
-      debugPrint(
-        'WARNING: Memulai penghapusan dompet $id dengan penanganan transaksi.',
-      );
-    }
-
     if (deleteTransactions && reassignTransactionsToDefault) {
       throw Exception('Pilih salah satu opsi penanganan transaksi.');
     }

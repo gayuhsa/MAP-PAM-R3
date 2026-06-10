@@ -161,7 +161,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           ),
         );
       }
-      debugPrint('WARNING: Edit transaksi dimulai.');
       try {
         await _transactionService.updateWithWalletAdjustment(
           transaction,
@@ -196,7 +195,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           ),
         );
       }
-      debugPrint('WARNING: Input transaksi baru dimulai.');
       try {
         await _transactionService.createWithWalletAdjustment(
           updatedTransaction,
@@ -269,7 +267,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       }
     }
   }
-  
+
   Widget _createActionButton() {
     return FloatingActionButton(
       backgroundColor: AppTheme.card,

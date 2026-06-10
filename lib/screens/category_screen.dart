@@ -57,7 +57,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
       }
 
       if (isEditing) {
-        debugPrint('WARNING: Edit kategori dimulai.');
         category.name = name;
         try {
           await _categoryService.update(category);
@@ -80,7 +79,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
           }
         }
       } else {
-        debugPrint('WARNING: Input kategori baru dimulai.');
         try {
           await _categoryService.create(Category(name: name));
           if (mounted) {
@@ -122,7 +120,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
         ),
       );
     }
-    debugPrint('WARNING: Penghapusan kategori dimulai.');
     try {
       await _categoryService.deleteWithTransactionHandling(
         id,
