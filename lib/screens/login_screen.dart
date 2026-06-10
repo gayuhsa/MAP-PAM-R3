@@ -132,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: _isLoading ? null : _login,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.button2,
+                  backgroundColor: AppTheme.editButton,
                   foregroundColor: AppTheme.textInverted,
                   padding: EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
