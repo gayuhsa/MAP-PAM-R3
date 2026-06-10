@@ -137,6 +137,11 @@ class _ModalState extends State<Modal> {
         keyboardType: _isNumericField(key)
             ? TextInputType.number
             : TextInputType.text,
+        textCapitalization: _isNumericField(key)
+            ? TextCapitalization.none
+            : key == 'Nama' || key == 'Nama Kategori'
+            ? TextCapitalization.words
+            : TextCapitalization.sentences,
         inputFormatters: _isNumericField(key)
             ? [FilteringTextInputFormatter.digitsOnly]
             : null,

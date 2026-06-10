@@ -6,6 +6,7 @@ import '../components/skeleton.dart';
 import '../models/wallet.dart';
 import '../services/wallet_service.dart';
 import '../theme.dart';
+import '../utils/string_utils.dart';
 
 class WalletsScreen extends StatefulWidget {
   const WalletsScreen({super.key});
@@ -36,11 +37,26 @@ class _WalletsScreenState extends State<WalletsScreen> {
     );
 
     if (isConfirmed == true) {
-      final String name = fields['Nama']!.text.trim();
+      final String name = normalizeEntityName(fields['Nama']!.text);
       final double balance =
           double.tryParse(fields['Jumlah']!.text.trim()) ?? 0.0;
 
       if (name.isEmpty) return;
+
+      if (await _walletService.existsWithName(
+        name,
+        excludeId: isEditing ? wallet?.id : null,
+      )) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Dompet dengan nama "$name" telah dibuat.'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+        return;
+      }
 
       if (isEditing) {
         final shouldSave = await showConfirmationDialog(

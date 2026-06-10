@@ -6,6 +6,7 @@ import '../components/skeleton.dart';
 import '../models/category.dart';
 import '../services/category_service.dart';
 import '../theme.dart';
+import '../utils/string_utils.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({super.key});
@@ -38,9 +39,27 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
 
     if (isConfirmed == true) {
-      final String name = fields['Nama Kategori']!.text.trim();
+      final String name = normalizeEntityName(fields['Nama Kategori']!.text);
+      final String description = normalizeDescription(
+        fields['Keterangan']!.text,
+      );
 
       if (name.isEmpty) return;
+
+      if (await _categoryService.existsWithName(
+        name,
+        excludeId: isEditing ? category?.id : null,
+      )) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Kategori dengan nama "$name" telah dibuat.'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+        return;
+      }
 
       if (isEditing) {
         final shouldSave = await showConfirmationDialog(
@@ -63,7 +82,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
       if (isEditing) {
         category.name = name;
-        category.description = fields['Keterangan']!.text.trim();
+        category.description = description;
         try {
           await _categoryService.update(category);
           if (mounted) {
@@ -74,8 +93,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               ),
             );
           }
-        } 
-        catch (_) {
+        } catch (_) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -85,14 +103,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
             );
           }
         }
-      } 
-
-      else {
+      } else {
         try {
-          await _categoryService.create(Category(
-            name: name,
-            description: fields['Keterangan']!.text.trim(),
-          ));
+          await _categoryService.create(
+            Category(name: name, description: description),
+          );
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -101,8 +116,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               ),
             );
           }
-        } 
-        catch (_) {
+        } catch (_) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -147,8 +161,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           ),
         );
       }
-    } 
-    catch (_) {
+    } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

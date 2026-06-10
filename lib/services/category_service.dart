@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rxdart/rxdart.dart';
 import '../models/category.dart';
+import '../utils/string_utils.dart';
 import 'transaction_service.dart';
 
 class CategoryService {
@@ -19,7 +20,15 @@ class CategoryService {
   }
 
   Future<void> create(Category category) async {
+    category.name = normalizeEntityName(category.name);
+    category.description = normalizeDescription(category.description);
     await _db.add(category.toJson());
+  }
+
+  Future<bool> existsWithName(String name, {String? excludeId}) async {
+    final normalized = normalizeEntityName(name);
+    final snapshot = await _db.where('name', isEqualTo: normalized).get();
+    return snapshot.docs.any((doc) => excludeId == null || doc.id != excludeId);
   }
 
   Stream<List<Category>> getAllByUserId() {
@@ -39,6 +48,8 @@ class CategoryService {
   }
 
   Future<void> update(Category category) async {
+    category.name = normalizeEntityName(category.name);
+    category.description = normalizeDescription(category.description);
     await _db.doc(category.id).update(category.toJson());
   }
 

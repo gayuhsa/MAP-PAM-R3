@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rxdart/rxdart.dart';
 import '../models/wallet.dart';
+import '../utils/string_utils.dart';
 import 'transaction_service.dart';
 
 class WalletService {
@@ -19,7 +20,14 @@ class WalletService {
   }
 
   Future<void> create(Wallet wallet) async {
+    wallet.name = normalizeEntityName(wallet.name);
     await _db.add(wallet.toJson());
+  }
+
+  Future<bool> existsWithName(String name, {String? excludeId}) async {
+    final normalized = normalizeEntityName(name);
+    final snapshot = await _db.where('name', isEqualTo: normalized).get();
+    return snapshot.docs.any((doc) => excludeId == null || doc.id != excludeId);
   }
 
   Stream<List<Wallet>> getAllByUserId() {
@@ -39,6 +47,7 @@ class WalletService {
   }
 
   Future<void> update(Wallet wallet) async {
+    wallet.name = normalizeEntityName(wallet.name);
     await _db.doc(wallet.id).update(wallet.toJson());
   }
 
