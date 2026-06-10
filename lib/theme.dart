@@ -22,7 +22,6 @@ class AppTheme {
   static const Color editButton    = Color(0xFF4D6149);
   static const Color greyButton    = Color(0xFFF0F7F5);
 
-  // === THEME DATA ===
   static ThemeData get themeData => ThemeData(
     useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(
@@ -31,7 +30,6 @@ class AppTheme {
     ),
     scaffoldBackgroundColor: const Color(0xFFF0F7F5),
 
-    // AppBar
     appBarTheme: AppBarTheme(
       backgroundColor: Color(0xFF4d6149),
       foregroundColor: Colors.white,
@@ -43,29 +41,21 @@ class AppTheme {
       ),
     ),
 
-    // Bottom Nav
-    bottomAppBarTheme: const BottomAppBarThemeData(
-      color: Color(0xFF4d6149),
-    ),
+    bottomAppBarTheme: const BottomAppBarThemeData(color: Color(0xFF4d6149)),
 
-    // FAB
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: const Color(0xFF4d6149),
       foregroundColor: Colors.white,
     ),
 
-    // ElevatedButton
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF4d6149),
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     ),
 
-    // Card
     cardTheme: CardThemeData(
       color: Color(0xFF4d6149),
       elevation: 0,
@@ -75,7 +65,6 @@ class AppTheme {
       ),
     ),
 
-    // InputDecoration
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: const Color.fromARGB(255, 255, 255, 255),
@@ -93,10 +82,9 @@ class AppTheme {
       ),
     ),
 
-    // Teks default
     textTheme: const TextTheme(
       bodyMedium: TextStyle(color: Color(0xFF4d6149)),
       bodyLarge: TextStyle(color: Color(0xFF4d6149)),
     ),
   );
-} 
+}

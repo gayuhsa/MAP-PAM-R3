@@ -21,7 +21,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
     final isEditing = category != null;
 
     final Map<String, TextEditingController> fields = {
-      'Nama Kategori': TextEditingController(text: isEditing ? category.name : ''),
+      'Nama Kategori': TextEditingController(
+        text: isEditing ? category.name : '',
+      ),
     };
 
     final bool? isConfirmed = await showDialog(

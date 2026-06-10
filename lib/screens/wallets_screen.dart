@@ -160,82 +160,76 @@ class _WalletsScreenState extends State<WalletsScreen> {
   }
 
   @override
-Widget build(BuildContext context) {
-  return Skeleton(
-    title: 'Dompet',
-    actionButton: _createActionButton(),
-    content: StreamBuilder<List<Wallet>>(
-      stream: _walletService.getAllByUserId(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text('Terjadi error. Coba lagi nanti.'));
-        }
+  Widget build(BuildContext context) {
+    return Skeleton(
+      title: 'Dompet',
+      actionButton: _createActionButton(),
+      content: StreamBuilder<List<Wallet>>(
+        stream: _walletService.getAllByUserId(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Terjadi error. Coba lagi nanti.'));
+          }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
 
-        final docs = snapshot.data ?? [];
+          final docs = snapshot.data ?? [];
 
-        if (docs.isEmpty) {
-          return Center(child: Text('Belum ada dompet.'));
-        }
+          if (docs.isEmpty) {
+            return Center(child: Text('Belum ada dompet.'));
+          }
 
-        // Hitung total saldo semua dompet
-        final double totalBalance = docs.fold(0, (sum, w) => sum + w.balance);
+          final double totalBalance = docs.fold(0, (sum, w) => sum + w.balance);
 
-        return Column(
-          children: [
-            // Summary Card
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.all(12),
-              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-              decoration: BoxDecoration(
-                color: AppTheme.button2, 
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Total Saldo',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 13,
+          return Column(
+            children: [
+              Container(
+                width: double.infinity,
+                margin: EdgeInsets.all(12),
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                decoration: BoxDecoration(
+                  color: AppTheme.button2,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Total Saldo',
+                      style: TextStyle(color: Colors.white70, fontSize: 13),
                     ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Rp ${totalBalance.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (m) => '${m[1]}.')}',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                    SizedBox(height: 4),
+                    Text(
+                      'Rp ${totalBalance.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (m) => '${m[1]}.')}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-
-            // List Dompet
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                itemCount: docs.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final doc = docs[index];
-                  return WalletCard(
-                    wallet: doc,
-                    modalCallback: _showWalletModal,
-                    deleteCallback: _deleteWallet,
-                  );
-                },
+              Expanded(
+                child: ListView.builder(
+                  padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  itemCount: docs.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final doc = docs[index];
+                    return WalletCard(
+                      wallet: doc,
+                      modalCallback: _showWalletModal,
+                      deleteCallback: _deleteWallet,
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
-        );
-      },
-    ),
-  );
-}}
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
