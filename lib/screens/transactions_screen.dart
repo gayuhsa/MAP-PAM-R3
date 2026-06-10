@@ -272,6 +272,24 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     }
   }
 
+  DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month);
+
+  String _formatMonth(DateTime date) {
+    return DateFormat('MMMM yyyy', 'id').format(date);
+  }
+
+  void _previousMonth() {
+    setState(() {
+      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month - 1);
+    });
+  }
+
+  void _nextMonth() {
+    setState(() {
+      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month + 1);
+    });
+  }
+
   Widget _createActionButton() {
     return FloatingActionButton(
       backgroundColor: AppTheme.button2,
@@ -306,31 +324,113 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             return Center(child: CircularProgressIndicator());
           }
 
-          final docs = snapshot.data ?? [];
+          final allDocs = snapshot.data ?? [];
 
-          if (docs.isEmpty) {
-            return Center(child: Text('Belum ada transaksi.'));
-          }
+final docs = allDocs.where((t) {
+  return t.dateTime.year == _selectedMonth.year &&
+      t.dateTime.month == _selectedMonth.month;
+}).toList();
 
-          return ListView.builder(
-            padding: EdgeInsets.all(12),
-            itemCount: docs.length,
-            itemBuilder: (BuildContext context, int index) {
-              final doc = docs[index];
+final totalIncome = docs
+    .where((t) => t.type == 'INCOME')
+    .fold(0.0, (sum, t) => sum + t.amount);
+final totalExpense = docs
+    .where((t) => t.type == 'EXPENSE')
+    .fold(0.0, (sum, t) => sum + t.amount);
 
-              return Padding(
-                padding: EdgeInsets.only(bottom: 12),
-                child: BTransactionCard(
-                  transaction: doc,
-                  modalCallback: ({BTransaction? transaction}) =>
-                      _showTransactionModal(transaction: transaction),
-                  deleteCallback: _deleteTransaction,
-                ),
-              );
-            },
-          );
-        },
+String formatRp(double amount) {
+  return 'Rp ${amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (m) => '${m[1]}.')}';
+}
+
+return Column(
+  children: [
+    Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            onPressed: _previousMonth,
+            icon: Icon(Icons.chevron_left),
+          ),
+          Text(
+            _formatMonth(_selectedMonth),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          IconButton(
+            onPressed: _nextMonth,
+            icon: Icon(Icons.chevron_right),
+          ),
+        ],
+      ),
+    ),
+    Padding(
+      padding: EdgeInsets.fromLTRB(12, 0, 12, 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppTheme.chipIncome,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Pemasukan', style: TextStyle(fontSize: 12)),
+                  SizedBox(height: 4),
+                  Text(formatRp(totalIncome),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(width: 8),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppTheme.chipExpense,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Pengeluaran', style: TextStyle(fontSize: 12)),
+                  SizedBox(height: 4),
+                  Text(formatRp(totalExpense),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+    Expanded(
+      child: docs.isEmpty
+          ? Center(child: Text('Belum ada transaksi bulan ini.'))
+          : ListView.builder(
+              padding: EdgeInsets.all(12),
+              itemCount: docs.length,
+              itemBuilder: (BuildContext context, int index) {
+                final doc = docs[index];
+                return Padding(
+                  padding: EdgeInsets.only(bottom: 12),
+                  child: BTransactionCard(
+                    transaction: doc,
+                    modalCallback: ({BTransaction? transaction}) =>
+                        _showTransactionModal(transaction: transaction),
+                    deleteCallback: _deleteTransaction,
+                  ),
+                );
+              },),
+            ),
+          ],
+        );},
       ),
     );
   }
 }
+      
