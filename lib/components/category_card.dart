@@ -106,7 +106,9 @@ class _CategoryCardState extends State<CategoryCard> {
                         ),
                         SizedBox(height: 6),
                         Text(
-                          'Ringkasan transaksi kategori',
+                          widget.category.description.isNotEmpty
+                              ? widget.category.description
+                              : 'Belum ada deskripsi',
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 13,

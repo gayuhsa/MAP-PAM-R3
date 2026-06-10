@@ -24,6 +24,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
       'Nama Kategori': TextEditingController(
         text: isEditing ? category.name : '',
       ),
+      'Keterangan': TextEditingController(
+        text: isEditing ? category.description : '',
+      ),
     };
 
     final bool? isConfirmed = await showDialog(
@@ -60,6 +63,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
       if (isEditing) {
         category.name = name;
+        category.description = fields['Keterangan']!.text.trim();
         try {
           await _categoryService.update(category);
           if (mounted) {
@@ -70,7 +74,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
               ),
             );
           }
-        } catch (_) {
+        } 
+        catch (_) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -80,9 +85,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
             );
           }
         }
-      } else {
+      } 
+
+      else {
         try {
-          await _categoryService.create(Category(name: name));
+          await _categoryService.create(Category(
+            name: name,
+            description: fields['Keterangan']!.text.trim(),
+          ));
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -91,7 +101,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
               ),
             );
           }
-        } catch (_) {
+        } 
+        catch (_) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -136,7 +147,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
           ),
         );
       }
-    } catch (_) {
+    } 
+    catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
