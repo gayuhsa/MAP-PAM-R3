@@ -22,24 +22,59 @@ class Skeleton extends StatelessWidget {
         target.runtimeType.toString()) {
       return;
     }
-
     Navigator.push(context, MaterialPageRoute(builder: (context) => target));
+  }
+
+  Widget _navItem(BuildContext context, IconData icon, String label, Widget screen) {
+    final isActive = title == label;
+    return GestureDetector(
+      onTap: () => _navigateTo(context, screen),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            decoration: BoxDecoration(
+              color: isActive ? AppTheme.button.withOpacity(0.15) : Colors.transparent,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(
+              icon,
+              color: isActive ? AppTheme.button : Colors.grey[500],
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+              color: isActive ? AppTheme.button : Colors.grey[500],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+<<<<<<< HEAD
         backgroundColor: AppTheme.bottomBar,
         title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+=======
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+>>>>>>> 97872e2 (ubah tema jd teal)
       ),
       resizeToAvoidBottomInset: false,
-      body: Container(color: AppTheme.background, child: content),
+      body: content,
       bottomNavigationBar: BottomAppBar(
-        color: AppTheme.bottomBar,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+<<<<<<< HEAD
             GestureDetector(
               onTap: () {
                 _navigateTo(context, CategoryScreen());
@@ -192,6 +227,12 @@ class Skeleton extends StatelessWidget {
                 ],
               ),
             ),
+=======
+            _navItem(context, Icons.category, 'Kategori', const CategoryScreen()),
+            _navItem(context, Icons.wallet, 'Dompet', const WalletsScreen()),
+            _navItem(context, Icons.money, 'Transaksi', const TransactionsScreen()),
+            _navItem(context, Icons.settings, 'Setelan', const SettingsScreen()),
+>>>>>>> 97872e2 (ubah tema jd teal)
           ],
         ),
       ),

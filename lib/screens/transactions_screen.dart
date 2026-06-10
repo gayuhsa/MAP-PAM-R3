@@ -224,6 +224,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   }
 
   Future<void> _deleteTransaction(String id) async {
+<<<<<<< HEAD
     final confirmDelete = await showConfirmationDialog(
       context,
       title: 'Konfirmasi Hapus',
@@ -232,6 +233,14 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       cancelLabel: 'Batal',
     );
     if (!confirmDelete) return;
+=======
+    print('DELETE ID: $id'); 
+    if (id.isEmpty) return;
+
+    try {
+      final allTx = await _transactionService.getAllByUserId().first;
+      final tx = allTx.where((t) => t.id == id).firstOrNull;
+>>>>>>> 97872e2 (ubah tema jd teal)
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
