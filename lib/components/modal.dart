@@ -92,6 +92,10 @@ class _ModalState extends State<Modal> {
                 initialSelection: state.value,
                 label: Text(key),
                 expandedInsets: EdgeInsets.zero,
+                inputDecorationTheme: const InputDecorationTheme(
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
                 dropdownMenuEntries: options.map((DropdownOptions option) {
                   return DropdownMenuEntry<String>(
                     value: option.id,
@@ -165,8 +169,10 @@ class _ModalState extends State<Modal> {
 
   String? _hintFor(String key) {
     switch (key) {
-      case 'Nama':
+      case 'Nama Kategori':
         return 'Contoh: Konsumsi';
+      case 'Nama':
+        return 'Contoh: BCA';
       case 'Jumlah':
         return 'Contoh: 150000';
       case 'Keterangan':
