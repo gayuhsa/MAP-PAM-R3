@@ -88,6 +88,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       'Jenis': TextEditingController(
         text: isEditing ? transaction.type : 'EXPENSE',
       ),
+      'Keterangan': TextEditingController( 
+        text: isEditing ? transaction.note : '',
+      ),
     };
 
     final bool? isConfirmed = await showDialog(
@@ -141,6 +144,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       amount: amount,
       dateTime: dateTime,
       type: type,
+      note: fields['Keterangan']!.text.trim(),
     );
 
     if (isEditing) {

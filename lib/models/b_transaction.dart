@@ -6,7 +6,8 @@ class BTransaction {
   String categoryId;
   double amount;
   DateTime dateTime;
-  String type; // 'INCOME' or 'EXPENSE'
+  String type; 
+  String note; 
 
   BTransaction({
     this.id,
@@ -15,6 +16,7 @@ class BTransaction {
     required this.amount,
     required this.dateTime,
     required this.type,
+     this.note = '',
   });
 
   static double _parseDouble(dynamic value) {
@@ -54,6 +56,7 @@ class BTransaction {
       amount: _parseDouble(json['amount']),
       dateTime: parsedDate,
       type: (json['type'] as String?)?.toUpperCase() ?? 'EXPENSE',
+      note: json['note'] ?? '',
     );
   }
 
@@ -64,6 +67,7 @@ class BTransaction {
       'amount': amount,
       'dateTime': Timestamp.fromDate(dateTime),
       'type': type,
+      'note': note,
     };
   }
 }

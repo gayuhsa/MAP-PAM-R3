@@ -191,21 +191,24 @@ class _ModalState extends State<Modal> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.title),
-      content: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: widget.fields.entries.map((entry) {
-              final controller = entry.value;
+      content: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: widget.fields.entries.map((entry) {
+                final controller = entry.value;
 
-              if (_isDropdownField(entry.key)) {
-                return _buildDropdownField(entry.key, controller);
-              }
+                if (_isDropdownField(entry.key)) {
+                  return _buildDropdownField(entry.key, controller);
+                }
 
-              return _buildTextField(entry.key, controller);
-            }).toList(),
+                return _buildTextField(entry.key, controller);
+              }).toList(),
+            ),
           ),
         ),
       ),

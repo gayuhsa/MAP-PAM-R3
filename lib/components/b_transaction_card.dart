@@ -190,9 +190,17 @@ class _BTransactionCardState extends State<BTransactionCard> {
                 ),
               ),
 
+              if (widget.transaction.note.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4, bottom: 4),
+                  child: Text(
+                    widget.transaction.note,
+                    style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                  ),
+                ),
               SizedBox(height: 10),
               Divider(color: AppTheme.cardBorder, height: 1),
-              SizedBox(height: 10),
+
               Row(
                 children: [
                   Expanded(
