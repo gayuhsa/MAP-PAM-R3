@@ -25,7 +25,12 @@ class Skeleton extends StatelessWidget {
     Navigator.push(context, MaterialPageRoute(builder: (context) => target));
   }
 
-  Widget _navItem(BuildContext context, IconData icon, String label, Widget screen) {
+  Widget _navItem(
+    BuildContext context,
+    IconData icon,
+    String label,
+    Widget screen,
+  ) {
     final isActive = title == label;
     return GestureDetector(
       onTap: () => _navigateTo(context, screen),
@@ -35,7 +40,9 @@ class Skeleton extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             decoration: BoxDecoration(
-              color: isActive ? AppTheme.button.withOpacity(0.15) : Colors.transparent,
+              color: isActive
+                  ? AppTheme.button.withOpacity(0.15)
+                  : Colors.transparent,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
@@ -69,10 +76,10 @@ class Skeleton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _navItem(context, Icons.category, 'Kategori', const CategoryScreen()),
-            _navItem(context, Icons.wallet, 'Dompet', const WalletsScreen()),
-            _navItem(context, Icons.money, 'Transaksi', const TransactionsScreen()),
-            _navItem(context, Icons.settings, 'Setelan', const SettingsScreen()),
+            _navItem(context, Icons.category, 'Kategori', CategoryScreen()),
+            _navItem(context, Icons.wallet, 'Dompet', WalletsScreen()),
+            _navItem(context, Icons.money, 'Transaksi', TransactionsScreen()),
+            _navItem(context, Icons.settings, 'Setelan', SettingsScreen()),
           ],
         ),
       ),

@@ -24,13 +24,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: AppTheme.background,
 
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           backgroundColor: Color(0xFF0D5C52),
           foregroundColor: AppTheme.textInverted,
           elevation: 0,
         ),
 
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
           backgroundColor: AppTheme.bottomBar,
           selectedItemColor: AppTheme.button,
           unselectedItemColor: Color(0xFF9E9E9E),
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
           elevation: 8,
         ),
 
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: AppTheme.button,
           foregroundColor: AppTheme.textInverted,
         ),
