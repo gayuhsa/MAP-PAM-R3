@@ -224,7 +224,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   }
 
   Future<void> _deleteTransaction(String id) async {
-<<<<<<< HEAD
+    if (id.isEmpty) return;
+
     final confirmDelete = await showConfirmationDialog(
       context,
       title: 'Konfirmasi Hapus',
@@ -233,26 +234,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       cancelLabel: 'Batal',
     );
     if (!confirmDelete) return;
-=======
-    print('DELETE ID: $id'); 
-    if (id.isEmpty) return;
-
-    try {
-      final allTx = await _transactionService.getAllByUserId().first;
-      final tx = allTx.where((t) => t.id == id).firstOrNull;
->>>>>>> 97872e2 (ubah tema jd teal)
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'Peringatan: sedang memproses penghapusan transaksi...',
-          ),
+          content: Text('Sedang memproses penghapusan transaksi...'),
           backgroundColor: Colors.orange,
         ),
       );
     }
-    debugPrint('WARNING: Penghapusan transaksi $id dimulai.');
     try {
       final tx = await _transactionService.getById(id);
       if (tx != null) {
@@ -260,7 +250,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       } else {
         await _transactionService.delete(id);
       }
-
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -280,7 +269,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       }
     }
   }
-
+  
   Widget _createActionButton() {
     return FloatingActionButton(
       backgroundColor: AppTheme.card,
