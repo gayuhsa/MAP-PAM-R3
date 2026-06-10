@@ -18,6 +18,8 @@ class AppTheme {
   static const Color button        = Color(0xFFD8E1D7);
   static const Color button2       = Color(0xFF759470);
   static const Color buttonDanger  = Color(0xFFB83A3C);
+  static const Color buttonInactive = Color.fromARGB(119, 255, 255, 255);
+  static const Color buttonTextInactive = Color.fromARGB(166, 255, 255, 255);
   static const Color trashButton   = Color(0xFFB83A3C);
   static const Color editButton    = Color(0xFF4D6149);
   static const Color greyButton    = Color(0xFFF0F7F5);
