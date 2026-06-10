@@ -24,5 +24,4 @@ class AppTheme {
   static const Color trashButton = Color(0xFFB83A3C);
   static const Color editButton = Color(0xFF90CF8E);
   static const Color greyButton = Color(0xFFD5F5E5);
-
 }

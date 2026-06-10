@@ -6,6 +6,7 @@ import '../models/wallet.dart';
 import '../services/category_service.dart';
 import '../services/wallet_service.dart';
 import '../theme.dart';
+import 'card_chip.dart';
 
 class BTransactionCard extends StatefulWidget {
   final BTransaction transaction;
@@ -148,27 +149,20 @@ class _BTransactionCardState extends State<BTransactionCard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: typeBg,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(typeIcon, size: 14, color: typeColor),
-                        SizedBox(width: 4),
-                        Text(
-                          typeLabel,
-                          style: TextStyle(
-                            color: typeColor,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
+                  CardChip(
+                    backgroundColor: typeBg,
+                    children: [
+                      Icon(typeIcon, size: 14, color: typeColor),
+                      SizedBox(width: 4),
+                      Text(
+                        typeLabel,
+                        style: TextStyle(
+                          color: typeColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   Row(
                     children: [
