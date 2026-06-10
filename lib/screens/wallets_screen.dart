@@ -22,7 +22,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
 
     final Map<String, TextEditingController> fields = {
       'Nama': TextEditingController(text: isEditing ? wallet.name : ''),
-      'Isi': TextEditingController(
+      'Jumlah': TextEditingController(
         text: isEditing ? '${wallet.balance}' : null,
       ),
     };
@@ -37,7 +37,8 @@ class _WalletsScreenState extends State<WalletsScreen> {
 
     if (isConfirmed == true) {
       final String name = fields['Nama']!.text.trim();
-      final double balance = double.tryParse(fields['Isi']!.text.trim()) ?? 0.0;
+      final double balance =
+          double.tryParse(fields['Jumlah']!.text.trim()) ?? 0.0;
 
       if (name.isEmpty) return;
 
