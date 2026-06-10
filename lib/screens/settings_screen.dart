@@ -129,7 +129,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: ElevatedButton(
                 onPressed: _updateProfile,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.button,
+                  backgroundColor: AppTheme.button2,
                   foregroundColor: AppTheme.textInverted,
                   padding: EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(

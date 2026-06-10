@@ -152,8 +152,8 @@ class _WalletsScreenState extends State<WalletsScreen> {
 
   Widget _createActionButton() {
     return FloatingActionButton(
-      backgroundColor: AppTheme.card,
-      foregroundColor: AppTheme.text,
+      backgroundColor: AppTheme.button2,
+      foregroundColor: AppTheme.textInverted,
       onPressed: () => _showWalletModal(),
       child: Icon(Icons.add),
     );

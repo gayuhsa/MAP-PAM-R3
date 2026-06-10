@@ -148,8 +148,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   Widget _createActionButton() {
     return FloatingActionButton(
-      backgroundColor: AppTheme.card,
-      foregroundColor: AppTheme.text,
+      backgroundColor: AppTheme.button2,
+      foregroundColor: AppTheme.textInverted,
       onPressed: () => _showCategoryModal(),
       child: Icon(Icons.add),
     );

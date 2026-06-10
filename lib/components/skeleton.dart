@@ -40,7 +40,7 @@ class Skeleton extends StatelessWidget {
             ),
             child: Icon(
               icon,
-              color: isActive ? AppTheme.button : Colors.grey[500],
+              color: isActive ? AppTheme.button : const Color.fromARGB(119, 255, 255, 255),
             ),
           ),
           const SizedBox(height: 4),
@@ -49,7 +49,7 @@ class Skeleton extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-              color: isActive ? AppTheme.button : Colors.grey[500],
+              color: isActive ? AppTheme.button : const Color.fromARGB(166, 255, 255, 255),
             ),
           ),
         ],

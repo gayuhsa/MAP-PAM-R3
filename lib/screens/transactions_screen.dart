@@ -274,8 +274,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   Widget _createActionButton() {
     return FloatingActionButton(
-      backgroundColor: AppTheme.card,
-      foregroundColor: AppTheme.text,
+      backgroundColor: AppTheme.button2,
+      foregroundColor: AppTheme.textInverted,
       onPressed: () => _showTransactionModal(),
       child: Icon(Icons.add),
     );
