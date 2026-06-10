@@ -160,7 +160,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ElevatedButton(
                 onPressed: _isLoading ? null : _signup,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.button,
+                  backgroundColor: AppTheme.button2,
                   foregroundColor: AppTheme.textInverted,
                   padding: EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
@@ -193,7 +193,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       TextSpan(
                         text: "Masuk.",
                         style: TextStyle(
-                          color: AppTheme.button,
+                          color: AppTheme.button2,
                           fontWeight: FontWeight.bold,
                         ),
                         recognizer: TapGestureRecognizer()

@@ -132,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: _isLoading ? null : _login,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.button,
+                  backgroundColor: AppTheme.button2,
                   foregroundColor: AppTheme.textInverted,
                   padding: EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
@@ -165,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextSpan(
                         text: "Daftar.",
                         style: TextStyle(
-                          color: AppTheme.button,
+                          color: AppTheme.button2,
                           fontWeight: FontWeight.bold,
                         ),
                         recognizer: TapGestureRecognizer()
