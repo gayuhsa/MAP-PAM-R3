@@ -88,13 +88,13 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.authContainer,
       resizeToAvoidBottomInset: false,
       body: Center(
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(32),
-            color: AppTheme.authContainer,
+            color: AppTheme.background,
           ),
           margin: EdgeInsets.fromLTRB(32, 0, 32, 0),
           padding: EdgeInsets.all(32),
