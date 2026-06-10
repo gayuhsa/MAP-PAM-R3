@@ -192,7 +192,7 @@ Widget build(BuildContext context) {
               margin: EdgeInsets.all(12),
               padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
               decoration: BoxDecoration(
-                color: AppTheme.bottomBar,
+                color: AppTheme.button, 
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
