@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class AppTheme {
   // === WARNA DASAR ===
   static const Color background    = Color(0xFFF0F7F5);
-  static const Color container     = Color(0xFFFFFFFF);
+  static const Color container     = Color(0xFFF0F7F5);
   static const Color subcontainer  = Color(0xFFF4F6F8);
   static const Color bottomBar     = Color(0xFFFFFFFF);
   static const Color card          = Color(0xFFD8E1D7);
   static const Color cardBorder    = Color(0xFFE0E0E0);
   static const Color chipExpense   = Color(0xFFE09698);
   static const Color chipIncome    = Color(0xFF99b096);
-  static const Color authContainer = Color(0xFFFFFFFF);
+  static const Color authContainer = Color(0xFFF8F9F8);
   static const Color authTextBox   = Color(0xFFFFFFFF);
   static const Color inputField    = Color(0xFFF0F7F5);
   static const Color text          = Color(0xFF21291F);
