@@ -1,28 +1,26 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // === WARNA DASAR ===
-  static const Color background    = Color(0xFFF0F7F5);
-  static const Color container     = Color(0xFFFFFFFF);
-  static const Color subcontainer  = Color(0xFFF4F6F8);
-  static const Color bottomBar     = Color(0xFFFFFFFF);
-  static const Color card          = Color(0xFFD8E1D7);
-  static const Color cardBorder    = Color(0xFFE0E0E0);
-  static const Color chipExpense   = Color(0xFFF2A6A6);
-  static const Color chipIncome    = Color(0xFFB0C1AD);
+  static const Color background = Color(0xFFF0F7F5);
+  static const Color container = Color(0xFFFFFFFF);
+  static const Color subcontainer = Color(0xFFF4F6F8);
+  static const Color bottomBar = Color(0xFFFFFFFF);
+  static const Color card = Color(0xFFD8E1D7);
+  static const Color cardBorder = Color(0xFFE0E0E0);
+  static const Color chipExpense = Color(0xFFF2A6A6);
+  static const Color chipIncome = Color(0xFFB0C1AD);
   static const Color authContainer = Color(0xFFFFFFFF);
-  static const Color authTextBox   = Color(0xFFFFFFFF);
-  static const Color inputField    = Color(0xFFF0F7F5);
-  static const Color text          = Color(0xFF21291F);
-  static const Color textInverted  = Colors.white;
-  static const Color button        = Color(0xFFD8E1D7);
-  static const Color button2       = Color(0xFF42533F);
-  static const Color buttonDanger  = Color(0xFFB83A3C);
-  static const Color trashButton   = Color(0xFFB83A3C);
-  static const Color editButton    = Color(0xFF4D6149);
-  static const Color greyButton    = Color(0xFFF0F7F5);
+  static const Color authTextBox = Color(0xFFFFFFFF);
+  static const Color inputField = Color(0xFFF0F7F5);
+  static const Color text = Color(0xFF21291F);
+  static const Color textInverted = Colors.white;
+  static const Color button = Color(0xFFD8E1D7);
+  static const Color button2 = Color(0xFF42533F);
+  static const Color buttonDanger = Color(0xFFB83A3C);
+  static const Color trashButton = Color(0xFFB83A3C);
+  static const Color editButton = Color(0xFF4D6149);
+  static const Color greyButton = Color(0xFFF0F7F5);
 
-  // === THEME DATA ===
   static ThemeData get themeData => ThemeData(
     useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(
@@ -31,7 +29,6 @@ class AppTheme {
     ),
     scaffoldBackgroundColor: const Color(0xFFF0F7F5),
 
-    // AppBar
     appBarTheme: AppBarTheme(
       backgroundColor: Color(0xFF4d6149),
       foregroundColor: Colors.white,
@@ -43,29 +40,21 @@ class AppTheme {
       ),
     ),
 
-    // Bottom Nav
-    bottomAppBarTheme: const BottomAppBarThemeData(
-      color: Color(0xFF4d6149),
-    ),
+    bottomAppBarTheme: const BottomAppBarThemeData(color: Color(0xFF4d6149)),
 
-    // FAB
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: const Color(0xFF4d6149),
       foregroundColor: Colors.white,
     ),
 
-    // ElevatedButton
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF4d6149),
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     ),
 
-    // Card
     cardTheme: CardThemeData(
       color: Color(0xFF4d6149),
       elevation: 0,
@@ -75,7 +64,6 @@ class AppTheme {
       ),
     ),
 
-    // InputDecoration
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: const Color.fromARGB(255, 255, 255, 255),
@@ -93,10 +81,9 @@ class AppTheme {
       ),
     ),
 
-    // Teks default
     textTheme: const TextTheme(
       bodyMedium: TextStyle(color: Color(0xFF4d6149)),
       bodyLarge: TextStyle(color: Color(0xFF4d6149)),
     ),
   );
-} 
+}
