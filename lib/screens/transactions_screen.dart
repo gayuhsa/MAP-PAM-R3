@@ -88,7 +88,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       'Jenis': TextEditingController(
         text: isEditing ? transaction.type : 'EXPENSE',
       ),
-      'Keterangan': TextEditingController( 
+      'Keterangan': TextEditingController(
         text: isEditing ? transaction.note : '',
       ),
     };
