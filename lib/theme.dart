@@ -57,7 +57,7 @@ class AppTheme {
     // ElevatedButton
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF0D5C52),
+        backgroundColor: const Color(0xFF4d6149),
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
@@ -95,8 +95,8 @@ class AppTheme {
 
     // Teks default
     textTheme: const TextTheme(
-      bodyMedium: TextStyle(color: Color(0xFF1C2D42)),
-      bodyLarge: TextStyle(color: Color(0xFF1C2D42)),
+      bodyMedium: TextStyle(color: Color(0xFF4d6149)),
+      bodyLarge: TextStyle(color: Color(0xFF4d6149)),
     ),
   );
 } 
