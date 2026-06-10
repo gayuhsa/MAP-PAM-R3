@@ -116,8 +116,8 @@ class _BTransactionCardState extends State<BTransactionCard> {
   Widget build(BuildContext context) {
     final bool isIncome = widget.transaction.type.toUpperCase() == 'INCOME';
     final Color typeColor = isIncome
-        ? AppTheme.chipIncome
-        : AppTheme.chipExpense;
+        ? AppTheme.chipTextIncome
+        : AppTheme.chipTextExpense;
     final Color typeBg = isIncome
         ? AppTheme.chipIncome.withOpacity(0.12)
         : AppTheme.chipExpense.withOpacity(0.12);
