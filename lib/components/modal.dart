@@ -28,10 +28,7 @@ class _ModalState extends State<Modal> {
   }
 
   bool _isNumericField(String key) {
-    return key == 'Isi' ||
-        key == 'Jumlah' ||
-        key == 'Jumlah Total' ||
-        key == 'Volume';
+    return key == 'Isi' || key == 'Jumlah';
   }
 
   bool _isDateField(String key) {
@@ -39,7 +36,7 @@ class _ModalState extends State<Modal> {
   }
 
   bool _isOptionalField(String key) {
-    return key == 'Bukti Pengeluaran' || key == 'Keterangan';
+    return key == 'Keterangan';
   }
 
   String? _validateField(String key, String? value) {
@@ -170,16 +167,10 @@ class _ModalState extends State<Modal> {
     switch (key) {
       case 'Nama':
         return 'Contoh: Konsumsi';
-      case 'Volume':
-        return 'Contoh: 10';
-      case 'Satuan':
-        return 'Contoh: kg, buah, unit';
-      case 'Jumlah Total':
+      case 'Jumlah':
         return 'Contoh: 150000';
       case 'Keterangan':
         return 'Keterangan tambahan...';
-      case 'Bukti Pengeluaran':
-        return 'Nama file / URL bukti';
       case 'Isi':
         return 'Contoh: 50000';
       default:
