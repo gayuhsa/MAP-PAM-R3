@@ -83,8 +83,8 @@ class _CategoryCardState extends State<CategoryCard> {
             border: Border.all(color: AppTheme.cardBorder, width: 2),
             borderRadius: BorderRadius.circular(16),
           ),
-          margin: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-          padding: const EdgeInsets.all(14),
+          margin: EdgeInsets.fromLTRB(0, 0, 0, 8),
+          padding: EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -99,12 +99,12 @@ class _CategoryCardState extends State<CategoryCard> {
                       children: [
                         Text(
                           widget.category.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        SizedBox(height: 6),
                         Text(
                           'Ringkasan transaksi kategori',
                           style: TextStyle(
@@ -116,7 +116,7 @@ class _CategoryCardState extends State<CategoryCard> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.edit),
+                    icon: Icon(Icons.edit),
                     style: IconButton.styleFrom(
                       backgroundColor: AppTheme.editButton,
                       foregroundColor: AppTheme.textInverted,
@@ -127,9 +127,9 @@ class _CategoryCardState extends State<CategoryCard> {
                     onPressed: () =>
                         widget.modalCallback(category: widget.category),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   IconButton(
-                    icon: const Icon(Icons.delete),
+                    icon: Icon(Icons.delete),
                     style: IconButton.styleFrom(
                       backgroundColor: AppTheme.trashButton,
                       foregroundColor: AppTheme.textInverted,
@@ -142,32 +142,32 @@ class _CategoryCardState extends State<CategoryCard> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
-              const Divider(height: 1),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
+              Divider(height: 1),
+              SizedBox(height: 12),
               Row(
                 children: [
                   Expanded(
                     child: CardChip(
                       backgroundColor: AppTheme.chipIncome,
                       children: [
-                        const Icon(Icons.trending_up, size: 16),
+                        Icon(Icons.trending_up, size: 16),
                         Text(
                           _formatCurrency(income),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: CardChip(
                       backgroundColor: AppTheme.chipExpense,
                       children: [
-                        const Icon(Icons.trending_down, size: 16),
+                        Icon(Icons.trending_down, size: 16),
                         Text(
                           _formatCurrency(expense),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),

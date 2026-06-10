@@ -55,7 +55,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     if (validWallets.isEmpty || validCategories.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Pastikan ada dompet dan kategori terlebih dahulu.'),
             backgroundColor: Colors.red,
           ),
@@ -91,7 +91,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     };
 
     final bool? isConfirmed = await showDialog(
-      // ignore: use_build_context_synchronously
       context: context,
       builder: (context) => Modal(
         title: isEditing ? 'Edit Transaksi' : 'Tambah Transaksi',
@@ -125,7 +124,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         dateTime == null) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
               'Isi semua field dengan benar: dompet, kategori, tanggal, dan jumlah > 0.',
             ),
@@ -154,7 +153,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
               'Peringatan: sedang memproses perubahan transaksi...',
             ),
@@ -170,7 +169,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         );
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Text('Transaksi berhasil diubah!'),
               backgroundColor: Colors.green,
             ),
@@ -189,7 +188,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
               'Peringatan: sedang memproses penambahan transaksi...',
             ),
@@ -205,7 +204,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Text('Transaksi berhasil ditambah!'),
               backgroundColor: Colors.green,
             ),
@@ -236,7 +235,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
             'Peringatan: sedang memproses penghapusan transaksi...',
           ),
@@ -255,7 +254,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Transaksi berhasil dihapus!'),
             backgroundColor: Colors.green,
           ),
@@ -320,7 +319,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               final doc = docs[index];
 
               return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
+                padding: EdgeInsets.only(bottom: 12),
                 child: BTransactionCard(
                   transaction: doc,
                   modalCallback: ({BTransaction? transaction}) =>

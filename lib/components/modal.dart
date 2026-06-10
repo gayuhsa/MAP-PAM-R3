@@ -30,8 +30,8 @@ class _ModalState extends State<Modal> {
   bool _isNumericField(String key) {
     return key == 'Isi' ||
         key == 'Jumlah' ||
-        key == 'Jumlah Total' || // ← BARU
-        key == 'Volume'; // ← BARU
+        key == 'Jumlah Total' ||
+        key == 'Volume';
   }
 
   bool _isDateField(String key) {
@@ -78,7 +78,7 @@ class _ModalState extends State<Modal> {
     final options = widget.dropdownFields![key]!;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: 8),
       child: FormField<String>(
         initialValue: controller.text.isNotEmpty ? controller.text : null,
         validator: (value) {
@@ -110,7 +110,7 @@ class _ModalState extends State<Modal> {
               ),
               if (state.hasError)
                 Padding(
-                  padding: const EdgeInsets.only(top: 4),
+                  padding: EdgeInsets.only(top: 4),
                   child: Text(
                     state.errorText!,
                     style: TextStyle(color: Colors.red.shade700, fontSize: 12),
@@ -127,7 +127,7 @@ class _ModalState extends State<Modal> {
     final isMultiline = key == 'Keterangan';
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         controller: controller,
         readOnly: _isDateField(key),
@@ -141,12 +141,10 @@ class _ModalState extends State<Modal> {
             : null,
 
         decoration: InputDecoration(
-          labelText: _isOptionalField(key) ? '$key (opsional)' : key, // ← BARU
-          hintText: _hintFor(key), // ← BARU
-          border: const OutlineInputBorder(),
-          suffixIcon: _isDateField(key)
-              ? const Icon(Icons.calendar_today)
-              : null,
+          labelText: _isOptionalField(key) ? '$key (opsional)' : key,
+          hintText: _hintFor(key),
+          border: OutlineInputBorder(),
+          suffixIcon: _isDateField(key) ? Icon(Icons.calendar_today) : null,
         ),
         validator: (value) => _validateField(key, value),
         onTap: _isDateField(key)
@@ -213,13 +211,13 @@ class _ModalState extends State<Modal> {
       ),
       actions: [
         TextButton(
-          child: const Text('Batal'),
+          child: Text('Batal'),
           onPressed: () {
             Navigator.of(context).pop(false);
           },
         ),
         ElevatedButton(
-          child: const Text('Konfirmasi'),
+          child: Text('Konfirmasi'),
           onPressed: () {
             final isValid = _formKey.currentState?.validate() ?? false;
             if (isValid) {

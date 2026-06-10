@@ -49,7 +49,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Peringatan: sedang memproses kategori...'),
             backgroundColor: Colors.orange,
           ),
@@ -63,7 +63,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           await _categoryService.update(category);
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
+              SnackBar(
                 content: Text('Kategori berhasil diubah!'),
                 backgroundColor: Colors.green,
               ),
@@ -72,7 +72,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         } catch (_) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
+              SnackBar(
                 content: Text('Gagal mengubah kategori!'),
                 backgroundColor: Colors.red,
               ),
@@ -85,7 +85,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           await _categoryService.create(Category(name: name));
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
+              SnackBar(
                 content: Text('Kategori berhasil ditambah!'),
                 backgroundColor: Colors.green,
               ),
@@ -94,7 +94,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         } catch (_) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
+              SnackBar(
                 content: Text('Gagal menambah kategori!'),
                 backgroundColor: Colors.red,
               ),
@@ -116,7 +116,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Peringatan: sedang memproses penghapusan kategori...'),
           backgroundColor: Colors.orange,
         ),
@@ -131,7 +131,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Kategori berhasil dihapus!'),
             backgroundColor: Colors.green,
           ),
@@ -140,7 +140,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Gagal menghapus kategori!'),
             backgroundColor: Colors.red,
           ),

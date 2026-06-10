@@ -53,7 +53,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Peringatan: sedang memproses dompet...'),
             backgroundColor: Colors.orange,
           ),
@@ -68,7 +68,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
           await _walletService.update(wallet);
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
+              SnackBar(
                 content: Text('Dompet berhasil diubah!'),
                 backgroundColor: Colors.green,
               ),
@@ -77,7 +77,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
         } catch (_) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
+              SnackBar(
                 content: Text('Gagal mengubah dompet!'),
                 backgroundColor: Colors.red,
               ),
@@ -90,7 +90,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
           await _walletService.create(Wallet(name: name, balance: balance));
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
+              SnackBar(
                 content: Text('Dompet berhasil ditambah!'),
                 backgroundColor: Colors.green,
               ),
@@ -99,7 +99,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
         } catch (_) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
+              SnackBar(
                 content: Text('Gagal menambah dompet!'),
                 backgroundColor: Colors.red,
               ),
@@ -120,7 +120,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Peringatan: sedang memproses penghapusan dompet...'),
           backgroundColor: Colors.orange,
         ),
@@ -135,7 +135,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
       );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Dompet berhasil dihapus!'),
             backgroundColor: Colors.green,
           ),
@@ -144,7 +144,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Gagal menghapus dompet!'),
             backgroundColor: Colors.red,
           ),

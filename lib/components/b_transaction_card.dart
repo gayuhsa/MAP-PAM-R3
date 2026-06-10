@@ -118,9 +118,7 @@ class _BTransactionCardState extends State<BTransactionCard> {
         ? AppTheme.chipIncome
         : AppTheme.chipExpense;
     final Color typeBg = isIncome
-        // ignore: deprecated_member_use
         ? AppTheme.chipIncome.withOpacity(0.12)
-        // ignore: deprecated_member_use
         : AppTheme.chipExpense.withOpacity(0.12);
     final IconData typeIcon = isIncome
         ? Icons.arrow_downward_rounded
