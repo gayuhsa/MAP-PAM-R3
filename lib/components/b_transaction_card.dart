@@ -174,7 +174,7 @@ class _BTransactionCardState extends State<BTransactionCard> {
                       SizedBox(width: 4),
                       Text(
                         formattedDate,
-                        style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                        style: TextStyle(color: Colors.grey[600], fontSize: 12),
                       ),
                     ],
                   ),
@@ -199,7 +199,8 @@ class _BTransactionCardState extends State<BTransactionCard> {
                   ),
                 ),
               SizedBox(height: 10),
-              Divider(color: AppTheme.cardBorder, height: 1),
+              Divider(height: 1),
+              SizedBox(height: 10),
 
               Row(
                 children: [
@@ -279,7 +280,7 @@ class _InfoItem extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 15, color: Colors.grey[500]),
+        Icon(icon, size: 15, color: Colors.grey[600]),
         SizedBox(width: 6),
         Expanded(
           child: Column(
@@ -287,7 +288,7 @@ class _InfoItem extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: TextStyle(color: Colors.grey[500], fontSize: 15),
+                style: TextStyle(color: Colors.grey[600], fontSize: 15),
               ),
               Text(
                 value,
