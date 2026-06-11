@@ -97,11 +97,11 @@ class AuthService {
     }
   }
 
-  /// Cek apakah email sudah terverifikasi
+  bool isEmailVerified() {
     return _auth.currentUser?.emailVerified ?? false;
   }
 
-  /// Refresh user data untuk update status verifikasi email
+  Future<void> refreshUser() async {
     try {
       await _auth.currentUser?.reload();
     } catch (e) {
@@ -109,7 +109,7 @@ class AuthService {
     }
   }
 
-  /// Kirim ulang email verifikasi
+  Future<void> resendEmailVerification() async {
     try {
       User? user = _auth.currentUser;
       if (user != null && !user.emailVerified) {
