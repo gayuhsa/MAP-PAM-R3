@@ -203,113 +203,117 @@ class _WalletsScreenState extends State<WalletsScreen> {
     return Skeleton(
       title: 'Dompet',
       actionButton: _createActionButton(),
-      content: StreamBuilder<List<Wallet>>(
-        stream: _walletService.getAllByUserId(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text('Terjadi error. Coba lagi nanti.'));
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          final docs = snapshot.data ?? [];
-
-          if (docs.isEmpty) {
-            return Center(child: Text('Belum ada dompet.'));
-          }
-
-          final filteredDocs = docs.where((wallet) {
-            final query = _searchQuery.toLowerCase();
-            return wallet.name.toLowerCase().contains(query) ||
-                wallet.description.toLowerCase().contains(query);
-          }).toList();
-
-          final double totalBalance = filteredDocs.fold(
-            0,
-            (sum, w) => sum + w.balance,
-          );
-
-          return Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    hintText: 'Cari dompet berdasarkan nama atau keterangan...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 0,
-                    ),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      _searchQuery = value.trim();
-                    });
-                  },
-                ),
-              ),
-              SizedBox(height: 12),
-              Container(
-                width: double.infinity,
-                margin: EdgeInsets.all(12),
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-                decoration: BoxDecoration(
-                  color: AppTheme.button2,
+      content: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                hintText: 'Cari dompet berdasarkan nama atau keterangan...',
+                border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Total Saldo',
-                      style: TextStyle(color: Colors.white70, fontSize: 13),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Rp ${totalBalance.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (m) => '${m[1]}.')}',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 0,
                 ),
               ),
-              Expanded(
-                child: filteredDocs.isEmpty
-                    ? Center(child: Text('Tidak ada dompet yang cocok.'))
-                    : ListView.builder(
-                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                        itemCount: filteredDocs.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final doc = filteredDocs[index];
-                          return WalletCard(
-                            wallet: doc,
-                            modalCallback: _showWalletModal,
-                            deleteCallback: _deleteWallet,
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      WalletSummaryScreen(wallet: doc),
-                                ),
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value.trim();
+                });
+              },
+            ),
+          ),
+          SizedBox(height: 12),
+          StreamBuilder<List<Wallet>>(
+            stream: _walletService.getAllByUserId(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(child: Text('Terjadi error. Coba lagi nanti.'));
+              }
+
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              final docs = snapshot.data ?? [];
+
+              if (docs.isEmpty) {
+                return Center(child: Text('Belum ada dompet.'));
+              }
+
+              final filteredDocs = docs.where((wallet) {
+                final query = _searchQuery.toLowerCase();
+                return wallet.name.toLowerCase().contains(query) ||
+                    wallet.description.toLowerCase().contains(query);
+              }).toList();
+
+              final double totalBalance = filteredDocs.fold(
+                0,
+                (sum, w) => sum + w.balance,
+              );
+
+              return Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.all(12),
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: AppTheme.button2,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Total Saldo',
+                          style: TextStyle(color: Colors.white70, fontSize: 13),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'Rp ${totalBalance.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (m) => '${m[1]}.')}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: filteredDocs.isEmpty
+                        ? Center(child: Text('Tidak ada dompet yang cocok.'))
+                        : ListView.builder(
+                            padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                            itemCount: filteredDocs.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final doc = filteredDocs[index];
+                              return WalletCard(
+                                wallet: doc,
+                                modalCallback: _showWalletModal,
+                                deleteCallback: _deleteWallet,
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          WalletSummaryScreen(wallet: doc),
+                                    ),
+                                  );
+                                },
                               );
                             },
-                          );
-                        },
-                      ),
-              ),
-            ],
-          );
-        },
+                          ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
     );
   }
