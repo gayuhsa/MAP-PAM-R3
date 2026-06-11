@@ -197,56 +197,54 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return Skeleton(
       title: 'Kategori',
       actionButton: _createActionButton(),
-      content: StreamBuilder<List<Category>>(
-        stream: _categoryService.getAllByUserId(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text('Terjadi error. Coba lagi nanti.'));
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          final docs = snapshot.data ?? [];
-
-          if (docs.isEmpty) {
-            return Center(child: Text('Belum ada kategori.'));
-          }
-
-          final filteredDocs = docs.where((category) {
-            final query = _searchQuery.toLowerCase();
-            return category.name.toLowerCase().contains(query) ||
-                category.description.toLowerCase().contains(query);
-          }).toList();
-
-          return Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    hintText:
-                        'Cari kategori berdasarkan nama atau keterangan...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 0,
-                    ),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      _searchQuery = value.trim();
-                    });
-                  },
+      content: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                hintText: 'Cari kategori berdasarkan nama atau keterangan...',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 0,
                 ),
               ),
-              SizedBox(height: 12),
-              Expanded(
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value.trim();
+                });
+              },
+            ),
+          ),
+          StreamBuilder<List<Category>>(
+            stream: _categoryService.getAllByUserId(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(child: Text('Terjadi error. Coba lagi nanti.'));
+              }
+
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              final docs = snapshot.data ?? [];
+
+              if (docs.isEmpty) {
+                return Center(child: Text('Belum ada kategori.'));
+              }
+
+              final filteredDocs = docs.where((category) {
+                final query = _searchQuery.toLowerCase();
+                return category.name.toLowerCase().contains(query) ||
+                    category.description.toLowerCase().contains(query);
+              }).toList();
+
+              return Expanded(
                 child: filteredDocs.isEmpty
                     ? Center(child: Text('Tidak ada kategori yang cocok.'))
                     : ListView.builder(
@@ -270,10 +268,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           );
                         },
                       ),
-              ),
-            ],
-          );
-        },
+              );
+            },
+          ),
+        ],
       ),
     );
   }
