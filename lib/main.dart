@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'screens/category_screen.dart';
 import 'screens/signup_screen.dart';
+import 'screens/email_verification_screen.dart';
 import 'firebase_options.dart';
 import 'theme.dart';
 
@@ -29,7 +30,14 @@ class MyApp extends StatelessWidget {
             return Scaffold(body: Center(child: CircularProgressIndicator()));
           }
           if (snapshot.hasData) {
-            return CategoryScreen();
+            User? user = snapshot.data;
+            // Jika email sudah terverifikasi, buka CategoryScreen
+            if (user?.emailVerified ?? false) {
+              return CategoryScreen();
+            } else {
+              // Jika email belum terverifikasi, buka EmailVerificationScreen
+              return EmailVerificationScreen(email: user?.email ?? '');
+            }
           }
           return SignupScreen();
         },

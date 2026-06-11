@@ -3,8 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  AuthService() {
+    _auth.setLanguageCode('id');
+  }
+
   Stream<User?> get authStateChanges => _auth.authStateChanges();
   String? get currentUserId => _auth.currentUser?.uid;
+  User? get currentUser => _auth.currentUser;
 
   Future<User?> signUpWithEmail(String email, String password) async {
     try {
@@ -66,7 +71,6 @@ class AuthService {
     return _auth.currentUser?.email ?? '';
   }
 
-  /// Validasi email format menggunakan regex pattern
   bool validateEmailFormat(String email) {
     final emailRegex = RegExp(
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
@@ -74,10 +78,43 @@ class AuthService {
     return emailRegex.hasMatch(email.trim());
   }
 
-  /// Kirim email untuk reset password
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email.trim().toLowerCase());
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> sendEmailVerification() async {
+    try {
+      User? user = _auth.currentUser;
+      if (user != null && !user.emailVerified) {
+        await user.sendEmailVerification();
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  /// Cek apakah email sudah terverifikasi
+    return _auth.currentUser?.emailVerified ?? false;
+  }
+
+  /// Refresh user data untuk update status verifikasi email
+    try {
+      await _auth.currentUser?.reload();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  /// Kirim ulang email verifikasi
+    try {
+      User? user = _auth.currentUser;
+      if (user != null && !user.emailVerified) {
+        await user.sendEmailVerification();
+      }
     } catch (e) {
       throw Exception(e.toString());
     }
