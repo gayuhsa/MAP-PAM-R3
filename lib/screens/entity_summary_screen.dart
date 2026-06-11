@@ -467,9 +467,7 @@ class _EntitySummaryScreenState extends State<EntitySummaryScreen> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       child: Center(
-                        child: Text(
-                          'Tidak ada transaksi untuk ringkasan ini.',
-                        ),
+                        child: Text('Tidak ada transaksi untuk ringkasan ini.'),
                       ),
                     ),
                     SizedBox(height: 12),
@@ -484,13 +482,10 @@ class _EntitySummaryScreenState extends State<EntitySummaryScreen> {
                         final transaction = filteredTransactions[index];
                         final otherName = widget.summaryForWallet
                             ? (otherNames[transaction.categoryId] ??
-                                'Kategori tidak ditemukan')
+                                  'Kategori tidak ditemukan')
                             : (otherNames[transaction.walletId] ??
-                                'Dompet tidak ditemukan');
-                        return _buildTransactionItem(
-                          transaction,
-                          otherName,
-                        );
+                                  'Dompet tidak ditemukan');
+                        return _buildTransactionItem(transaction, otherName);
                       },
                     ),
                     SizedBox(height: 12),
