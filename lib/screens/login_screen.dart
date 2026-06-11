@@ -49,8 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } catch (e) {
-      final errorMessage = e.toString();
-      _showErrorDialog(errorMessage);
+      _showErrorDialog(e.toString());
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -76,94 +75,103 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.authContainer,
-      resizeToAvoidBottomInset: false,
       body: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(32),
-            color: AppTheme.background,
-          ),
-          margin: EdgeInsets.fromLTRB(32, 0, 32, 0),
-          padding: EdgeInsets.all(32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Masuk",
-                style: TextStyle(
-                  color: AppTheme.text,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+        child: SingleChildScrollView(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(32),
+              color: AppTheme.background,
+            ),
+            margin: EdgeInsets.symmetric(horizontal: 32),
+            padding: EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'image/nomi2.png',
+                  width: 100,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 16),
-              Text(
-                "Email",
-                style: TextStyle(
-                  color: AppTheme.text,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.left,
-              ),
-              AuthTextBox(
-                controller: emailController,
-                hintText: "Email",
-                obscureText: false,
-              ),
-              SizedBox(height: 16),
-              Text(
-                "Password",
-                style: TextStyle(
-                  color: AppTheme.text,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.left,
-              ),
-              AuthTextBox(
-                controller: passwordController,
-                hintText: "Password",
-                obscureText: true,
-              ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _login,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.editButton,
-                  foregroundColor: AppTheme.textInverted,
-                  padding: EdgeInsets.all(16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+
+                SizedBox(height: 2),
+
+                Text(
+                  "Masuk",
+                  style: TextStyle(
+                    color: AppTheme.text,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                child: _isLoading
-                    ? SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(),
-                      )
-                    : Text(
-                        "Masuk",
-                        style: TextStyle(
-                          color: AppTheme.textInverted,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-              ),
-              SizedBox(height: 16),
-              Center(
-                child: RichText(
+
+                SizedBox(height: 24),
+
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Email",
+                    style: TextStyle(
+                      color: AppTheme.text,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
+                AuthTextBox(
+                  controller: emailController,
+                  hintText: "Email",
+                  obscureText: false,
+                ),
+
+                SizedBox(height: 16),
+
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Password",
+                    style: TextStyle(
+                      color: AppTheme.text,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
+                AuthTextBox(
+                  controller: passwordController,
+                  hintText: "Password",
+                  obscureText: true,
+                ),
+
+                SizedBox(height: 20),
+
+                ElevatedButton(
+                  onPressed: _isLoading ? null : _login,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.editButton,
+                    foregroundColor: AppTheme.textInverted,
+                    padding: EdgeInsets.all(16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: _isLoading
+                      ? SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(),
+                        )
+                      : Text("Masuk"),
+                ),
+
+                SizedBox(height: 16),
+
+                RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
-                    style: TextStyle(color: AppTheme.text, fontSize: 16),
+                    style: TextStyle(color: AppTheme.text),
                     children: [
-                      TextSpan(text: "Belum memiliki akun? "),
+                      TextSpan(text: "Belum punya akun? "),
                       TextSpan(
-                        text: "Daftar.",
+                        text: "Daftar",
                         style: TextStyle(
                           color: AppTheme.button2,
                           fontWeight: FontWeight.bold,
@@ -181,8 +189,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
