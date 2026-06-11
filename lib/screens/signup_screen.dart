@@ -194,7 +194,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         width: 20,
                         child: CircularProgressIndicator(
                           color: AppTheme.textInverted,
-                          strokeWidth: 2,
                         ),
                       )
                     : Text(

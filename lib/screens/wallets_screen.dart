@@ -205,7 +205,6 @@ class _WalletsScreenState extends State<WalletsScreen> {
       actionButton: _createActionButton(),
       content: Column(
         children: [
-          // ✅ Search bar di luar StreamBuilder — langsung muncul saat loading
           Padding(
             padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
             child: TextField(
