@@ -65,4 +65,21 @@ class AuthService {
   String getCurrentUserEmail() {
     return _auth.currentUser?.email ?? '';
   }
+
+  /// Validasi email format menggunakan regex pattern
+  bool validateEmailFormat(String email) {
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    return emailRegex.hasMatch(email.trim());
+  }
+
+  /// Kirim email untuk reset password
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email.trim().toLowerCase());
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }
