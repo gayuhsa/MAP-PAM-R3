@@ -4,68 +4,98 @@ import 'package:email_validator/email_validator.dart';
 import '../components/auth_text_box.dart';
 import '../services/auth_service.dart';
 import '../theme.dart';
-import 'category_screen.dart';
-import 'signup_screen.dart';
-import 'forgot_password_screen.dart';
+import 'login_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class ForgotPasswordScreen extends StatefulWidget {
+  const ForgotPasswordScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
   final AuthService _authService = AuthService();
-
   bool _isLoading = false;
+  bool _emailSent = false;
 
-  void _login() async {
-    if (emailController.text.trim().isEmpty ||
-        passwordController.text.trim().isEmpty) {
-      _showErrorDialog("Email dan password tidak boleh kosong.");
+  Future<void> _sendResetEmail() async {
+    final email = emailController.text.trim();
+
+    // Validasi input kosong
+    if (email.isEmpty) {
+      _showErrorDialog("Email tidak boleh kosong.");
       return;
     }
 
-    if (!EmailValidator.validate(emailController.text)) {
-      _showErrorDialog("Email tidak valid.");
+    // Validasi format email
+    if (!EmailValidator.validate(email)) {
+      _showErrorDialog("Format email tidak valid.");
       return;
     }
 
     setState(() => _isLoading = true);
 
     try {
-      await _authService.signInWithEmail(
-        emailController.text.trim(),
-        passwordController.text,
-      );
+      // Kirim email reset password
+      await _authService.sendPasswordResetEmail(email);
 
-      if (mounted) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => CategoryScreen()),
-          (route) => false,
-        );
-      }
+      setState(() => _emailSent = true);
+
+      _showSuccessDialog(
+        "Email Telah Dikirim",
+        "Jika email Anda terdaftar di sistem kami, Anda akan menerima email dengan instruksi untuk mengatur ulang password.",
+      );
     } catch (e) {
-      _showErrorDialog(e.toString());
+      _showErrorDialog(_extractErrorMessage(e.toString()));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  String _extractErrorMessage(String error) {
+    if (error.contains("user-not-found")) {
+      return "Email tidak terdaftar di sistem kami.";
+    } else if (error.contains("invalid-email")) {
+      return "Format email tidak valid.";
+    } else if (error.contains("too-many-requests")) {
+      return "Terlalu banyak percobaan. Silakan coba beberapa saat lagi.";
+    }
+    return error;
   }
 
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Gagal Masuk"),
+        title: Text("Gagal"),
         content: Text(message),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showSuccessDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+              );
+            },
+            child: Text("Kembali ke Login"),
           ),
         ],
       ),
@@ -89,86 +119,40 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Image.asset('image/nomi2.png', width: 100),
-
-                SizedBox(height: 2),
-
+                SizedBox(height: 16),
                 Text(
-                  "Masuk",
+                  "Lupa Password",
                   style: TextStyle(
                     color: AppTheme.text,
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
+                SizedBox(height: 12),
+                Text(
+                  "Masukkan email Anda untuk menerima link reset password",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: AppTheme.text, fontSize: 14),
+                ),
                 SizedBox(height: 24),
-
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     "Email",
                     style: TextStyle(
                       color: AppTheme.text,
-                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-
                 AuthTextBox(
                   controller: emailController,
                   hintText: "Email",
                   obscureText: false,
                 ),
-
-                SizedBox(height: 16),
-
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Password",
-                    style: TextStyle(
-                      color: AppTheme.text,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-
-                AuthTextBox(
-                  controller: passwordController,
-                  hintText: "Password",
-                  obscureText: true,
-                ),
-
-                SizedBox(height: 8),
-
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ForgotPasswordScreen(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Lupa Password?",
-                      style: TextStyle(
-                        color: AppTheme.button2,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: 12),
-
+                SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _isLoading ? null : _login,
+                  onPressed: _isLoading ? null : _sendResetEmail,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.editButton,
                     foregroundColor: AppTheme.textInverted,
@@ -182,29 +166,23 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 20,
                           width: 20,
                           child: CircularProgressIndicator(
-                             color: AppTheme.textInverted,
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppTheme.textInverted,
+                            ),
                           ),
                         )
-                      : Text(
-                        "Masuk",
-                        style: TextStyle(
-                          color: AppTheme.textInverted,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
+                      : Text("Kirim Email Reset"),
                 ),
-
                 SizedBox(height: 16),
-
                 RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
-                    style: TextStyle(color: AppTheme.text, fontSize: 16),
+                    style: TextStyle(color: AppTheme.text),
                     children: [
-                      TextSpan(text: "Belum memiliki akun? "),
+                      TextSpan(text: "Sudah ingat password? "),
                       TextSpan(
-                        text: "Daftar",
+                        text: "Kembali ke Login",
                         style: TextStyle(
                           color: AppTheme.button2,
                           fontWeight: FontWeight.bold,
@@ -214,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => SignupScreen(),
+                                builder: (context) => LoginScreen(),
                               ),
                             );
                           },
@@ -228,5 +206,11 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    super.dispose();
   }
 }
