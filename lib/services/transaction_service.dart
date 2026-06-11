@@ -81,18 +81,37 @@ class TransactionService {
     if (user == null) {
       return Stream.error('User belum login!');
     }
-    return _db
-        .where('walletId', isEqualTo: walletId)
-        .orderBy('dateTime', descending: true)
-        .snapshots()
-        .map((snapshot) {
-          return snapshot.docs.map((doc) {
-            return BTransaction.fromJson(
-              doc.data() as Map<String, dynamic>,
-              doc.id,
-            );
-          }).toList();
-        });
+    return _db.where('walletId', isEqualTo: walletId).snapshots().map((
+      snapshot,
+    ) {
+      final transactions = snapshot.docs.map((doc) {
+        return BTransaction.fromJson(
+          doc.data() as Map<String, dynamic>,
+          doc.id,
+        );
+      }).toList();
+      transactions.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+      return transactions;
+    });
+  }
+
+  Stream<List<BTransaction>> getByCategory(String categoryId) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return Stream.error('User belum login!');
+    }
+    return _db.where('categoryId', isEqualTo: categoryId).snapshots().map((
+      snapshot,
+    ) {
+      final transactions = snapshot.docs.map((doc) {
+        return BTransaction.fromJson(
+          doc.data() as Map<String, dynamic>,
+          doc.id,
+        );
+      }).toList();
+      transactions.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+      return transactions;
+    });
   }
 
   Future<void> update(BTransaction transaction) async {

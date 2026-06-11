@@ -4,6 +4,7 @@ import '../components/modal.dart';
 import '../components/wallet_card.dart';
 import '../components/skeleton.dart';
 import '../models/wallet.dart';
+import '../screens/wallet_summary_screen.dart';
 import '../services/wallet_service.dart';
 import '../theme.dart';
 import '../utils/string_utils.dart';
@@ -17,12 +18,23 @@ class WalletsScreen extends StatefulWidget {
 
 class _WalletsScreenState extends State<WalletsScreen> {
   final WalletService _walletService = WalletService();
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   void _showWalletModal({Wallet? wallet}) async {
     final isEditing = wallet != null;
 
     final Map<String, TextEditingController> fields = {
       'Nama': TextEditingController(text: isEditing ? wallet.name : ''),
+      'Keterangan': TextEditingController(
+        text: isEditing ? wallet.description : '',
+      ),
       'Jumlah': TextEditingController(
         text: isEditing ? '${wallet.balance}' : null,
       ),
@@ -79,6 +91,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
 
       if (isEditing) {
         wallet.name = name;
+        wallet.description = fields['Keterangan']!.text.trim();
         wallet.balance = balance;
         try {
           await _walletService.update(wallet);
@@ -102,7 +115,13 @@ class _WalletsScreenState extends State<WalletsScreen> {
         }
       } else {
         try {
-          await _walletService.create(Wallet(name: name, balance: balance));
+          await _walletService.create(
+            Wallet(
+              name: name,
+              description: fields['Keterangan']!.text.trim(),
+              balance: balance,
+            ),
+          );
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -198,10 +217,42 @@ class _WalletsScreenState extends State<WalletsScreen> {
             return Center(child: Text('Belum ada dompet.'));
           }
 
-          final double totalBalance = docs.fold(0, (sum, w) => sum + w.balance);
+          final filteredDocs = docs.where((wallet) {
+            final query = _searchQuery.toLowerCase();
+            return wallet.name.toLowerCase().contains(query) ||
+                wallet.description.toLowerCase().contains(query);
+          }).toList();
+
+          final double totalBalance = filteredDocs.fold(
+            0,
+            (sum, w) => sum + w.balance,
+          );
 
           return Column(
             children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                    hintText: 'Cari dompet berdasarkan nama atau keterangan...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 0,
+                    ),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value.trim();
+                    });
+                  },
+                ),
+              ),
+              SizedBox(height: 12),
               Container(
                 width: double.infinity,
                 margin: EdgeInsets.all(12),
@@ -230,18 +281,28 @@ class _WalletsScreenState extends State<WalletsScreen> {
                 ),
               ),
               Expanded(
-                child: ListView.builder(
-                  padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                  itemCount: docs.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final doc = docs[index];
-                    return WalletCard(
-                      wallet: doc,
-                      modalCallback: _showWalletModal,
-                      deleteCallback: _deleteWallet,
-                    );
-                  },
-                ),
+                child: filteredDocs.isEmpty
+                    ? Center(child: Text('Tidak ada dompet yang cocok.'))
+                    : ListView.builder(
+                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                        itemCount: filteredDocs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final doc = filteredDocs[index];
+                          return WalletCard(
+                            wallet: doc,
+                            modalCallback: _showWalletModal,
+                            deleteCallback: _deleteWallet,
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      WalletSummaryScreen(wallet: doc),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
               ),
             ],
           );

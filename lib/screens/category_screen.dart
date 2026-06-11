@@ -4,6 +4,7 @@ import '../components/confirmation_dialog.dart';
 import '../components/modal.dart';
 import '../components/skeleton.dart';
 import '../models/category.dart';
+import '../screens/category_summary_screen.dart';
 import '../services/category_service.dart';
 import '../theme.dart';
 import '../utils/string_utils.dart';
@@ -17,6 +18,14 @@ class CategoryScreen extends StatefulWidget {
 
 class _CategoryScreenState extends State<CategoryScreen> {
   final CategoryService _categoryService = CategoryService();
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   void _showCategoryModal({Category? category}) async {
     final isEditing = category != null;
@@ -204,18 +213,64 @@ class _CategoryScreenState extends State<CategoryScreen> {
             return Center(child: Text('Belum ada kategori.'));
           }
 
-          return ListView.builder(
-            padding: EdgeInsets.all(8),
-            itemCount: docs.length,
-            itemBuilder: (BuildContext context, int index) {
-              final doc = docs[index];
+          final filteredDocs = docs.where((category) {
+            final query = _searchQuery.toLowerCase();
+            return category.name.toLowerCase().contains(query) ||
+                category.description.toLowerCase().contains(query);
+          }).toList();
 
-              return CategoryCard(
-                category: doc,
-                modalCallback: _showCategoryModal,
-                deleteCallback: _deleteCategory,
-              );
-            },
+          return Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                    hintText:
+                        'Cari kategori berdasarkan nama atau keterangan...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 0,
+                    ),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value.trim();
+                    });
+                  },
+                ),
+              ),
+              SizedBox(height: 12),
+              Expanded(
+                child: filteredDocs.isEmpty
+                    ? Center(child: Text('Tidak ada kategori yang cocok.'))
+                    : ListView.builder(
+                        padding: EdgeInsets.all(8),
+                        itemCount: filteredDocs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final doc = filteredDocs[index];
+
+                          return CategoryCard(
+                            category: doc,
+                            modalCallback: _showCategoryModal,
+                            deleteCallback: _deleteCategory,
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      CategorySummaryScreen(category: doc),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+              ),
+            ],
           );
         },
       ),

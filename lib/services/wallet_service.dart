@@ -21,6 +21,7 @@ class WalletService {
 
   Future<void> create(Wallet wallet) async {
     wallet.name = normalizeEntityName(wallet.name);
+    wallet.description = normalizeDescription(wallet.description);
     await _db.add(wallet.toJson());
   }
 
@@ -48,6 +49,7 @@ class WalletService {
 
   Future<void> update(Wallet wallet) async {
     wallet.name = normalizeEntityName(wallet.name);
+    wallet.description = normalizeDescription(wallet.description);
     await _db.doc(wallet.id).update(wallet.toJson());
   }
 

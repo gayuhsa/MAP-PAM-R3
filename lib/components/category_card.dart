@@ -9,12 +9,14 @@ class CategoryCard extends StatefulWidget {
   final Category category;
   final void Function({Category? category}) modalCallback;
   final void Function(String) deleteCallback;
+  final VoidCallback? onTap;
 
   const CategoryCard({
     super.key,
     required this.category,
     required this.modalCallback,
     required this.deleteCallback,
+    this.onTap,
   });
 
   @override
@@ -77,106 +79,110 @@ class _CategoryCardState extends State<CategoryCard> {
         final income = snapshot.data?['income'] ?? 0;
         final expense = snapshot.data?['expense'] ?? 0;
 
-        return Container(
-          decoration: BoxDecoration(
-            color: AppTheme.card,
-            border: Border.all(color: AppTheme.cardBorder, width: 2),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 8),
-          padding: EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          widget.category.name,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+        return InkWell(
+          onTap: widget.onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppTheme.card,
+              border: Border.all(color: AppTheme.cardBorder, width: 2),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 8),
+            padding: EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            widget.category.name,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 6),
-                        Text(
-                          widget.category.description.isNotEmpty
-                              ? widget.category.description
-                              : 'Belum ada deskripsi',
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 13,
+                          SizedBox(height: 6),
+                          Text(
+                            widget.category.description.isNotEmpty
+                                ? widget.category.description
+                                : 'Belum ada deskripsi',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 13,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.edit),
-                    style: IconButton.styleFrom(
-                      backgroundColor: AppTheme.editButton,
-                      foregroundColor: AppTheme.textInverted,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        ],
                       ),
                     ),
-                    onPressed: () =>
-                        widget.modalCallback(category: widget.category),
-                  ),
-                  SizedBox(width: 8),
-                  IconButton(
-                    icon: Icon(Icons.delete),
-                    style: IconButton.styleFrom(
-                      backgroundColor: AppTheme.trashButton,
-                      foregroundColor: AppTheme.textInverted,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                    IconButton(
+                      icon: Icon(Icons.edit),
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppTheme.editButton,
+                        foregroundColor: AppTheme.textInverted,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () =>
+                          widget.modalCallback(category: widget.category),
+                    ),
+                    SizedBox(width: 8),
+                    IconButton(
+                      icon: Icon(Icons.delete),
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppTheme.trashButton,
+                        foregroundColor: AppTheme.textInverted,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () =>
+                          widget.deleteCallback(widget.category.id ?? ''),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 12),
+                Divider(height: 1),
+                SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CardChip(
+                        backgroundColor: AppTheme.chipIncome,
+                        children: [
+                          Icon(Icons.trending_up, size: 16),
+                          Text(
+                            _formatCurrency(income),
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
                     ),
-                    onPressed: () =>
-                        widget.deleteCallback(widget.category.id ?? ''),
-                  ),
-                ],
-              ),
-              SizedBox(height: 12),
-              Divider(height: 1),
-              SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: CardChip(
-                      backgroundColor: AppTheme.chipIncome,
-                      children: [
-                        Icon(Icons.trending_up, size: 16),
-                        Text(
-                          _formatCurrency(income),
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: CardChip(
+                        backgroundColor: AppTheme.chipExpense,
+                        children: [
+                          Icon(Icons.trending_down, size: 16),
+                          Text(
+                            _formatCurrency(expense),
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: CardChip(
-                      backgroundColor: AppTheme.chipExpense,
-                      children: [
-                        Icon(Icons.trending_down, size: 16),
-                        Text(
-                          _formatCurrency(expense),
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },

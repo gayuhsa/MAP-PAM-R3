@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:myapp/models/category.dart';
+import 'package:myapp/models/wallet.dart';
 import '../components/b_transaction_card.dart';
 import '../components/confirmation_dialog.dart';
 import '../components/modal.dart';
@@ -22,6 +24,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   final CategoryService _categoryService = CategoryService();
   final TransactionService _transactionService = TransactionService();
   final WalletService _walletService = WalletService();
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   static const List<DropdownOptions> _typeOptions = [
     DropdownOptions(id: 'INCOME', name: 'Pemasukan'),
@@ -272,22 +276,40 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     }
   }
 
-  DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month);
-
-  String _formatMonth(DateTime date) {
-    return DateFormat('MMMM yyyy', 'id').format(date);
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
-  void _previousMonth() {
-    setState(() {
-      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month - 1);
-    });
-  }
+  bool _matchesSearch(
+    BTransaction transaction,
+    String query,
+    Map<String, String> walletNames,
+    Map<String, String> categoryNames,
+  ) {
+    if (query.isEmpty) return true;
 
-  void _nextMonth() {
-    setState(() {
-      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month + 1);
-    });
+    final lowerQuery = query.toLowerCase();
+    final walletName = walletNames[transaction.walletId] ?? '';
+    final categoryName = categoryNames[transaction.categoryId] ?? '';
+    final note = transaction.note.toLowerCase();
+    final dateText = DateFormat(
+      'dd MMM yyyy',
+      'id_ID',
+    ).format(transaction.dateTime).toLowerCase();
+    final monthText = DateFormat(
+      'MMMM',
+      'id_ID',
+    ).format(transaction.dateTime).toLowerCase();
+    final yearText = transaction.dateTime.year.toString();
+
+    return walletName.toLowerCase().contains(lowerQuery) ||
+        categoryName.toLowerCase().contains(lowerQuery) ||
+        note.contains(lowerQuery) ||
+        dateText.contains(lowerQuery) ||
+        monthText.contains(lowerQuery) ||
+        yearText.contains(lowerQuery);
   }
 
   Widget _createActionButton() {
@@ -326,111 +348,175 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
           final allDocs = snapshot.data ?? [];
 
-final docs = allDocs.where((t) {
-  return t.dateTime.year == _selectedMonth.year &&
-      t.dateTime.month == _selectedMonth.month;
-}).toList();
+          return StreamBuilder<List<Wallet>>(
+            stream: _walletService.getAllByUserId(),
+            builder: (context, walletSnapshot) {
+              if (walletSnapshot.hasError) {
+                return Center(child: Text('Gagal memuat dompet.'));
+              }
+              if (!walletSnapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              }
 
-final totalIncome = docs
-    .where((t) => t.type == 'INCOME')
-    .fold(0.0, (sum, t) => sum + t.amount);
-final totalExpense = docs
-    .where((t) => t.type == 'EXPENSE')
-    .fold(0.0, (sum, t) => sum + t.amount);
+              final walletNames = {
+                for (final wallet in walletSnapshot.data!)
+                  wallet.id ?? '': wallet.name,
+              };
 
-String formatRp(double amount) {
-  return 'Rp ${amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (m) => '${m[1]}.')}';
-}
+              return StreamBuilder<List<Category>>(
+                stream: _categoryService.getAllByUserId(),
+                builder: (context, categorySnapshot) {
+                  if (categorySnapshot.hasError) {
+                    return Center(child: Text('Gagal memuat kategori.'));
+                  }
+                  if (!categorySnapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  }
 
-return Column(
-  children: [
-    Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            onPressed: _previousMonth,
-            icon: Icon(Icons.chevron_left),
-          ),
-          Text(
-            _formatMonth(_selectedMonth),
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-          IconButton(
-            onPressed: _nextMonth,
-            icon: Icon(Icons.chevron_right),
-          ),
-        ],
-      ),
-    ),
-    Padding(
-      padding: EdgeInsets.fromLTRB(12, 0, 12, 8),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppTheme.chipIncome,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Pemasukan', style: TextStyle(fontSize: 12)),
-                  SizedBox(height: 4),
-                  Text(formatRp(totalIncome),
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(width: 8),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppTheme.chipExpense,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Pengeluaran', style: TextStyle(fontSize: 12)),
-                  SizedBox(height: 4),
-                  Text(formatRp(totalExpense),
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-    Expanded(
-      child: docs.isEmpty
-          ? Center(child: Text('Belum ada transaksi bulan ini.'))
-          : ListView.builder(
-              padding: EdgeInsets.all(12),
-              itemCount: docs.length,
-              itemBuilder: (BuildContext context, int index) {
-                final doc = docs[index];
-                return Padding(
-                  padding: EdgeInsets.only(bottom: 12),
-                  child: BTransactionCard(
-                    transaction: doc,
-                    modalCallback: ({BTransaction? transaction}) =>
-                        _showTransactionModal(transaction: transaction),
-                    deleteCallback: _deleteTransaction,
-                  ),
-                );
-              },),
-            ),
-          ],
-        );},
+                  final categoryNames = {
+                    for (final category in categorySnapshot.data!)
+                      category.id ?? '': category.name,
+                  };
+
+                  final filteredDocs = allDocs.where((transaction) {
+                    return _matchesSearch(
+                      transaction,
+                      _searchQuery,
+                      walletNames,
+                      categoryNames,
+                    );
+                  }).toList();
+
+                  final totalIncome = filteredDocs
+                      .where((t) => t.type == 'INCOME')
+                      .fold(0.0, (sum, t) => sum + t.amount);
+                  final totalExpense = filteredDocs
+                      .where((t) => t.type == 'EXPENSE')
+                      .fold(0.0, (sum, t) => sum + t.amount);
+
+                  String formatRp(double amount) {
+                    return 'Rp ${amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (m) => '${m[1]}.')}';
+                  }
+
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+                        child: TextField(
+                          controller: _searchController,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.search),
+                            hintText:
+                                'Cari transaksi berdasarkan dompet, kategori, keterangan, tanggal, bulan, atau tahun...',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 0,
+                            ),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _searchQuery = value.trim();
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(12, 0, 12, 8),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.chipIncome,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Pemasukan',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      formatRp(totalIncome),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.chipExpense,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Pengeluaran',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      formatRp(totalExpense),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: filteredDocs.isEmpty
+                            ? Center(
+                                child: Text('Tidak ada transaksi yang cocok.'),
+                              )
+                            : ListView.builder(
+                                padding: EdgeInsets.all(12),
+                                itemCount: filteredDocs.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final doc = filteredDocs[index];
+                                  return Padding(
+                                    padding: EdgeInsets.only(bottom: 12),
+                                    child: BTransactionCard(
+                                      transaction: doc,
+                                      modalCallback:
+                                          ({BTransaction? transaction}) =>
+                                              _showTransactionModal(
+                                                transaction: transaction,
+                                              ),
+                                      deleteCallback: _deleteTransaction,
+                                    ),
+                                  );
+                                },
+                              ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }
 }
-      
