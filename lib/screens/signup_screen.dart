@@ -6,6 +6,7 @@ import '../services/auth_service.dart';
 import '../theme.dart';
 import 'category_screen.dart';
 import 'login_screen.dart';
+import 'email_verification_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -49,17 +50,26 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() => _isLoading = true);
 
     try {
-      await _authService.signUpWithEmail(
+      final user = await _authService.signUpWithEmail(
         emailController.text.trim(),
         passwordController.text,
       );
 
-      if (mounted) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => CategoryScreen()),
-          (route) => false,
-        );
+      if (user != null) {
+        // Kirim email verifikasi
+        await _authService.sendEmailVerification();
+
+        if (mounted) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EmailVerificationScreen(
+                email: user.email ?? emailController.text.trim(),
+              ),
+            ),
+            (route) => false,
+          );
+        }
       }
     } catch (e) {
       _showErrorDialog(e.toString());
@@ -103,10 +113,7 @@ class _SignupScreenState extends State<SignupScreen> {
             children: [
               Column(
                 children: [
-                  Image.asset(
-                    'image/nomi2.png', 
-                    width: 100,
-                  ),
+                  Image.asset('image/nomi2.png', width: 100),
 
                   const SizedBox(height: 2),
 
