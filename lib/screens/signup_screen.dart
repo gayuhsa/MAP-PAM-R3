@@ -183,7 +183,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.editButton,
                   foregroundColor: AppTheme.textInverted,
-                  padding: const EdgeInsets.all(16),
+                  minimumSize: const Size(double.infinity, 52),
+                  padding: EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
