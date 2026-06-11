@@ -32,11 +32,11 @@ class _WalletsScreenState extends State<WalletsScreen> {
 
     final Map<String, TextEditingController> fields = {
       'Nama': TextEditingController(text: isEditing ? wallet.name : ''),
-      'Keterangan': TextEditingController(
-        text: isEditing ? wallet.description : '',
-      ),
       'Jumlah': TextEditingController(
         text: isEditing ? '${wallet.balance}' : null,
+      ),
+      'Keterangan': TextEditingController(
+        text: isEditing ? wallet.description : '',
       ),
     };
 

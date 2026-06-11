@@ -346,7 +346,10 @@ class _EntitySummaryScreenState extends State<EntitySummaryScreen> {
 
               final chartEntries = _groupTransactions(filteredTransactions);
 
-              return Column(
+              return ListView(
+                padding: EdgeInsets.zero,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 children: [
                   Padding(
                     padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
@@ -460,31 +463,38 @@ class _EntitySummaryScreenState extends State<EntitySummaryScreen> {
                     child: _buildChart(chartEntries),
                   ),
                   SizedBox(height: 12),
-                  Expanded(
-                    child: filteredTransactions.isEmpty
-                        ? Center(
-                            child: Text(
-                              'Tidak ada transaksi untuk ringkasan ini.',
-                            ),
-                          )
-                        : ListView.separated(
-                            padding: EdgeInsets.all(12),
-                            itemCount: filteredTransactions.length,
-                            separatorBuilder: (_, __) => SizedBox(height: 12),
-                            itemBuilder: (context, index) {
-                              final transaction = filteredTransactions[index];
-                              final otherName = widget.summaryForWallet
-                                  ? (otherNames[transaction.categoryId] ??
-                                        'Kategori tidak ditemukan')
-                                  : (otherNames[transaction.walletId] ??
-                                        'Dompet tidak ditemukan');
-                              return _buildTransactionItem(
-                                transaction,
-                                otherName,
-                              );
-                            },
-                          ),
-                  ),
+                  if (filteredTransactions.isEmpty) ...[
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      child: Center(
+                        child: Text(
+                          'Tidak ada transaksi untuk ringkasan ini.',
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                  ] else ...[
+                    ListView.separated(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: filteredTransactions.length,
+                      separatorBuilder: (_, __) => SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        final transaction = filteredTransactions[index];
+                        final otherName = widget.summaryForWallet
+                            ? (otherNames[transaction.categoryId] ??
+                                'Kategori tidak ditemukan')
+                            : (otherNames[transaction.walletId] ??
+                                'Dompet tidak ditemukan');
+                        return _buildTransactionItem(
+                          transaction,
+                          otherName,
+                        );
+                      },
+                    ),
+                    SizedBox(height: 12),
+                  ],
                 ],
               );
             },
