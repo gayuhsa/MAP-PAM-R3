@@ -13,9 +13,16 @@ class Wallet {
     required this.initialBalance,
   });
 
+  static double _toDouble(dynamic value, [double fallback = 0.0]) {
+    if (value == null) return fallback;
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? fallback;
+    return fallback;
+  }
+
   factory Wallet.fromJson(Map<String, dynamic> json, String docId) {
-    final balance = (json['balance'] ?? 0.0).toDouble();
-    final initialBalance = (json['initialBalance'] ?? balance).toDouble();
+    final balance = _toDouble(json['balance'], 0.0);
+    final initialBalance = _toDouble(json['initialBalance'], balance);
     return Wallet(
       id: docId,
       name: json['name'] ?? '',

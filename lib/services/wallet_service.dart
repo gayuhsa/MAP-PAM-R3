@@ -22,7 +22,6 @@ class WalletService {
   Future<void> create(Wallet wallet) async {
     wallet.name = normalizeEntityName(wallet.name);
     wallet.description = normalizeDescription(wallet.description);
-    wallet.initialBalance = wallet.initialBalance;
     await _db.add(wallet.toJson());
   }
 
