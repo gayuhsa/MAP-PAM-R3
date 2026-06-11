@@ -17,6 +17,7 @@ class EntitySummaryScreen extends StatefulWidget {
   final Stream<List<BTransaction>> transactionStream;
   final bool summaryForWallet;
   final String otherLabel;
+  final double? startingValue;
 
   const EntitySummaryScreen({
     super.key,
@@ -25,6 +26,7 @@ class EntitySummaryScreen extends StatefulWidget {
     required this.transactionStream,
     required this.summaryForWallet,
     required this.otherLabel,
+    this.startingValue,
   });
 
   @override
@@ -109,7 +111,7 @@ class _EntitySummaryScreenState extends State<EntitySummaryScreen> {
   }
 
   Widget _buildChart(List<MapEntry<String, double>> entries) {
-    if (entries.isEmpty) {
+    if (entries.isEmpty && widget.startingValue == null) {
       return Container(
         height: 180,
         alignment: Alignment.center,
@@ -117,15 +119,30 @@ class _EntitySummaryScreenState extends State<EntitySummaryScreen> {
       );
     }
 
+    final labels = widget.startingValue != null
+        ? ['Saldo Awal', ...entries.map((e) => e.key)]
+        : entries.map((e) => e.key).toList();
+
+    final cumulativeValues = <double>[];
+    if (widget.startingValue != null) {
+      double current = widget.startingValue!;
+      cumulativeValues.add(current);
+      for (final entry in entries) {
+        current += entry.value.toDouble();
+        cumulativeValues.add(current);
+      }
+    } else {
+      cumulativeValues.addAll(entries.map((e) => e.value.toDouble()));
+    }
+
     final spots = List.generate(
-      entries.length,
-      (index) => FlSpot(index.toDouble(), entries[index].value.toDouble()),
+      cumulativeValues.length,
+      (index) => FlSpot(index.toDouble(), cumulativeValues[index]),
     );
 
-    final values = entries.map((e) => e.value).toList();
-    final double minY = min(0.0, values.reduce(min).toDouble());
-    final double maxY = values.reduce(max).toDouble();
-    final labelInterval = max(1, (entries.length / 4).ceil());
+    final double minY = min(0.0, cumulativeValues.reduce(min));
+    final double maxY = cumulativeValues.reduce(max);
+    final labelInterval = max(1, (labels.length / 4).ceil());
     final double yInterval = max(1.0, (maxY - minY) / 4);
 
     return SizedBox(
@@ -140,19 +157,16 @@ class _EntitySummaryScreenState extends State<EntitySummaryScreen> {
                 interval: labelInterval.toDouble(),
                 getTitlesWidget: (value, meta) {
                   final index = value.toInt();
-                  if (index < 0 || index >= entries.length) {
+                  if (index < 0 || index >= labels.length) {
                     return const SizedBox.shrink();
                   }
                   if (index % labelInterval != 0 &&
-                      index != entries.length - 1) {
+                      index != labels.length - 1) {
                     return const SizedBox.shrink();
                   }
                   return SideTitleWidget(
                     axisSide: meta.axisSide,
-                    child: Text(
-                      entries[index].key,
-                      style: TextStyle(fontSize: 10),
-                    ),
+                    child: Text(labels[index], style: TextStyle(fontSize: 10)),
                   );
                 },
               ),
@@ -344,6 +358,7 @@ class _EntitySummaryScreenState extends State<EntitySummaryScreen> {
                         SizedBox(height: 12),
                         TextField(
                           controller: _searchController,
+                          style: TextStyle(color: AppTheme.text),
                           decoration: InputDecoration(
                             prefixIcon: Icon(Icons.search),
                             hintText: 'Cari transaksi dalam ringkasan...',

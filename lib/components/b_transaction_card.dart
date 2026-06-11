@@ -60,7 +60,8 @@ class _BTransactionCardState extends State<BTransactionCard> {
 
       final wallet = wallets.firstWhere(
         (w) => w.id == widget.transaction.walletId,
-        orElse: () => Wallet(id: '', name: 'Dompet Utama', balance: 0),
+        orElse: () =>
+            Wallet(id: '', name: 'Dompet Utama', balance: 0, initialBalance: 0),
       );
 
       final category = categories.firstWhere(

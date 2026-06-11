@@ -16,6 +16,7 @@ class WalletSummaryScreen extends StatelessWidget {
       transactionStream: TransactionService().getByWallet(wallet.id ?? ''),
       summaryForWallet: true,
       otherLabel: 'Kategori',
+      startingValue: wallet.initialBalance,
     );
   }
 }

@@ -22,6 +22,7 @@ class WalletService {
   Future<void> create(Wallet wallet) async {
     wallet.name = normalizeEntityName(wallet.name);
     wallet.description = normalizeDescription(wallet.description);
+    wallet.initialBalance = wallet.initialBalance;
     await _db.add(wallet.toJson());
   }
 
@@ -88,7 +89,13 @@ class WalletService {
     if (snapshot.exists) {
       return defaultDoc.id;
     }
-    await defaultDoc.set(Wallet(name: 'Dompet Default', balance: 0.0).toJson());
+    await defaultDoc.set(
+      Wallet(
+        name: 'Dompet Default',
+        balance: 0.0,
+        initialBalance: 0.0,
+      ).toJson(),
+    );
     return defaultDoc.id;
   }
 

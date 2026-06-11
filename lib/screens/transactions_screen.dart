@@ -404,6 +404,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                         padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
                         child: TextField(
                           controller: _searchController,
+                          style: TextStyle(color: AppTheme.text),
                           decoration: InputDecoration(
                             prefixIcon: Icon(Icons.search),
                             hintText:

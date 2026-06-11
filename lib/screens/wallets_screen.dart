@@ -93,6 +93,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
         wallet.name = name;
         wallet.description = fields['Keterangan']!.text.trim();
         wallet.balance = balance;
+        // preserve initialBalance on edit
         try {
           await _walletService.update(wallet);
           if (mounted) {
@@ -120,6 +121,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
               name: name,
               description: fields['Keterangan']!.text.trim(),
               balance: balance,
+              initialBalance: balance,
             ),
           );
           if (mounted) {
