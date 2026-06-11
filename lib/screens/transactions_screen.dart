@@ -88,12 +88,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       'Jenis': TextEditingController(
         text: isEditing ? transaction.type : 'EXPENSE',
       ),
-      'Keterangan': TextEditingController( 
+      'Keterangan': TextEditingController(
         text: isEditing ? transaction.note : '',
       ),
     };
 
     final bool? isConfirmed = await showDialog(
+      // ignore: use_build_context_synchronously
       context: context,
       builder: (context) => Modal(
         title: isEditing ? 'Edit Transaksi' : 'Tambah Transaksi',
@@ -149,6 +150,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
     if (isEditing) {
       final confirmEdit = await showConfirmationDialog(
+        // ignore: use_build_context_synchronously
         context,
         title: 'Konfirmasi Edit',
         message: 'Yakin ingin menyimpan perubahan transaksi ini?',

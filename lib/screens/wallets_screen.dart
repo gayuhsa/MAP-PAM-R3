@@ -43,6 +43,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
 
       if (isEditing) {
         final shouldSave = await showConfirmationDialog(
+          // ignore: use_build_context_synchronously
           context,
           title: 'Konfirmasi Edit',
           message: 'Yakin ingin menyimpan perubahan dompet ini?',
