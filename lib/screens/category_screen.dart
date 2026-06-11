@@ -19,11 +19,12 @@ class CategoryScreen extends StatefulWidget {
 class _CategoryScreenState extends State<CategoryScreen> {
   final CategoryService _categoryService = CategoryService();
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
+  final ValueNotifier<String> _searchQuery = ValueNotifier('');
 
   @override
   void dispose() {
     _searchController.dispose();
+    _searchQuery.dispose();
     super.dispose();
   }
 
@@ -215,67 +216,62 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 ),
               ),
               onChanged: (value) {
-                setState(() {
-                  _searchQuery = value.trim();
-                });
+                _searchQuery.value = value.trim();
               },
             ),
           ),
-          StreamBuilder<List<Category>>(
-            stream: _categoryService.getAllByUserId(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Expanded( // ✅ FIX: pakai Expanded biar isi tengah layar
-                  child: Center(child: Text('Terjadi error. Coba lagi nanti.')),
-                );
-              }
+          Expanded(
+            child: StreamBuilder<List<Category>>(
+              stream: _categoryService.getAllByUserId(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(child: Text('Terjadi error. Coba lagi nanti.'));
+                }
 
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Expanded( // ✅ FIX: pakai Expanded biar spinner di tengah
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
 
-              final docs = snapshot.data ?? [];
+                final docs = snapshot.data ?? [];
 
-              if (docs.isEmpty) {
-                return Expanded(
-                  child: Center(child: Text('Belum ada kategori.')),
-                );
-              }
+                if (docs.isEmpty) {
+                  return Center(child: Text('Belum ada kategori.'));
+                }
 
-              final filteredDocs = docs.where((category) {
-                final query = _searchQuery.toLowerCase();
-                return category.name.toLowerCase().contains(query) ||
-                    category.description.toLowerCase().contains(query);
-              }).toList();
+                return ValueListenableBuilder<String>(
+                  valueListenable: _searchQuery,
+                  builder: (context, query, _) {
+                    final filteredDocs = docs.where((category) {
+                      return category.name.toLowerCase().contains(query.toLowerCase()) ||
+                          category.description.toLowerCase().contains(query.toLowerCase());
+                    }).toList();
 
-              return Expanded(
-                child: filteredDocs.isEmpty
-                    ? Center(child: Text('Tidak ada kategori yang cocok.'))
-                    : ListView.builder(
-                        padding: EdgeInsets.all(8),
-                        itemCount: filteredDocs.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final doc = filteredDocs[index];
-
-                          return CategoryCard(
-                            category: doc,
-                            modalCallback: _showCategoryModal,
-                            deleteCallback: _deleteCategory,
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      CategorySummaryScreen(category: doc),
-                                ),
+                    return filteredDocs.isEmpty
+                        ? Center(child: Text('Tidak ada kategori yang cocok.'))
+                        : ListView.builder(
+                            padding: EdgeInsets.all(8),
+                            itemCount: filteredDocs.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final doc = filteredDocs[index];
+                              return CategoryCard(
+                                category: doc,
+                                modalCallback: _showCategoryModal,
+                                deleteCallback: _deleteCategory,
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          CategorySummaryScreen(category: doc),
+                                    ),
+                                  );
+                                },
                               );
                             },
                           );
-                        },
-                      ),
-              );
-            },
+                  },
+                );
+              },
+            ),
           ),
         ],
       ),
