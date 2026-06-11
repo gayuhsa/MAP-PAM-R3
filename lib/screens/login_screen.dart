@@ -190,7 +190,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(
                           color: AppTheme.textInverted,
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
                         ),
                       )
                 ),

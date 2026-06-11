@@ -119,7 +119,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Image.asset('image/nomi2.png', width: 100),
-                SizedBox(height: 16),
+
+                SizedBox(height: 2),
+
                 Text(
                   "Lupa Password",
                   style: TextStyle(

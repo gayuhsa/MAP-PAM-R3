@@ -194,7 +194,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         style: TextStyle(
                           color: AppTheme.textInverted,
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
               ),
@@ -209,7 +208,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     children: [
                       const TextSpan(text: "Sudah memiliki akun? "),
                       TextSpan(
-                        text: "Masuk.",
+                        text: "Masuk",
                         style: TextStyle(
                           color: AppTheme.button2,
                           fontWeight: FontWeight.bold,

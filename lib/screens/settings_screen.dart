@@ -141,7 +141,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   style: TextStyle(
                     color: AppTheme.textInverted,
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
