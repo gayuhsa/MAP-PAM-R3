@@ -109,7 +109,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
 
                   const SizedBox(height: 2),
-                  
+
                   Text(
                     "Daftar",
                     style: TextStyle(
@@ -187,7 +187,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         width: 20,
                         child: CircularProgressIndicator(
                           color: AppTheme.textInverted,
-                          strokeWidth: 2,
                         ),
                       )
                     : Text(
