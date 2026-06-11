@@ -256,7 +256,9 @@ class _EntitySummaryScreenState extends State<EntitySummaryScreen> {
                 _formatCurrency(transaction.amount),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: isIncome ? AppTheme.chipIncome : AppTheme.chipExpense,
+                  color: isIncome
+                      ? AppTheme.chipTextIncome
+                      : AppTheme.chipTextExpense,
                 ),
               ),
             ],
