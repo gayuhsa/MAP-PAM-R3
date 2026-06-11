@@ -57,7 +57,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
 
       if (await _walletService.existsWithName(
         name,
-        excludeId: isEditing ? wallet?.id : null,
+        excludeId: isEditing ? wallet.id : null,
       )) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(

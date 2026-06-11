@@ -57,7 +57,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
       if (await _categoryService.existsWithName(
         name,
-        excludeId: isEditing ? category?.id : null,
+        excludeId: isEditing ? category.id : null,
       )) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
