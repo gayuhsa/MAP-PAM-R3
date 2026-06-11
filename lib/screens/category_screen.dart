@@ -225,17 +225,23 @@ class _CategoryScreenState extends State<CategoryScreen> {
             stream: _categoryService.getAllByUserId(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return Center(child: Text('Terjadi error. Coba lagi nanti.'));
+                return Expanded( // ✅ FIX: pakai Expanded biar isi tengah layar
+                  child: Center(child: Text('Terjadi error. Coba lagi nanti.')),
+                );
               }
 
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return Expanded( // ✅ FIX: pakai Expanded biar spinner di tengah
+                  child: Center(child: CircularProgressIndicator()),
+                );
               }
 
               final docs = snapshot.data ?? [];
 
               if (docs.isEmpty) {
-                return Center(child: Text('Belum ada kategori.'));
+                return Expanded(
+                  child: Center(child: Text('Belum ada kategori.')),
+                );
               }
 
               final filteredDocs = docs.where((category) {
