@@ -92,6 +92,10 @@ class _ModalState extends State<Modal> {
                 initialSelection: state.value,
                 label: Text(key),
                 expandedInsets: EdgeInsets.zero,
+                inputDecorationTheme: const InputDecorationTheme(
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
                 dropdownMenuEntries: options.map((DropdownOptions option) {
                   return DropdownMenuEntry<String>(
                     value: option.id,
@@ -133,6 +137,11 @@ class _ModalState extends State<Modal> {
         keyboardType: _isNumericField(key)
             ? TextInputType.number
             : TextInputType.text,
+        textCapitalization: _isNumericField(key)
+            ? TextCapitalization.none
+            : key == 'Nama' || key == 'Nama Kategori'
+            ? TextCapitalization.words
+            : TextCapitalization.sentences,
         inputFormatters: _isNumericField(key)
             ? [FilteringTextInputFormatter.digitsOnly]
             : null,
@@ -165,8 +174,10 @@ class _ModalState extends State<Modal> {
 
   String? _hintFor(String key) {
     switch (key) {
-      case 'Nama':
+      case 'Nama Kategori':
         return 'Contoh: Konsumsi';
+      case 'Nama':
+        return 'Contoh: BCA';
       case 'Jumlah':
         return 'Contoh: 150000';
       case 'Keterangan':

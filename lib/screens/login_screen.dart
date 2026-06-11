@@ -75,13 +75,13 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.authContainer,
       resizeToAvoidBottomInset: false,
       body: Center(
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(32),
-            color: AppTheme.authContainer,
+            color: AppTheme.background,
           ),
           margin: EdgeInsets.fromLTRB(32, 0, 32, 0),
           padding: EdgeInsets.all(32),
@@ -132,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: _isLoading ? null : _login,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.button,
+                  backgroundColor: AppTheme.editButton,
                   foregroundColor: AppTheme.textInverted,
                   padding: EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
@@ -165,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextSpan(
                         text: "Daftar.",
                         style: TextStyle(
-                          color: AppTheme.button,
+                          color: AppTheme.button2,
                           fontWeight: FontWeight.bold,
                         ),
                         recognizer: TapGestureRecognizer()

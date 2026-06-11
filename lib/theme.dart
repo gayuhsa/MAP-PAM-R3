@@ -1,34 +1,41 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const Color background    = Color(0xFFF0F7F5);
-  static const Color container     = Color(0xFFFFFFFF);
+
+  static const Color background    = Color(0xFFF3F6F3);
+  static const Color container     = Color(0xFFF0F7F5);
   static const Color subcontainer  = Color(0xFFF4F6F8);
   static const Color bottomBar     = Color(0xFFFFFFFF);
-  static const Color card          = Color(0xFFFFFFFF);
+  static const Color card          = Color(0xFFD8E1D7);
   static const Color cardBorder    = Color(0xFFE0E0E0);
-  static const Color chipExpense   = Color(0xFFF2A6A6);
-  static const Color chipIncome    = Color(0xFFA6D4A8);
-  static const Color authContainer = Color(0xFFFFFFFF);
+  static const Color chipExpense   = Color(0xFFF2C2C2);
+  static const Color chipIncome    = Color(0xFF99b096);
+  static const Color chipTextExpense = Color(0xFFCD5C5C);
+  static const Color chipTextIncome = Color(0xFF546B60);
+  static const Color authContainer = Color(0xFFF8F9F8);
   static const Color authTextBox   = Color(0xFFFFFFFF);
   static const Color inputField    = Color(0xFFF0F7F5);
-  static const Color text          = Color(0xFF1C2D42);
+  static const Color text          = Color(0xFF21291F);
   static const Color textInverted  = Colors.white;
-  static const Color button        = Color(0xFF0D5C52);
+  static const Color button        = Color(0xFFD8E1D7);
+  static const Color button2       = Color(0xFF759470);
   static const Color buttonDanger  = Color(0xFFB83A3C);
+  static const Color buttonInactive = Color.fromARGB(119, 255, 255, 255);
+  static const Color buttonTextInactive = Color.fromARGB(166, 255, 255, 255);
   static const Color trashButton   = Color(0xFFB83A3C);
-  static const Color editButton    = Color(0xFF0D5C52);
+  static const Color editButton    = Color(0xFF4D6149);
   static const Color greyButton    = Color(0xFFF0F7F5);
 
   static ThemeData get themeData => ThemeData(
     useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFF0D5C52),
-      surface: const Color(0xFFF0F7F5),
+      seedColor: const Color(0xFF4d6149),
+      surface: const Color(0xFFF3F6F3),
     ),
     scaffoldBackgroundColor: const Color(0xFFF0F7F5),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF0D5C52),
+
+    appBarTheme: AppBarTheme(
+      backgroundColor: Color(0xFF4d6149),
       foregroundColor: Colors.white,
       elevation: 0,
       titleTextStyle: TextStyle(
@@ -37,33 +44,34 @@ class AppTheme {
         fontWeight: FontWeight.bold,
       ),
     ),
-    bottomAppBarTheme: const BottomAppBarThemeData(
-      color: Color(0xFFFFFFFF),
-    ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: Color(0xFF0D5C52),
+
+    bottomAppBarTheme: const BottomAppBarThemeData(color: Color(0xFF4d6149)),
+
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: const Color(0xFF4d6149),
       foregroundColor: Colors.white,
     ),
+
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF0D5C52),
+        backgroundColor: const Color(0xFF4d6149),
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     ),
+
     cardTheme: CardThemeData(
-      color: Colors.white,
+      color: Color(0xFF4d6149),
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: const BorderSide(color: Color(0xFFE0E0E0)),
       ),
     ),
+
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: const Color(0xFFF0F7F5),
+      fillColor: const Color.fromARGB(255, 255, 255, 255),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
@@ -74,12 +82,13 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: Color(0xFF0D5C52), width: 2),
+        borderSide: const BorderSide(color: Color(0xFF3A4A38), width: 2),
       ),
     ),
+
     textTheme: const TextTheme(
-      bodyMedium: TextStyle(color: Color(0xFF1C2D42)),
-      bodyLarge: TextStyle(color: Color(0xFF1C2D42)),
+      bodyMedium: TextStyle(color: Color(0xFF4d6149)),
+      bodyLarge: TextStyle(color: Color(0xFF4d6149)),
     ),
   );
 }

@@ -6,8 +6,8 @@ class BTransaction {
   String categoryId;
   double amount;
   DateTime dateTime;
-  String type; 
-  String note; 
+  String type;
+  String note;
 
   BTransaction({
     this.id,
@@ -16,7 +16,7 @@ class BTransaction {
     required this.amount,
     required this.dateTime,
     required this.type,
-     this.note = '',
+    this.note = '',
   });
 
   static double _parseDouble(dynamic value) {

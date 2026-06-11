@@ -21,52 +21,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'MAP-PAM-R3',
-      theme: ThemeData(
-        scaffoldBackgroundColor: AppTheme.background,
-
-        appBarTheme: AppBarTheme(
-          backgroundColor: Color(0xFF0D5C52),
-          foregroundColor: AppTheme.textInverted,
-          elevation: 0,
-        ),
-
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: AppTheme.bottomBar,
-          selectedItemColor: AppTheme.button,
-          unselectedItemColor: Color(0xFF9E9E9E),
-          selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
-          elevation: 8,
-        ),
-
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: AppTheme.button,
-          foregroundColor: AppTheme.textInverted,
-        ),
-
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.button,
-            foregroundColor: AppTheme.textInverted,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        ),
-        colorScheme: ColorScheme.fromSeed(seedColor: AppTheme.button),
-        useMaterial3: true,
-      ),
-
+      theme: AppTheme.themeData,
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Scaffold(body: Center(child: CircularProgressIndicator()));
           }
-
           if (snapshot.hasData) {
             return CategoryScreen();
           }
-
           return SignupScreen();
         },
       ),

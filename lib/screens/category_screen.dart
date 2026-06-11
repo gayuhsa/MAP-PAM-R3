@@ -4,8 +4,10 @@ import '../components/confirmation_dialog.dart';
 import '../components/modal.dart';
 import '../components/skeleton.dart';
 import '../models/category.dart';
+import '../screens/category_summary_screen.dart';
 import '../services/category_service.dart';
 import '../theme.dart';
+import '../utils/string_utils.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({super.key});
@@ -16,12 +18,25 @@ class CategoryScreen extends StatefulWidget {
 
 class _CategoryScreenState extends State<CategoryScreen> {
   final CategoryService _categoryService = CategoryService();
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   void _showCategoryModal({Category? category}) async {
     final isEditing = category != null;
 
     final Map<String, TextEditingController> fields = {
-      'Nama': TextEditingController(text: isEditing ? category.name : ''),
+      'Nama Kategori': TextEditingController(
+        text: isEditing ? category.name : '',
+      ),
+      'Keterangan': TextEditingController(
+        text: isEditing ? category.description : '',
+      ),
     };
 
     final bool? isConfirmed = await showDialog(
@@ -33,9 +48,27 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
 
     if (isConfirmed == true) {
-      final String name = fields['Nama']!.text.trim();
+      final String name = normalizeEntityName(fields['Nama Kategori']!.text);
+      final String description = normalizeDescription(
+        fields['Keterangan']!.text,
+      );
 
       if (name.isEmpty) return;
+
+      if (await _categoryService.existsWithName(
+        name,
+        excludeId: isEditing ? category?.id : null,
+      )) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Kategori dengan nama "$name" telah dibuat.'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+        return;
+      }
 
       if (isEditing) {
         final shouldSave = await showConfirmationDialog(
@@ -59,6 +92,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
       if (isEditing) {
         category.name = name;
+        category.description = description;
         try {
           await _categoryService.update(category);
           if (mounted) {
@@ -81,7 +115,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
         }
       } else {
         try {
-          await _categoryService.create(Category(name: name));
+          await _categoryService.create(
+            Category(name: name, description: description),
+          );
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -149,8 +185,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   Widget _createActionButton() {
     return FloatingActionButton(
-      backgroundColor: AppTheme.card,
-      foregroundColor: AppTheme.text,
+      backgroundColor: AppTheme.button2,
+      foregroundColor: AppTheme.textInverted,
       onPressed: () => _showCategoryModal(),
       child: Icon(Icons.add),
     );
@@ -178,18 +214,64 @@ class _CategoryScreenState extends State<CategoryScreen> {
             return Center(child: Text('Belum ada kategori.'));
           }
 
-          return ListView.builder(
-            padding: EdgeInsets.all(8),
-            itemCount: docs.length,
-            itemBuilder: (BuildContext context, int index) {
-              final doc = docs[index];
+          final filteredDocs = docs.where((category) {
+            final query = _searchQuery.toLowerCase();
+            return category.name.toLowerCase().contains(query) ||
+                category.description.toLowerCase().contains(query);
+          }).toList();
 
-              return CategoryCard(
-                category: doc,
-                modalCallback: _showCategoryModal,
-                deleteCallback: _deleteCategory,
-              );
-            },
+          return Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                    hintText:
+                        'Cari kategori berdasarkan nama atau keterangan...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 0,
+                    ),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value.trim();
+                    });
+                  },
+                ),
+              ),
+              SizedBox(height: 12),
+              Expanded(
+                child: filteredDocs.isEmpty
+                    ? Center(child: Text('Tidak ada kategori yang cocok.'))
+                    : ListView.builder(
+                        padding: EdgeInsets.all(8),
+                        itemCount: filteredDocs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final doc = filteredDocs[index];
+
+                          return CategoryCard(
+                            category: doc,
+                            modalCallback: _showCategoryModal,
+                            deleteCallback: _deleteCategory,
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      CategorySummaryScreen(category: doc),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+              ),
+            ],
           );
         },
       ),
